@@ -1,0 +1,20 @@
+{
+  "name": "WebApp-web",
+  "version": "0.0.1",
+  "authors": [
+        "marco.calabretta86@gmail.com"
+    ],
+  "dependencies": {
+    	"angular": "1.4.3",
+    	"json3": "3.3.2",
+   		"jquery": "2.1.4",
+    	"bootstrap": "3.3.5",
+    	"angular-resource": "1.4.3",
+   		"angular-cookies": "1.4.3",
+    	"angular-sanitize": "1.4.3",
+    	"angular-route": "1.4.3",
+    	"angular-bootstrap": "0.13.1",
+    	"base64": "0.3.0",
+    	"spring-security-csrf-token-interceptor": "0.1.5"
+  }
+}
