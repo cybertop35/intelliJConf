@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.i4c.framework.installazione</groupId>
+        <artifactId>fwk-installazione-root</artifactId>
+        <version>7.0M1</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.i4c.antares.pom</groupId>
+    <artifactId>earlywarning-pom</artifactId>
+    <version>7.0M1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>${project.artifactId} (${project.version})</name>
+
+	<distributionManagement> <!-- repositories aziendali -->
+        <repository>
+            <id>nexus.aaap</id>
+            <name>Internal Release Repository APP Catalog</name>
+            <url>https://aaap.digital.accenture.com/nexus/content/repositories/internal.aaap-catalog.snap/</url>
+        </repository>
+    </distributionManagement>
+
+    <modules>
+        <!--	COMMON MODULES	-->
+        <!-- module>../../commons/commons-app-java</module -->
+        <!-- module>../../commons/commons-app-ejb</module -->
+
+        <!--	PROJECT MODULES	-->
+        <!-- module>../../apps/predictive-app</module -->
+        <module>earlywarning-config</module>
+        <module>earlywarning-ear</module>
+		<module>earlywarning-auth-ejb</module>
+    </modules>
+
+</project>
