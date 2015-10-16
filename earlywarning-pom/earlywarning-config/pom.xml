@@ -6,13 +6,13 @@
     <parent>
         <groupId>com.i4c.framework.java</groupId>
         <artifactId>fwk-java-root</artifactId>
-        <version>7.0M1</version>
+        <version>7.0M2-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
-    <groupId>com.i4c.antares.ejb</groupId>
+    <groupId>com.i4c.antares.java</groupId>
     <artifactId>earlywarning-config</artifactId>
-    <version>7.0M1.0.0-SNAPSHOT</version>
+    <version>7.0M2.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>${project.artifactId} (${project.version})</name>
 
