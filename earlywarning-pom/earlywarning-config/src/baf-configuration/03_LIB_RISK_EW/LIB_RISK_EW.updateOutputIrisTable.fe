@@ -1,0 +1,80 @@
+# FENull returnNull LIB_RISK.updateOutputIrisTable;
+# RETURN VALUE: FENull      -
+# EFFETCS:      -           updateAnalyticaltable
+
+DEBUGMESSAGE("LIB_RISK_EW.updateOutputIrisTable.fe"); # stacktrace
+
+VAR MATRIX;
+
+VAR MATRIX_TABLE;
+VAR BM_TABLE;
+VAR UNIT_TABLE;
+VAR BR;
+
+VAR CREATED;
+VAR SQL;
+
+VAR T_OUT_TMP 	= "OUTPUT_IRSIS_TMP";
+VAR T_OUT_BCK 	= "OUTPUT_IRSIS_BCK";
+VAR T_OUT 		= "OUTPUT_IRSIS";
+
+VAR DBCONNECTION = "TeradataDS";
+
+
+
+# RECUPERO LA MATRICE IN PROD
+MATRIX = WarningScore_Matrix[MatrixStatus="Production"];
+if(MATRIX <> NULL) THEN {
+
+	MATRIX_TABLE =  MATRIX.ResultTableName;
+    MATRIX_TABLE = MATRIX_TABLE[0];
+	
+    BM_TABLE = MATRIX.WSMatrix_BusinessModel.Business_Model.ResultTableName;
+    BM_TABLE = BM_TABLE[0];
+    
+    UNIT_TABLE = MATRIX.WarningScoreMatrix_Workspace.Workspace.Workspace_AnalysisUnit.Analysis_Unit.AnalyticalTable;
+    UNIT_TABLE = UNIT_TABLE[0];
+    
+    BR = MATRIX.WSMatrix_BusinessModel.Business_Model.BusinessModel_BusinessRule.Business_Rule;
+    
+    SQL = "SELECT "+ UNIT_TABLE+".* ";
+    
+    foreach (BR as b){
+    	SQL = SQL +" ,CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END as "+b.ID ;
+    }
+    
+    
+    
+    SQL = SQL +" ,"+BM_TABLE+".WARNING_SCORE as WARNING_APP ";
+	SQL = SQL +" ,"+MATRIX_TABLE+".COLOR as COLOR_APP ";
+	SQL = SQL +" ,null as WARNING_SYSTEM";
+    SQL = SQL +" ,null as COLOR_SYSTEM";
+    SQL = SQL +" ,CURRENT_DATE AS CREATION_DATE";
+
+    SQL = SQL +" FROM "+UNIT_TABLE +" "+UNIT_TABLE;
+    SQL = SQL +" JOIN "+MATRIX_TABLE+" "+MATRIX_TABLE+ "  ON "+MATRIX_TABLE+".SNDG="+UNIT_TABLE+".SNDG";
+    SQL = SQL +" JOIN "+BM_TABLE+" "+BM_TABLE+ "  ON "+MATRIX_TABLE+".SNDG="+UNIT_TABLE+".SNDG";
+
+    IF(LIB_DB.isTableExisting(T_OUT_TMP,DBCONNECTION)) THEN
+    {
+        SQLEXECUTE("DROP TABLE "+ T_OUT_TMP,DBCONNECTION,NULL,{});
+    }
+    
+    SQL = "CREATE TABLE "+T_OUT_TMP+" AS ( "+ SQL+" ) WITH DATA";
+  	SQLEXECUTE(SQL,DBCONNECTION,NULL,{});
+    
+    CREATED = LIB_DB.isTableExistingAndHavingData(T_OUT_TMP, DBCONNECTION);
+    
+    IF(CREATED) THEN {
+        IF(LIB_DB.isTableExisting(T_OUT_BCK,DBCONNECTION)) THEN    {
+            SQLEXECUTE("DROP TABLE "+T_OUT_BCK,DBCONNECTION,NULL,{});
+        }
+        IF(LIB_DB.isTableExisting(T_OUT,DBCONNECTION)) THEN    {
+            LIB_DB.renameTable(T_OUT,T_OUT_BCK,DBCONNECTION);
+        }
+        
+        LIB_DB.renameTable(T_OUT_TMP,T_OUT,DBCONNECTION);
+        return NOW();
+    }
+}
+return null;
