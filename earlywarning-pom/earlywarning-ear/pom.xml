@@ -21,17 +21,18 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 
     <dependencies>
         <dependency><version>${project.parent.version}</version><type>ejb</type><groupId>com.i4c.antares.ejb</groupId><artifactId>antares-core-ejb</artifactId></dependency>
-
+		
         <dependency><version>${project.parent.version}</version><type>war</type><groupId>com.i4c.antares.web</groupId><artifactId>ux-web</artifactId></dependency>
         <dependency><version>${project.parent.version}</version><type>pom</type><groupId>com.i4c.antares.web</groupId><artifactId>ux-web</artifactId></dependency>
-
-		<dependency><version>${project.parent.version}</version><type>war</type><groupId>com.i4c.antares.web</groupId><artifactId>antares-web</artifactId></dependency>
-        <dependency><version>${project.parent.version}</version><type>pom</type><groupId>com.i4c.antares.web</groupId><artifactId>antares-web</artifactId></dependency>
+		
+		<dependency><version>${project.version}</version><type>war</type><groupId>com.i4c.antares.web</groupId><artifactId>earlywarning-web</artifactId></dependency>
+        <dependency><version>${project.version}</version><type>pom</type><groupId>com.i4c.antares.web</groupId><artifactId>earlywarning-web</artifactId></dependency>
 		
         <dependency><version>${project.version}</version><type>ejb</type><groupId>com.i4c.antares.ejb</groupId><artifactId>commons-app-ejb</artifactId></dependency>
         <dependency><version>${project.version}</version><type>ejb</type><groupId>com.i4c.antares.ejb</groupId><artifactId>predictive-app</artifactId></dependency>
-        <dependency><version>${project.version}</version><type>jar</type><groupId>com.i4c.antares.java</groupId><artifactId>earlywarning-config</artifactId></dependency>
+		
 		<dependency><version>${project.version}</version><type>ejb</type><groupId>com.i4c.antares.ejb</groupId><artifactId>earlywarning-auth-ejb</artifactId></dependency>
+        <dependency><version>${project.version}</version><type>jar</type><groupId>com.i4c.antares.java</groupId><artifactId>earlywarning-config</artifactId></dependency>
     </dependencies>
 
     
@@ -46,12 +47,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
                         <ejbModule><groupId>com.i4c.antares.ejb</groupId><artifactId>antares-core-ejb</artifactId></ejbModule>
                         <ejbModule><groupId>com.i4c.antares.ejb</groupId><artifactId>commons-app-ejb</artifactId></ejbModule>
 						<ejbModule><groupId>com.i4c.antares.ejb</groupId><artifactId>earlywarning-auth-ejb</artifactId></ejbModule>
-						<jarModule><groupId>com.i4c.antares.java</groupId><artifactId>earlywarning-config</artifactId></jarModule>
+						<!-- jarModule><groupId>com.i4c.antares.java</groupId><artifactId>earlywarning-config</artifactId></jarModule -->
                         <webModule><groupId>com.i4c.antares.web</groupId><artifactId>ux-web</artifactId><contextRoot>/${i4c.uxContextRoot}</contextRoot></webModule>
-						<webModule><groupId>com.i4c.antares.web</groupId><artifactId>antares-web</artifactId><contextRoot>/${i4c.contextRoot}</contextRoot></webModule>
+						<webModule><groupId>com.i4c.antares.web</groupId><artifactId>earlywarning-web</artifactId><contextRoot>/${i4c.contextRoot}</contextRoot></webModule>
                     </modules>
                 </configuration>
             </plugin>
+	
 			<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -66,12 +68,13 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
                         <configuration>
                             <outputDirectory>${project.build.directory}</outputDirectory>
                             <artifactItems>
-                                <artifactItem><groupId>com.i4c.antares.ejb</groupId><artifactId>predictive-app</artifactId><version>${project.version}</version><classifier>bundle</classifier><overWrite>true</overWrite><type>zip</type></artifactItem>
+                                <artifactItem><groupId>com.i4c.antares.ejb</groupId><artifactId>predictive-app</artifactId><version>${project.version}</version><classifier>pages</classifier><overWrite>true</overWrite><type>zip</type></artifactItem>
                             </artifactItems>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
+		
         </plugins>
     </build>
 </project>

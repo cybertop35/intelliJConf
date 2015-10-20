@@ -30,10 +30,9 @@
         <module>earlywarning-config</module>
         <module>earlywarning-ear</module>
 		<module>earlywarning-auth-ejb</module>
-		
-				<!--
+
 		<module>earlywarning-web</module>
-		<module>earlywarning-ws-web</module> -->
+		<module>earlywarning-ws-web</module> 
     </modules>
 
 </project>

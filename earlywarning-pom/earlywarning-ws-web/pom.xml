@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <groupId>com.i4c.framework.web</groupId>
+        <artifactId>fwk-web-root</artifactId>
+        <version>7.0M2-SNAPSHOT</version>
+        <relativePath/>
+    </parent>
+
+    <groupId>com.i4c.antares.web</groupId>
+    <artifactId>earlywarning-ws-web</artifactId>
+    <version>7.0M2.0.0-SNAPSHOT</version>
+    <packaging>war</packaging>
+    <name>${project.artifactId} (${project.version})</name>
+
+
+	<dependencies>
+		<dependency><groupId>com.i4c.antares.java</groupId><artifactId>antares-common-java</artifactId><version>${project.parent.version}</version></dependency>
+		<dependency><groupId>com.i4c.antares.ejb</groupId><artifactId>antares-core-ejb</artifactId><version>${project.parent.version}</version></dependency>
+		<dependency><groupId>com.i4c.antares.web</groupId><artifactId>antares-web</artifactId><version>${project.parent.version}</version><type>pom</type></dependency>
+		<dependency><groupId>com.i4c.antares.web</groupId><artifactId>antares-web</artifactId><version>${project.parent.version}</version><type>war</type><scope>provided</scope></dependency>
+		<dependency><groupId>com.i4c.antares.ejb</groupId><artifactId>earlywarning-auth-ejb</artifactId><version>${project.version}</version></dependency>
+		<dependency><groupId>org.jboss.spec.javax.servlet</groupId><artifactId>jboss-servlet-api_3.0_spec</artifactId></dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<overlays>
+						<overlay>
+							<groupId>com.i4c.antares.web</groupId>
+							<artifactId>antares-web</artifactId>
+						</overlay>
+					</overlays>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
