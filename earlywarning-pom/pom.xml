@@ -7,13 +7,13 @@
     <parent>
         <groupId>com.i4c.framework.installazione</groupId>
         <artifactId>fwk-installazione-root</artifactId>
-        <version>7.0M1</version>
+        <version>7.0M2-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
     <groupId>com.i4c.antares.pom</groupId>
     <artifactId>earlywarning-pom</artifactId>
-    <version>7.0M1.0.0-SNAPSHOT</version>
+    <version>7.0M2.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>${project.artifactId} (${project.version})</name>
 
@@ -26,15 +26,14 @@
     </distributionManagement>
 
     <modules>
-        <!--	COMMON MODULES	-->
-        <!-- module>../../commons/commons-app-java</module -->
-        <!-- module>../../commons/commons-app-ejb</module -->
 
-        <!--	PROJECT MODULES	-->
-        <!-- module>../../apps/predictive-app</module -->
         <module>earlywarning-config</module>
         <module>earlywarning-ear</module>
 		<module>earlywarning-auth-ejb</module>
+		
+				<!--
+		<module>earlywarning-web</module>
+		<module>earlywarning-ws-web</module> -->
     </modules>
 
 </project>
