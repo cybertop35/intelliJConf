@@ -1,145 +1,130 @@
 package com.isp.auth.aaap;
 
-
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.List;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.namespace.QName;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import javax.xml.transform.Source;
-import javax.xml.transform.sax.SAXSource;
 
 import org.apache.log4j.Logger;
 import org.xml.sax.InputSource;
-import org.xml.sax.XMLReader;
+import org.xml.sax.SAXException;
 
 import com.i4c.antares.authentication.AuthorizationProvider;
 import com.i4c.antares.authentication.UserAuthorizations;
-import com.i4c.antares.common.core.PropertiesUtil;
 import com.isp.auth.ws.Service;
 import com.isp.auth.ws.ServiceSoap;
-import com.isp.auth.ws.response.ProfileResponse;
-import com.isp.auth.ws.response.ProfileResponse.SpiProfilingWS.Userinfo.Userprofile.Privileges;
-import com.isp.auth.ws.response.ProfileResponse.SpiProfilingWS.Userinfo.Userprofile.Privileges.Privilege;
-
-
+import com.isp.auth.ws.response.SAXHandlerProfileResponse;
 
 public class ISPAuthorization implements AuthorizationProvider {
 
-	private static final QName SERVICE_NAME = new QName("http://sanpaoloimi.com/SSO", "Service");
-	private static final Logger logger = Logger.getLogger(ISPAuthorization.class);
-	
-	private static final String PROPERTY_NAME = "auth.profile.url"; 
-	
+	private static final Logger logger = Logger
+			.getLogger(ISPAuthorization.class);
+
+	@SuppressWarnings("unused")
 	@Override
-	public UserAuthorizations authorizeRequest(String username,
-			HttpServletRequest request) {
-		
+	public UserAuthorizations authorizeRequest(String username,	HttpServletRequest request) {
+
 		logger.info("Profile Service ");
 		
 		UserAuthorizations authorizations = null;
-		URL profileServiceUrl = getProfileServiceURL();
 
+		String timeStamp = null;
+		String encodedPwd = null;
+		String encodedType = null;
+		String filter = null;
+		String siteName = null;
 
-		System.out.println("*************************************************");
-		
-		Enumeration<String> headerNames = request.getHeaderNames();
-		while(headerNames.hasMoreElements()) {
-		  String headerName = (String)headerNames.nextElement();
-		  System.out.println("" + headerName+"="+request.getHeader(headerName));
+		try {
+			siteName = request.getHeader("svcUrl");
+
+			logger.info("Logged User: " + username);
+
+			if (siteName != null && siteName.length() > 0) {
+				
+				if (!siteName.contains("?wsdl"))
+					siteName = siteName + "?wsdl";
+
+				Service ss = new Service(new URL(siteName));
+
+				if (ss != null) {
+					ServiceSoap port = ss.getServiceSoap12();
+					
+					String profiles = port.getProfile2(username, siteName,
+							timeStamp, encodedPwd, encodedType, filter);
+					
+					List<String> groups = getGroup(profiles);
+					
+					logger.info("Groups:" + Arrays.toString(groups.toArray()));
+					
+					if(groups == null || groups.size() == 0){
+						logger.warn("No group found: "+profiles);
+					}
+										
+					authorizations = new UserAuthorizations(username, groups);
+				} else
+					logger.error("Service is null. Check " + siteName);
+
+			} else {
+				logger.error("ISPAuthorization URL not found " + siteName);
+			}
+
+		} catch (MalformedURLException e) {
+			logger.error("ISPAuthorization Malformed URL " + siteName);
+		} catch (Exception e) {
+			logger.error("ISPAuthorization Generic error ", e);
 		}
-		
-		System.out.println("*************************************************");
-		
-		for (Cookie c :request.getCookies()){
-			System.out.println("Cookie: "+c.getName()+ " Value:"+c.getValue());
-		}
-		System.out.println("*************************************************");
-		
-		if(profileServiceUrl != null){
-			String token = request.getHeader("userId");
-			String siteName = null;
-			String timeStamp = null;
-			String encodedPwd = null;
-			String encodedType = null;
-			String filter = null;
-			
-			logger.info("Logged User: "+token);
-			
-			Service ss = new Service(profileServiceUrl, SERVICE_NAME);
-			ServiceSoap port = ss.getServiceSoap12();
-			
-			String profiles = port.getProfile2(token, siteName, timeStamp,encodedPwd, encodedType, filter);
-	
-			List<String> groups = getGroup(profiles);
-			System.out.println("Groups:"+Arrays.toString(groups.toArray()));
-			
-			authorizations = new UserAuthorizations(username, groups);
-		}
-		
+
 		return authorizations;
 	}
 
-	private URL getProfileServiceURL() {
-		String url = PropertiesUtil.getPropertyOrDefault(PROPERTY_NAME, null);
-		try{
+	private static List<String> getGroup(String response) {
+
+		SAXParserFactory parserFactor = SAXParserFactory.newInstance();
+		SAXParser parser;
+		
+		try {
+			parser = parserFactor.newSAXParser();
+			SAXHandlerProfileResponse handler = new SAXHandlerProfileResponse();
+			InputSource inputSource = new InputSource(new StringReader(response));
+			parser.parse(inputSource, handler);
 			
-			return new URL(url);
+			return  handler.getProfile();
 			
-		}catch(Exception e){
-			logger.error("ISPAuthorization: "+e.getMessage());
-			logger.error("Check property configuration: "+PROPERTY_NAME);
-		}
+		} catch (ParserConfigurationException e) {
+			logger.error("ParserConfigurationException Error "+e.getMessage());
+		} catch (SAXException e) {
+			logger.error("SAXException Error "+e.getMessage());
+		} catch (IOException e) {
+			logger.error("IOException Error "+e.getMessage());
+		} 
+
 		return null;
 	}
-
-	private static List<String> getGroup(String response){
-		List<String> groups = new ArrayList<String>();
-		try {
-			
-			JAXBContext jc = JAXBContext.newInstance(ProfileResponse.class);
-			Unmarshaller unmarshaller = jc.createUnmarshaller();
-			
-			SAXParserFactory sax = SAXParserFactory.newInstance();
-			sax.setNamespaceAware(false);
-			XMLReader reader = sax.newSAXParser().getXMLReader();
-			InputSource inputSource = new InputSource( new StringReader( response ) );
-			Source source = new SAXSource(reader, inputSource );
-
-			ProfileResponse profileResponse = (ProfileResponse) unmarshaller.unmarshal(source);
-			Privileges privileges = profileResponse.getSpiProfilingWS().getUserinfo().getUserprofile().getPrivileges();
-			
-			for(Privilege privilege:privileges.getPrivilege()){
-				groups.add(privilege.getName());
-			}
-			
-			
-		} catch (Exception e) {
-			logger.error("ISPAuthorization getGroup: "+e.getMessage());
-		} 
-		
-		
-		return groups;
-	}
 	
-	public static void main(String args[]){
+	private static String removeDomain(String str) {
+		if (str.contains("\\")) {
+			return str.substring(str.indexOf("\\") + 1, str.length());
+		} else
+			return str;
+	}
+
+	public static void main(String args[]) {
 		try {
-			String content = new String(Files.readAllBytes(Paths.get("C:/Dati/DEV/Doc/Intesa/sicurezza/profiles.xml")));
+			// String content =new
+			// String(Files.readAllBytes(Paths.get("C:/Dati/DEV/Doc/Intesa/sicurezza/profiles.xml")));
+			String content = "<SpiProfilingWS>	<userinfo name=\"U0I2197\">		<userprofile bank=\"01\" branch=\"02955\">		</userprofile>	</userinfo></SpiProfilingWS>";
+
 			System.out.println(content);
 			List<String> groups = getGroup(content);
 			System.out.println(Arrays.toString(groups.toArray()));
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

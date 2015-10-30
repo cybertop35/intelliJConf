@@ -11,12 +11,15 @@ VAR BM_TABLE;
 VAR UNIT_TABLE;
 VAR BR;
 
+VAR ORDER;
+
 VAR CREATED;
 VAR SQL;
+VAR ERROR_SQL;
 
-VAR T_OUT_TMP 	= "OUTPUT_IRSIS_TMP";
-VAR T_OUT_BCK 	= "OUTPUT_IRSIS_BCK";
-VAR T_OUT 		= "OUTPUT_IRSIS";
+VAR T_OUT_TMP 	= "OUTPUT_IRIS_WEB_TMP";
+VAR T_OUT_BCK 	= "OUTPUT_IRIS_WEB_BCK";
+VAR T_OUT 		= "OUTPUT_IRIS_WEB";
 
 VAR DBCONNECTION = "TeradataDS";
 
@@ -37,23 +40,34 @@ if(MATRIX <> NULL) THEN {
     
     BR = MATRIX.WSMatrix_BusinessModel.Business_Model.BusinessModel_BusinessRule.Business_Rule;
     
-    SQL = "SELECT "+ UNIT_TABLE+".* ";
+    SQL = "SELECT "+UNIT_TABLE+".SNDG";
     
-    foreach (BR as b){
+	ORDER = Variable order by [ColumnName ASC];
+	
+    foreach (ORDER as v){
+ 		IF( v.ColumnName <> "TARGET" and v.ColumnName <> "EXPOSURE" and v.ColumnName <> "SNDG"){
+			SQL = SQL +","+UNIT_TABLE+"."+v.ColumnName ;
+			ERROR_SQL = ERROR_SQL +","+UNIT_TABLE+".ERROR_MSG_"+v.ColumnName;
+		}
+	}
+    
+    SQL = SQL + ERROR_SQL; 
+    
+    ORDER = BR ORDER BY [ID ASC];
+    
+    foreach (ORDER as b){
     	SQL = SQL +" ,CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END as "+b.ID ;
     }
-    
-    
-    
+        
     SQL = SQL +" ,"+BM_TABLE+".WARNING_SCORE as WARNING_APP ";
 	SQL = SQL +" ,"+MATRIX_TABLE+".COLOR as COLOR_APP ";
-	SQL = SQL +" ,null as WARNING_SYSTEM";
+	# SQL = SQL +" ,null as WARNING_SYSTEM";
     SQL = SQL +" ,null as COLOR_SYSTEM";
     SQL = SQL +" ,CURRENT_DATE AS CREATION_DATE";
 
     SQL = SQL +" FROM "+UNIT_TABLE +" "+UNIT_TABLE;
     SQL = SQL +" JOIN "+MATRIX_TABLE+" "+MATRIX_TABLE+ "  ON "+MATRIX_TABLE+".SNDG="+UNIT_TABLE+".SNDG";
-    SQL = SQL +" JOIN "+BM_TABLE+" "+BM_TABLE+ "  ON "+MATRIX_TABLE+".SNDG="+UNIT_TABLE+".SNDG";
+    SQL = SQL +" JOIN "+BM_TABLE+" "+BM_TABLE+ "  ON "+BM_TABLE+".SNDG="+UNIT_TABLE+".SNDG";
 
     IF(LIB_DB.isTableExisting(T_OUT_TMP,DBCONNECTION)) THEN
     {

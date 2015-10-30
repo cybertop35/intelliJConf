@@ -37,7 +37,7 @@
                 <configuration>
                     <overlays> 
                         <overlay><groupId>com.i4c.antares.web</groupId><artifactId>antares-web</artifactId></overlay>
-						<overlay><groupId>com.i4c.antares.web</groupId><artifactId>ux-web</artifactId></overlay>
+<!-- 						<overlay><groupId>com.i4c.antares.web</groupId><artifactId>ux-web</artifactId></overlay> -->
 						<overlay><groupId>com.i4c.antares.web</groupId><artifactId>earlywarning-ws-web</artifactId></overlay>
                     </overlays>
                 </configuration>
