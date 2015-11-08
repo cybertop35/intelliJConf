@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.i4c.framework.java</groupId>
         <artifactId>fwk-java-root</artifactId>
-        <version>7.0M2-SNAPSHOT</version>
+        <version>7.0M2</version>
         <relativePath/>
     </parent>
 

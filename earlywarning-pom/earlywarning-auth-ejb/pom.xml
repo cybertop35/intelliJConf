@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.i4c.framework.ejb</groupId>
         <artifactId>fwk-ejb-root</artifactId>
-        <version>7.0M2-SNAPSHOT</version>
+        <version>7.0M2</version>
         <relativePath/>
     </parent>
 

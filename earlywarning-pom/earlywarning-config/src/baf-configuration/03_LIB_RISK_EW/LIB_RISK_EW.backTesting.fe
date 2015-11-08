@@ -1,0 +1,51 @@
+VAR SQL_COLUMNS;
+VAR COLUMNS;
+VAR SQL ;
+VAR backTestingHistoryTable = "BACK_TESTING_HISTORY";
+VAR backTestingCRRTable		= "SNDG_CRR_DEFAULT";
+VAR logActionName 			= "BackTesting";
+VAR JDBC_NAME 				= Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
+VAR analysisUnit 			= Analysis_Unit[ID="CUSTOMER"];
+VAR analysisUnitTable 		= analysisUnit.AnalyticalTable;
+
+########################
+## Creazione Tabelle  ##
+########################
+COLUMNS = analysisUnit.AnalysisUnit_Variable.Variable.ColumnName order by [ColumnName];
+SQL_COLUMNS = " SNDG,EXPOSURE,CURRENT_DATE as HISTORY_DATE";
+
+FOREACH( COLUMNS as column ) {
+	if(column <> "TARGET" and column <> "SNDG"){
+		SQL_COLUMNS =SQL_COLUMNS +"," +column;
+    }
+}
+
+SQL = "CREATE TABLE "+backTestingHistoryTable+" as (select  "+ SQL_COLUMNS +"FROM "+analysisUnitTable+" ) with NO data";
+IF (not LIB_DB.isTableExisting(backTestingHistoryTable,JDBC_NAME)) {
+	SQLEXECUTE(SQL,JDBC_NAME,0,{});
+    SAVE_LOG("Info", logActionName, "create table "+backTestingHistoryTable);
+}
+
+SQL = "CREATE TABLE "+backTestingCRRTable+" AS ( select SNDG, CURRENT_DATE AS LOAD_DATE FROM "+analysisUnitTable+") WITH NO DATA";
+IF (not LIB_DB.isTableExisting(backTestingCRRTable,JDBC_NAME)) {
+	SQLEXECUTE(SQL,JDBC_NAME,0,{});
+    SAVE_LOG("Info", logActionName, "Create table "+backTestingCRRTable);
+}
+
+##################################
+######### POPOLA TABELLE #########
+##################################
+
+IF(Utils.isLastOfMonth()){
+	SQL = "INSERT INTO "+backTestingHistoryTable+" SELECT "+SQL_COLUMNS+" FROM "+analysisUnitTable;
+    SQLEXECUTE(SQL,JDBC_NAME,0,{});
+    SAVE_LOG("Info", logActionName, "Insert table "+backTestingCRRTable);
+}
+
+
+SQL = "INSERT INTO "+backTestingCRRTable+" SELECT SNDG,EXPOSURE,CURRENT_DATE as HISTORY_DATE FROM "+analysisUnitTable +"where IND_02 = 1";
+SQLEXECUTE(SQL,JDBC_NAME,0,{});
+SAVE_LOG("Info", logActionName, "Insert table "+backTestingCRRTable);
+
+
+return now();
