@@ -1,0 +1,39 @@
+VAR formulaName = "[LIB_UserGroupRight.checkUserGroupRight.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+# FEBoolean resultValue = LIB_UserGroupRight.checkUserGroupRight.fe(user,entity,function);
+# EFFECTS       -               -
+# var canEdit = LIB_UserGroupRight.checkUserGroupRight.fe('claimsanalyst','Workspace','EDIT');
+
+var user 	= Param1;
+var entity 	= Param2;
+var function = Param3;
+var groups = null;
+
+var sql = "select distinct groups from FWU_11_USER_AUTHORIZATIONS";
+
+sql = sql +" where user_id='"+user+"'";
+
+groups = sqlexecute( sql ,0,{});
+
+if(groups <> null and size(groups) == 1){
+ 	groups = groups[0][0];
+    groups = split(groups,",");
+}
+
+var rights;
+foreach (groups as group) {
+	rights = User_Group_Right[Group=$group AND Entity=$entity AND Function=$function];
+    if (size(rights) > 0) {
+        foreach(rights as right) {
+            if (right.Allow) {
+                DEBUGMESSAGE(formulaName, "END");
+                return true;
+            }
+        }
+    }
+}
+
+
+DEBUGMESSAGE(formulaName, "END");
+return false;

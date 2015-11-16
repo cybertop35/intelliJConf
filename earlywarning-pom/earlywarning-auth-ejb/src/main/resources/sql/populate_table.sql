@@ -1,0 +1,22 @@
+Insert into EWSA_OWN.FWS_01_PROFILE_MAPPING (SYSTEM_PROFILE,AAAP_PROFILE) values ('YAKK01','administratorProfile')
+/
+Insert into EWSA_OWN.FWS_01_PROFILE_MAPPING (SYSTEM_PROFILE,AAAP_PROFILE) values ('YAKK01','claimsanalyst')
+/
+Insert into EWSA_OWN.FWS_01_PROFILE_MAPPING (SYSTEM_PROFILE,AAAP_PROFILE) values ('YAKK02','claimsanalyst')
+/
+Insert into EWSA_OWN.FWS_01_PROFILE_MAPPING (SYSTEM_PROFILE,AAAP_PROFILE) values ('YAKK02','productionProfile')
+/
+Insert into EWSA_OWN.FWS_01_PROFILE_MAPPING (SYSTEM_PROFILE,AAAP_PROFILE) values ('YAKK03','claimsanalyst')
+/
+Insert into EWSA_OWN.FWS_01_PROFILE_MAPPING (SYSTEM_PROFILE,AAAP_PROFILE) values ('YAKK04','core_group_admin')
+/
+Insert into EWSA_OWN.FWS_01_PROFILE_MAPPING (SYSTEM_PROFILE,AAAP_PROFILE) values ('YAKK04','group1')
+/
+commit
+/
+
+Insert into FWU_01_USER ((select max (COD_USER) + 1 from FWU_01_USER),USER_ID,NAME,DESCRIPTION, CRPWD,PWD_LAST_UPDATE,LAST_LOGIN,EMAIL,IS_ACTIVE, START_ENABLED, END_ENABLED, LANGUAGE)
+values (10,'U0I2197','Marco Calabretta','Administration User' ,'59e9280cc425586ad2899ecc991e7b083584f95f81796ce5bd9e6873571606b3d499bbc6bdf7a9af000cc81e20d0c3eb20db2962a4aa5cca2e8a0eec275ded06',SYSDATE,SYSDATE,'marco.calabretta@accenture.com', 1,null,null,'en')
+/
+commit
+/

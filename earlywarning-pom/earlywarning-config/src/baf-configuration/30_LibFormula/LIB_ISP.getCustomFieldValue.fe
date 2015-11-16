@@ -1,0 +1,22 @@
+VAR formulaName = "[LIB_ISP.getCustomFieldValue] ";
+DEBUGMESSAGE(formulaName, "START");
+
+# FEBoolean resultValue = LIB_ISP.getCustomFieldValue(FEString workspaceId);
+# Param1:       FEInstance      workspace instance id
+# RESULT VALUE: FEReal          custom field value result
+# EFFECTS       -
+
+# VAR workspaceId = "W000";
+# VAR resultValue = LIB_ISP.getCustomFieldValue(workspaceId);
+
+VAR workspaceId = Param1;
+VAR analyticalTableName = Workspace[ID=$workspaceId].Workspace_AnalysisUnit.Analysis_Unit.AnalyticalTable;
+
+VAR query = "select SUM(EXPOSURE) from " + analyticalTableName[0];
+DEBUGMESSAGE(formulaName + " QUERY : ", query);
+
+VAR predictiveDatasourceName = Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
+VAR sqlQuery = SQLEXECUTE(query, predictiveDatasourceName, null, {});
+
+DEBUGMESSAGE(formulaName, "END");
+RETURN sqlQuery[0][0];

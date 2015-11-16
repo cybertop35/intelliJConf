@@ -22,8 +22,11 @@
 		<dependency><groupId>com.i4c.antares.ejb</groupId><artifactId>antares-core-ejb</artifactId><version>${project.parent.version}</version></dependency>
 		<dependency><groupId>org.jboss.spec.javax.servlet</groupId><artifactId>jboss-servlet-api_3.0_spec</artifactId></dependency>
 <!-- 		<dependency><version>${project.version}</version><groupId>com.i4c.antares.java</groupId><artifactId>antares-common-java</artifactId><scope>required</scope></dependency> -->
+
+
 	</dependencies>
 
+  
 	<build>
     <plugins>
         <plugin>
@@ -32,6 +35,31 @@
                 <compilerArgument>-proc:none</compilerArgument>
             </configuration>
         </plugin>
+        
+        
+        <plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-install-plugin</artifactId>
+    <version>2.4</version>
+    <executions>
+        <execution>
+            <phase>initialize</phase>
+            <goals>
+                <goal>install-file</goal>
+            </goals>
+            <configuration>
+                <groupId>myGroupId</groupId>
+                <artifactId>myArtifactId</artifactId>
+                <version>myVersion</version>
+                <packaging>jar</packaging>
+                <file>${basedir}/lib/TEST_JMS.jar</file>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+        
+        
+        
     </plugins>
     </build>
 </project>
