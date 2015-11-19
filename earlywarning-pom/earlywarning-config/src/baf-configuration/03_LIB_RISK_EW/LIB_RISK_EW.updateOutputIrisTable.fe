@@ -88,7 +88,18 @@ if(MATRIX <> NULL) THEN {
         }
         
         LIB_DB.renameTable(T_OUT_TMP,T_OUT,DBCONNECTION);
-        return NOW();
+        
+		
+		
+		IF(NOT LIB_DB.isTableExisting("SEM_BATCH") ) THEN {
+			SQL = "CREATE TABLE SEM_BATCH (STATUS VARCHAR(30) )";
+			SQLEXECUTE(SQL,NULL,{});
+		}
+		
+		SQL = "INSERT INTO SEM_BATCH VALUES ('OK')";
+		SQLEXECUTE(SQL,NULL,{});
+		
+		return NOW();
     }
 }
 return null;

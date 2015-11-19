@@ -6,6 +6,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -72,10 +74,11 @@ public class ISPAuthorization implements AuthorizationProvider {
 						logger.info("Groups:" + Arrays.toString(systemGroups.toArray()));
 					
 					
-					List<String> aaapProfiles = new ArrayList<String>();
+					Collection<String> aaapProfiles = new HashSet<String>();
 
 					if(managerProfiles != null)					
 						for(String profile: systemGroups){
+							
 							aaapProfiles.addAll(managerProfiles.getAAAPProfile(profile));
 						}
 					else
@@ -84,7 +87,9 @@ public class ISPAuthorization implements AuthorizationProvider {
 					if(aaapProfiles.size() == 0)
 						logger.error("No profile mapping");
 					
-					authorizations = new UserAuthorizations(username, aaapProfiles);	
+					List<String> distinctGroup = new ArrayList<String>(aaapProfiles);
+					
+					authorizations = new UserAuthorizations(username, distinctGroup);	
 					
 					
 				} else

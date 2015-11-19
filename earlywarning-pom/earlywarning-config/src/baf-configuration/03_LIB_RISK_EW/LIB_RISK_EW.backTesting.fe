@@ -68,7 +68,7 @@ IF(Utils.isLastOfMonth()){
 }
 
 
-SQL = "INSERT INTO "+backTestingCRRTable+" SELECT SNDG,CURRENT_DATE as HISTORY_DATE FROM "+analysisUnitTable +" where IND_02=1";
+SQL = "INSERT INTO "+backTestingCRRTable+" SELECT SNDG,CURRENT_DATE as HISTORY_DATE FROM "+analysisUnitTable +" where IND_02=1 and sndg not in (select sndg from  "+backTestingCRRTable+" where EXTRACT (YEAR FROM HISTORY_DATE) = EXTRACT (YEAR FROM CURRENT_DATE) and EXTRACT (MONTH FROM HISTORY_DATE) = EXTRACT (MONTH FROM CURRENT_DATE)  )";
 SQLEXECUTE(SQL,JDBC_NAME,0,{});
 SAVE_LOG("Info", logActionName, "Insert table "+backTestingCRRTable);
 
