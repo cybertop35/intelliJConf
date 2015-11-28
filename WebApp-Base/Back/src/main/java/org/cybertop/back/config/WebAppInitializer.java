@@ -1,6 +1,5 @@
 package org.cybertop.back.config;
 
-import org.cybertop.back.config.root.AppSecurityConfig;
 import org.cybertop.back.config.root.DatabaseConfiguration;
 import org.cybertop.back.config.servlet.ServletContextConfig;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
