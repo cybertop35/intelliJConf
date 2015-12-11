@@ -12,7 +12,7 @@ VAR UNIT_TABLE;
 VAR BR;
 
 VAR ORDER;
-
+VAR columns = {};
 VAR CREATED;
 VAR SQL;
 VAR ERROR_SQL;
@@ -20,9 +20,11 @@ VAR ERROR_SQL;
 VAR T_OUT_TMP 	= "OUTPUT_IRIS_WEB_TMP";
 VAR T_OUT_BCK 	= "OUTPUT_IRIS_WEB_BCK";
 VAR T_OUT 		= "OUTPUT_IRIS_WEB";
+VAR T_OUT_VIEW 		= "OUTPUT_IRIS_WEB";
 
 VAR DBCONNECTION = "TeradataDS";
-
+VAR NOME_COLONNA = NULL;
+VAR COUNTER = 1;
 
 
 # RECUPERO LA MATRICE IN PROD
@@ -38,7 +40,7 @@ if(MATRIX <> NULL) THEN {
     UNIT_TABLE = MATRIX.WarningScoreMatrix_Workspace.Workspace.Workspace_AnalysisUnit.Analysis_Unit.AnalyticalTable;
     UNIT_TABLE = UNIT_TABLE[0];
     
-    BR = MATRIX.WSMatrix_BusinessModel.Business_Model.BusinessModel_BusinessRule.Business_Rule;
+    BR = MATRIX.WSMatrix_BusinessModel.Business_Model.BusinessModel_BusinessRule.Business_Rule order by [NAME];
     
     SQL = "SELECT "+UNIT_TABLE+".SNDG";
     
@@ -46,23 +48,34 @@ if(MATRIX <> NULL) THEN {
 	
     foreach (ORDER as v){
  		IF( v.ColumnName <> "TARGET" and v.ColumnName <> "EXPOSURE" and v.ColumnName <> "SNDG"){
-			SQL = SQL +","+UNIT_TABLE+"."+v.ColumnName ;
-			ERROR_SQL = ERROR_SQL +","+UNIT_TABLE+".ERROR_MSG_"+v.ColumnName;
+			IF(v.Variable_DataType.Data_Type.ID == "STRING") {
+				SQL = SQL +",cast("+UNIT_TABLE+"."+v.ColumnName+" as VARCHAR(50) ) as "+v.ColumnName ;
+			}
+			IF(v.Variable_DataType.Data_Type.ID == "REAL") {
+				SQL = SQL +",cast("+UNIT_TABLE+"."+v.ColumnName+" as NUMBER ) as "+v.ColumnName ;
+			}
+			ERROR_SQL = ERROR_SQL +",CAST("+UNIT_TABLE+".ERROR_MSG_"+v.ColumnName+" AS VARCHAR(200) ) as ERROR_MSG_" +v.ColumnName;
 		}
 	}
     
     SQL = SQL + ERROR_SQL; 
-    
-    ORDER = BR ORDER BY [ID ASC];
-    
-    foreach (ORDER as b){
-    	SQL = SQL +" ,CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END as "+b.ID ;
+        
+    foreach (BR as b){
+		if (COUNTER <= 9){
+			NOME_COLONNA = "BR00000"+COUNTER;
+		}
+		else{
+			NOME_COLONNA = "BR0000"+COUNTER;
+		}
+    	SQL = SQL +" ,(CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END ) as "+  NOME_COLONNA ;
+		
+		COUNTER = COUNTER + 1 ;
     }
         
     SQL = SQL +" ,"+BM_TABLE+".WARNING_SCORE as WARNING_APP ";
-	SQL = SQL +" ,"+MATRIX_TABLE+".COLOR as COLOR_APP ";
-	# SQL = SQL +" ,null as WARNING_SYSTEM";
-    SQL = SQL +" ,null as COLOR_SYSTEM";
+	SQL = SQL +" ,CAST("+MATRIX_TABLE+".COLOR as VARCHAR(50)) as COLOR_APP ";
+	# SQL = SQL +",CAST(null as VARCHAR(50)) as WARNING_SYSTEM";
+    SQL = SQL +" ,CAST(null as VARCHAR(50)) as COLOR_SYSTEM";
     SQL = SQL +" ,CURRENT_DATE AS CREATION_DATE";
 
     SQL = SQL +" FROM "+UNIT_TABLE +" "+UNIT_TABLE;
@@ -89,8 +102,30 @@ if(MATRIX <> NULL) THEN {
         
         LIB_DB.renameTable(T_OUT_TMP,T_OUT,DBCONNECTION);
         
-		
-		
+		##### CREATE VIEW OUTPUT #######
+		#SQL = "select trim(columnName)
+		#   from dbc.COLUMNS
+		#   where 1 = 1
+		#	and tableNAME = '"+T_OUT+"'
+ 		#	and databasename = (select database)
+        #   and columnName <> 'SNDG'";
+		# 
+		#columns = sqlexecute(SQL,DBCONNECTION,NULL,{});
+		#VAR i = SIZE(columns);
+		#VAR counter = 1;
+		#SQL  = "";
+		#foreach (columns as col){
+		#	SQL = SQL + " SELECT SNDG, CAST ( '" +col[0]+ "' AS VARCHAR(50)) AS TYPE,CAST("+col[0]+ " as VARCHAR(200)) as VALUE from "+T_OUT;
+		#	if (counter < i) {
+		#		SQL = SQL + " UNION ALL";
+		#	}
+		#}
+		# 
+		#SQL = "REPLACE VIEW "+T_OUT_VIEW +" AS " + SQL;
+		#sqlexecute(SQL,DBCONNECTION,NULL,{});
+		##############################################
+ 
+ 
 		IF(NOT LIB_DB.isTableExisting("SEM_BATCH",DBCONNECTION) ) THEN {
 			SQL = "CREATE TABLE SEM_BATCH (STATUS VARCHAR(30) )";
 			SQLEXECUTE(SQL,DBCONNECTION,NULL,{});
