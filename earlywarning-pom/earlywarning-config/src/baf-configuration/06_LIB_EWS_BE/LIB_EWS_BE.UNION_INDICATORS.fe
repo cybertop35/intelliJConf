@@ -1,0 +1,15 @@
+VAR formulaName = "[LIB_EWS_BE.UNION_INDICATORS.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = SELECT SNDG , "
+		+ LIB_EWS_BE.INDICATORE_1() + "," 
+		+ LIB_EWS_BE.INDICATORE_2() 
+		+ " from customer table";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;
