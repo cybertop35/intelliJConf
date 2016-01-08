@@ -1,0 +1,96 @@
+# FENull returnNull LIB_RISK_EW.backTesting;
+# RETURN VALUE: FENull      -
+# EFFETCS:      -           updateAnalyticaltable
+# Param1:       FEInstance      analysisUnit instance id
+
+DEBUGMESSAGE("LIB_RISK_EW.backTesting.fe"); # stacktrace
+
+VAR analysisUnitID = Param1;
+
+VAR SQL_COLUMNS;
+VAR COLUMNS;
+VAR SQL ;
+
+
+VAR backTestingHistoryTable = "BACK_TESTING_HISTORY";
+VAR backTestingHistoryView 	= "BACK_TESTING_V";
+VAR backTestingCRRTable		= "SNDG_CRR_DEFAULT";
+VAR logActionName 			= "BackTesting";
+
+VAR JDBC_NAME 				= Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
+VAR analysisUnit 			= Analysis_Unit[ID=analysisUnitID];
+VAR analysisUnitTable 		= analysisUnit.AnalyticalTable;
+
+########################
+## Creazione Tabelle  ##
+########################
+COLUMNS = analysisUnit.AnalysisUnit_Variable.Variable.ColumnName order by [ColumnName];
+SQL_COLUMNS = " SNDG,EXPOSURE,CURRENT_DATE as HISTORY_DATE";
+
+FOREACH( COLUMNS as column ) {
+	if(column <> "TARGET" and column <> "SNDG"){
+		SQL_COLUMNS =SQL_COLUMNS +"," +column;
+    }
+}
+
+SQL = "CREATE TABLE "+backTestingHistoryTable+" as (select  "+ SQL_COLUMNS +"FROM "+analysisUnitTable+" ) with NO data";
+IF (not LIB_DB.isTableExisting(backTestingHistoryTable,JDBC_NAME)) {
+	SQLEXECUTE(SQL,JDBC_NAME,0,{});
+    SAVE_LOG("Info", logActionName, "create table "+backTestingHistoryTable);
+}
+
+SQL = "CREATE TABLE "+backTestingCRRTable+" AS ( select SNDG, CURRENT_DATE AS LOAD_DATE FROM "+analysisUnitTable+") WITH NO DATA";
+IF (not LIB_DB.isTableExisting(backTestingCRRTable,JDBC_NAME)) {
+	SQLEXECUTE(SQL,JDBC_NAME,0,{});
+    SAVE_LOG("Info", logActionName, "Create table "+backTestingCRRTable);
+}
+
+SQL ="Create view "+backTestingHistoryView+" as 
+		select  h.*
+			,(case
+				when crr.sndg is not null then 1
+				else 0
+			end ) AS TARGET
+		from "+backTestingHistoryTable+"  H
+			left join (
+					select sndg 
+					from "+backTestingCRRTable+" 
+					where LOAD_DATE between TRUNC(ADD_MONTHS(CURRENT_DATE,-6),'mon') and TRUNC(ADD_MONTHS(CURRENT_DATE,-1),'mon')
+			group by sndg 
+			) CRR ON h.sndg =crr.sndg
+		where EXTRACT (YEAR FROM H.HISTORY_DATE) = EXTRACT (YEAR  FROM ADD_MONTHS( CURRENT_DATE,-7)) 
+			and EXTRACT (MONTH FROM H.HISTORY_DATE) = EXTRACT (MONTH FROM ADD_MONTHS( CURRENT_DATE,-7))
+			and ind_02 <> 1" ;
+  
+IF (not LIB_DB.isTableExisting(backTestingHistoryView,JDBC_NAME)) {
+	SQLEXECUTE(SQL,JDBC_NAME,0,{});
+    SAVE_LOG("Info", logActionName, "Create view "+backTestingHistoryView);
+}
+  
+##################################
+######### POPOLA TABELLE #########
+##################################
+
+IF(Utils.isLastOfMonth()){
+	SQL = "INSERT INTO "+backTestingHistoryTable+" SELECT "+SQL_COLUMNS+" FROM "+analysisUnitTable;
+    SQLEXECUTE(SQL,JDBC_NAME,0,{});
+    SAVE_LOG("Info", logActionName, "Insert table "+backTestingCRRTable);
+}
+
+
+SQL = "INSERT INTO "+backTestingCRRTable+" 
+		SELECT SNDG,CURRENT_DATE as HISTORY_DATE 
+		FROM "+analysisUnitTable +" 
+		where IND_02=1 
+			and sndg not in (select sndg from  "+backTestingCRRTable+" 
+								where EXTRACT (YEAR FROM Load_date) = EXTRACT (YEAR FROM CURRENT_DATE) 
+								  and EXTRACT (MONTH FROM Load_date) = EXTRACT (MONTH FROM CURRENT_DATE)  
+								  and EXTRACT (DAY FROM Load_date) = EXTRACT (DAY FROM CURRENT_DATE)   )";
+SQLEXECUTE(SQL,JDBC_NAME,0,{});
+SAVE_LOG("Info", logActionName, "Insert table "+backTestingCRRTable);
+
+
+  
+ 
+
+return now();
