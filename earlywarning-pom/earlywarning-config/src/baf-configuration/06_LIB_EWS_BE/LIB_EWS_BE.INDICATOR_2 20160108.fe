@@ -1,0 +1,12 @@
+VAR formulaName = "[LIB_EWS_BE.INDICATORE_2.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "( COLONNA_A/COLONNA_B ) AS IND_2";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

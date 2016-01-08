@@ -1,0 +1,12 @@
+VAR formulaName = "[LIB_EWS_BE.INDICATOR_210.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "PAST_DUE_MAX_DAYS_Y0 as IND_210";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

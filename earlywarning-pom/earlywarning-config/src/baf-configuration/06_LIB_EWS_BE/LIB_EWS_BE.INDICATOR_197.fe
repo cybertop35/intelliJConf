@@ -1,0 +1,12 @@
+VAR formulaName = "[LIB_EWS_BE.INDICATOR_197.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "UNPAID_INSTAL_LOANS AS IND_197";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

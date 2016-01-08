@@ -1,0 +1,12 @@
+VAR formulaName = "[LIB_EWS_BE.INDICATOR_217.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "OVERDRAFT_EXCEEDED AS IND_217";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

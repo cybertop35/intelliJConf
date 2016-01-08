@@ -1,9 +1,9 @@
-VAR formulaName = "[LIB_EWS_BE.INDICATORE_1.fe] ";
+VAR formulaName = "[LIB_EWS_BE.INDICATOR_1.fe] ";
 DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "( COLONNA_A/COLONNA_B ) AS IND_1";
+sql = "DAYS_PAST_DUE AS IND_1";
 
 
 DEBUGMESSAGE(formulaName, sql);
