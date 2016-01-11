@@ -1,0 +1,15 @@
+VAR formulaName = "[LIB_EWS_BE.INDICATOR_88.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "(CASE 
+	WHEN SALES_Y0 = 0 THEN NULL
+	ELSE (EBITDA_Y0/SALES_Y0) 
+END) AS ID88";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;
