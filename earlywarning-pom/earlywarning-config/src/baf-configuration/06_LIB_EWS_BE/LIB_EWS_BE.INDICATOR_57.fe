@@ -1,0 +1,12 @@
+VAR formulaName = "[LIB_EWS_BE.INDICATOR_57.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "greatest(PAST_DUE_MAX_DAYS_Y0, PAST_DUE_MAX_DAYS_Y1) AS IND57";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;
