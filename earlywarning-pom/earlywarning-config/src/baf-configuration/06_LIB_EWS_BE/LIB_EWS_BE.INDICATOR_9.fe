@@ -1,0 +1,13 @@
+VAR formulaName = "[LIB_EWS_BE.INDICATOR_9.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "(CASE WHEN SALES_Y1 <> 0 THEN ((SALES_Y0/SALES_Y1)-1)
+END) AS IND_9";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

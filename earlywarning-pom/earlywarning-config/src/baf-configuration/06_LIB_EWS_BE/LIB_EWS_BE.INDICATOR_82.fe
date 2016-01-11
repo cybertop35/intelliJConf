@@ -1,0 +1,13 @@
+VAR formulaName = "[LIB_EWS_BE.INDICATOR_82.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "(CASE WHEN EBIT_Y1 <> 0 THEN ((EBIT_Y0/EBIT_Y1)-1)
+END) AS IND_82";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;
