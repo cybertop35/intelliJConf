@@ -100,7 +100,19 @@ sql = SELECT SNDG , "
 		+ LIB_EWS_BE.INDICATOR_182() + "," 
 		+ LIB_EWS_BE.INDICATOR_186() + ","
 		+ LIB_EWS_BE.INDICATOR_201() + ","
-		+ LIB_EWS_BE.INDICATOR_205() 
+		+ LIB_EWS_BE.INDICATOR_205() + ","
+
+		+ LIB_EWS_BE.INDICATOR_8() + "," 
+		+ LIB_EWS_BE.INDICATOR_13() + "," 
+		+ LIB_EWS_BE.INDICATOR_59() + ","
+		+ LIB_EWS_BE.INDICATOR_61() + ","
+		+ LIB_EWS_BE.INDICATOR_62() + "," 
+		+ LIB_EWS_BE.INDICATOR_63() + "," 
+		+ LIB_EWS_BE.INDICATOR_67() + "," 
+		+ LIB_EWS_BE.INDICATOR_68() + ","
+		+ LIB_EWS_BE.INDICATOR_172() + ","
+		+ LIB_EWS_BE.INDICATOR_187() + "," 
+		+ LIB_EWS_BE.INDICATOR_188()
 		+ " from customer table";
 
 

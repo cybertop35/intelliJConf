@@ -1,0 +1,14 @@
+VAR formulaName = "[LIB_EWS_BE.INDICATOR_67.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "(CASE WHEN EBITDA_Y0 = 0 THEN NULL
+ELSE ((TOTAL_DEBT_Y0)/EBITDA_Y0)
+END) AS IND_67";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;
