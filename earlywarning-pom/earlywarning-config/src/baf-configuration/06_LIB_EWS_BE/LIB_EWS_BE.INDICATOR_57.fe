@@ -3,7 +3,7 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "greatest(PAST_DUE_MAX_DAYS_Y0, PAST_DUE_MAX_DAYS_Y1) AS IND57";
+sql = "greatest(PAST_DUE_MAX_DAYS_Y0, PAST_DUE_MAX_DAYS_Y1) AS IND_57";
 
 
 DEBUGMESSAGE(formulaName, sql);

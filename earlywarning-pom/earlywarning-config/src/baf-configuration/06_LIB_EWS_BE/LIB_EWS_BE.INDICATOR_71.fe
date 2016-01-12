@@ -5,7 +5,7 @@ VAR sql = "";
 
 sql = "(CASE WHEN COST_SOLD_Y1 = 0 THEN NULL
 ELSE ((COST_SOLD_Y0/COST_SOLD_Y1)-1)
-END) AS IND71";
+END) AS IND_71";
 
 
 DEBUGMESSAGE(formulaName, sql);

@@ -5,7 +5,7 @@ VAR sql = "";
 
 sql = "(CASE WHEN (EBITDA_Y1=0) THEN null  
  ELSE ((EBITDA_Y0/EBITDA_Y1)-1)
- END) AS IND85";
+ END) AS IND_85";
 
 
 DEBUGMESSAGE(formulaName, sql);
