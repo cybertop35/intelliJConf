@@ -1,9 +1,9 @@
-VAR formulaName = "[LIB_EWS_BE.INDICATOR_57.fe] ";
+VAR formulaName = "[LIB_EWS_BE.INDICATOR_215.fe] ";
 DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "greatest(PAST_DUE_MAX_DAYS_Y0, PAST_DUE_MAX_DAYS_Y1) AS IND_57";
+sql = "OVERDRAFT_UTILIZ_CONS_DAYS_6M AS IND_215";
 
 
 DEBUGMESSAGE(formulaName, sql);

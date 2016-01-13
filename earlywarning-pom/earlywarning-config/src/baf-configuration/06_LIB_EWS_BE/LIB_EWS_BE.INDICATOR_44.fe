@@ -3,7 +3,7 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "PAST_DUE_AMOUNT AS IND_44";
+sql = "(PAST_DUE_AMOUNT) AS IND_44";
 
 
 DEBUGMESSAGE(formulaName, sql);
