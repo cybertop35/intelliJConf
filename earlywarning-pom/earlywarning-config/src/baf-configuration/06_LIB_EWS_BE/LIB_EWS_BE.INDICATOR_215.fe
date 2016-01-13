@@ -1,10 +1,9 @@
-VAR formulaName = "[LIB_EWS_BE.INDICATOR_2.fe] ";
+VAR formulaName = "[LIB_EWS_BE.INDICATOR_215.fe] ";
 DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "(CASE WHEN DAYS_PAST_DUE >90  THEN 1 ELSE 0 
-END) AS IND_2";
+sql = "OVERDRAFT_UTILIZ_CONS_DAYS_6M AS IND_215";
 
 
 DEBUGMESSAGE(formulaName, sql);
