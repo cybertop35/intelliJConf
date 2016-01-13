@@ -3,7 +3,7 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "(OVERDRAFT_UTILIZ_CONS_DAYS_6M) AS IND_215";
+sql = "OVERDRAFT_UTILIZ_CONS_DAYS_6M AS IND_215";
 
 
 DEBUGMESSAGE(formulaName, sql);
