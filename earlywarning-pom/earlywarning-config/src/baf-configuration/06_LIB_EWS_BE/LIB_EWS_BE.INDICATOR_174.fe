@@ -1,0 +1,13 @@
+VAR formulaName = "[LIB_EWS_BE.INDICATOR_174.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "(CASE WHEN INFLOWS_ACCOUNT_M0 > (OVERDRAFT_LIMIT_M0*3)  THEN 1 ELSE 0 
+END) AS IND_174";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

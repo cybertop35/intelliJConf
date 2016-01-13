@@ -1,0 +1,12 @@
+VAR formulaName = "[LIB_EWS_BE.INDICATOR_214.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "OVERDRAFT_UTILIZ_CONS_DAYS_3M as IND_214";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;
