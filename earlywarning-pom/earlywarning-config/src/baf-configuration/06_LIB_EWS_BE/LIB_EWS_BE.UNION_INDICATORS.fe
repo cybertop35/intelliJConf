@@ -6,6 +6,7 @@ VAR sql = "";
 sql = SELECT SNDG , "
 		+ LIB_EWS_BE.INDICATOR_1() + "," 
 		+ LIB_EWS_BE.INDICATOR_3() + "," 
+		+ LIB_EWS_BE.INDICATOR_11() + "," 
 		+ LIB_EWS_BE.INDICATOR_14() + "," 
 		+ LIB_EWS_BE.INDICATOR_16() + "," 
 		+ LIB_EWS_BE.INDICATOR_20() + "," 
