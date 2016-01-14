@@ -16,8 +16,6 @@ VAR sql = "CASE
        ELSE  ((TOTAL_DEBT_Y0 - CASH_AMOUNT_Y0) /EBITDA_Y0) / ((TOTAL_DEBT_Y1 - CASH_AMOUNT_Y1)/ EBITDA_Y1)
 END AS IND_109";
 
-sql = "";
-
 
 DEBUGMESSAGE(formulaName, sql);
 DEBUGMESSAGE(formulaName, "END");
