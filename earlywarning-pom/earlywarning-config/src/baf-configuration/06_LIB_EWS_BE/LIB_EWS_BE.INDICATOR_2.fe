@@ -4,7 +4,7 @@ DEBUGMESSAGE(formulaName, "START");
 VAR sql = "";
 
 sql = "CASE
-           WHEN DAYS_PAST_DUE IS NULL THEN 0
+           WHEN NULLIF(DAYS_PAST_DUE,'') IS NULL THEN 0
            WHEN DAYS_PAST_DUE > 90 THEN 1
            ELSE 0
 
