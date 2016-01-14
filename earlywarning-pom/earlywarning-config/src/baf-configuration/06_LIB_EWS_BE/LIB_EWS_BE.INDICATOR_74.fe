@@ -3,9 +3,12 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "(CASE WHEN ST_ASSETS_Y1 <> 0 
-THEN ((ST_ASSETS_Y0/ST_ASSETS_Y1)-1)
-END) AS IND_74";
+sql = "CASE
+                WHEN (ST_ASSETS_Y1 = 0 AND ST_ASSETS_Y0 >0) THEN NULL
+                WHEN (ST_ASSETS_Y1 = 0 AND ST_ASSETS_Y0 <0) THEN NULL
+                WHEN (ST_ASSETS_Y1 = 0 AND ST_ASSETS_Y0 =0) THEN NULL
+		ELSE ((ST_ASSETS_Y0/ST_ASSETS_Y1)-1)
+END AS IND_74";
 
 
 DEBUGMESSAGE(formulaName, sql);
