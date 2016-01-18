@@ -14,7 +14,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 
     <groupId>com.i4c.antares.enterprise</groupId>
     <artifactId>earlywarning-ear</artifactId>
-    <version>7.0M2.0.0-SNAPSHOT</version>
+    <version>7.0M2.0.1-SNAPSHOT</version>
     <packaging>ear</packaging>
     <name>${project.artifactId} (${project.version})</name>
 
@@ -30,6 +30,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
 		
         <dependency><version>${project.version}</version><type>ejb</type><groupId>com.i4c.antares.ejb</groupId><artifactId>commons-app-ejb</artifactId></dependency>
         <dependency><version>${project.version}</version><type>ejb</type><groupId>com.i4c.antares.ejb</groupId><artifactId>predictive-app</artifactId></dependency>
+		<dependency><version>${project.version}</version><type>ejb</type><groupId>com.i4c.antares.ejb</groupId><artifactId>early-warning-app</artifactId></dependency>
 		
 		<dependency><version>${project.version}</version><type>ejb</type><groupId>com.i4c.antares.ejb</groupId><artifactId>earlywarning-auth-ejb</artifactId></dependency>
         <dependency><version>${project.version}</version><type>jar</type><groupId>com.i4c.antares.java</groupId><artifactId>earlywarning-config</artifactId></dependency>

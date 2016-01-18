@@ -18,7 +18,7 @@ VAR backTestingCRRTable		= "SNDG_CRR_DEFAULT";
 VAR logActionName 			= "BackTesting";
 
 VAR JDBC_NAME 				= Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
-VAR analysisUnit 			= Analysis_Unit[ID=analysisUnitID];
+VAR analysisUnit 			= Analysis_Unit[ID=$analysisUnitID];
 VAR analysisUnitTable 		= analysisUnit.AnalyticalTable;
 
 ########################
@@ -33,7 +33,7 @@ FOREACH( COLUMNS as column ) {
     }
 }
 
-SQL = "CREATE TABLE "+backTestingHistoryTable+" as (select  "+ SQL_COLUMNS +"FROM "+analysisUnitTable+" ) with NO data";
+SQL = "CREATE TABLE "+backTestingHistoryTable+" as (select  "+ SQL_COLUMNS +" FROM "+analysisUnitTable+" ) with NO data";
 IF (not LIB_DB.isTableExisting(backTestingHistoryTable,JDBC_NAME)) {
 	SQLEXECUTE(SQL,JDBC_NAME,0,{});
     SAVE_LOG("Info", logActionName, "create table "+backTestingHistoryTable);

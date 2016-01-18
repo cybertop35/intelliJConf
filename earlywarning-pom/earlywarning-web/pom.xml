@@ -12,7 +12,7 @@
 
 	<groupId>com.i4c.antares.web</groupId>
 	<artifactId>earlywarning-web</artifactId>
-	<version>7.0M2.0.0-SNAPSHOT</version>
+	<version>7.0M2.0.1-SNAPSHOT</version>
 	<name>${project.artifactId} (${project.version})</name>
     <packaging>war</packaging>
 

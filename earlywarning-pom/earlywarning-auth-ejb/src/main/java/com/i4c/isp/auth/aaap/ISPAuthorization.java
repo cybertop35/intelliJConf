@@ -7,6 +7,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 
@@ -22,6 +23,12 @@ import org.xml.sax.SAXException;
 import com.i4c.antares.authentication.AuthorizationProvider;
 import com.i4c.antares.authentication.UserAuthorizations;
 import com.i4c.antares.common.utils.ServiceLocator;
+import com.i4c.antares.usersactions.ejb.ActionFacadeBean;
+import com.i4c.antares.usersactions.ejb.ActionFacadeLocal;
+import com.i4c.antares.usersactions.ejb.UserFacadeBean;
+import com.i4c.antares.usersactions.ejb.UserFacadeLocal;
+import com.i4c.antares.usersactions.to.UserTO;
+import com.i4c.antares.utils.CoreModuleName;
 import com.i4c.isp.auth.ws.Service;
 import com.i4c.isp.auth.ws.ServiceSoap;
 import com.i4c.isp.auth.ws.response.SAXHandlerProfileResponse;
@@ -31,7 +38,7 @@ public class ISPAuthorization implements AuthorizationProvider {
 	private static final Logger logger = Logger
 			.getLogger(ISPAuthorization.class);
 
-	
+
 	@SuppressWarnings("unused")
 	@Override
 	public UserAuthorizations authorizeRequest(String username,	HttpServletRequest request) {
@@ -47,7 +54,10 @@ public class ISPAuthorization implements AuthorizationProvider {
 		String siteName = null;
 		
 		ManagerProfileLocal managerProfiles = ServiceLocator.getInstance().getEJB(ManagerProfileLocal.class, ManagerProfileSession.class, "earlywarning");
-
+		UserFacadeLocal userFacade 			= ServiceLocator.getInstance().getEJB(UserFacadeLocal.class, UserFacadeBean.class, CoreModuleName.getModuleName());
+		
+		
+		
 		try {
 			siteName = request.getHeader("svcUrl");
 
@@ -77,17 +87,25 @@ public class ISPAuthorization implements AuthorizationProvider {
 					Collection<String> aaapProfiles = new HashSet<String>();
 
 					if(managerProfiles != null)					
-						for(String profile: systemGroups){
-							
+						for(String profile: systemGroups){							
 							aaapProfiles.addAll(managerProfiles.getAAAPProfile(profile));
 						}
 					else
 						logger.error("No manager profile found");
 					
-					if(aaapProfiles.size() == 0)
-						logger.error("No profile mapping");
-					
 					List<String> distinctGroup = new ArrayList<String>(aaapProfiles);
+					
+					if(distinctGroup.size() == 0)
+						logger.error("No profile mapping");			
+
+					//Verifico\creo UTENTE					
+					UserTO user = userFacade.getUserByUsername(username);
+					if (user == null && distinctGroup.size() > 0 ){
+						createUser(username);
+					}
+					else if(user != null && distinctGroup.size() == 0){
+						disableUser(user);
+					}
 					
 					authorizations = new UserAuthorizations(username, distinctGroup);	
 					
@@ -107,7 +125,36 @@ public class ISPAuthorization implements AuthorizationProvider {
 
 		return authorizations;
 	}
+	
+	private void disableUser(UserTO user){
+		ActionFacadeLocal actionFacadeLocal = ServiceLocator.getInstance().getEJB(ActionFacadeLocal.class, ActionFacadeBean.class, CoreModuleName.getModuleName());
+		user.setActive(false);
+		actionFacadeLocal.update(user);
+		
+	}
 
+	private void createUser(String username){
+		try {
+			ActionFacadeLocal actionFacadeLocal = ServiceLocator.getInstance().getEJB(ActionFacadeLocal.class, ActionFacadeBean.class, CoreModuleName.getModuleName());
+			
+			UserTO user = new UserTO();
+			
+			user.setUserId(username);
+			user.setName(username);	
+			user.setEmail(username+"@autocreato.it");
+			user.setActive(true);
+			user.setStartEnabled(new Date());
+			user.setLanguage("it");
+			
+			actionFacadeLocal.persist(user);
+			
+			logger.info("User "+username +" created." );
+		} catch (Exception e) {
+			logger.error("ISPAuthorization createUser error ", e);
+		}
+
+	}
+	
 	private static List<String> getGroup(String response) {
 
 		SAXParserFactory parserFactor = SAXParserFactory.newInstance();

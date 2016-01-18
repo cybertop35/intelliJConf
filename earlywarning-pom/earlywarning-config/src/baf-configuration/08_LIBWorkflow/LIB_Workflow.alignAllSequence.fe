@@ -1,0 +1,117 @@
+VAR formulaName = "[LIB_Workflow.alignAllSequence] ";
+DEBUGMESSAGE(formulaName, "START");
+
+# FEArray lastSequences= LIB_Workflow.alignAllSequence(FEString entityName);
+# RESULT VALUE:
+# EFFECTS       -
+
+# VAR entityName= Business_Rule;
+# VAR maxSequence = LIB_Workflow.alignAllSequence(entityName);
+
+VAR entityName = Param1;
+
+VAR maxSequence;
+VAR relations = {};
+VAR components = {};
+
+IF (entityName == "Business_Rule"){
+    maxSequence = LIB_Workflow.updateSequence(Business_Rule,"SEQ_BUSINESS_RULE","BR");
+    relations = {
+        [
+            'relationSet'   : Subset_AnalysisUnit,
+            'sequenceName'  : "SEQ_BR_ANALYSISUNIT",
+            'sequencePrefix': "BRAU"
+        ]
+    };
+
+    components = {
+        [
+            'relationSet'   : Filter,
+            'sequenceName'  : "SEQ_FILTER",
+            'sequencePrefix': "FI"
+        ],
+        [
+            'relationSet'   : Filter_Operator,
+            'sequenceName'  : "SEQ_FILTER_OPERATOR",
+            'sequencePrefix': "FO"
+        ],
+        [
+            'relationSet'   : Filter_Variable,
+            'sequenceName'  : "SEQ_FILTER_VARIABLE",
+            'sequencePrefix': "FV"
+        ],
+        [
+            'relationSet'   : Filter_Variable_Value,
+            'sequenceName'  : "SEQ_FILTER_VARIABLE_VALUE",
+            'sequencePrefix': "FVV"
+        ]
+    };
+} ELSE IF (entityName == "Business_Model"){
+    maxSequence = LIB_Workflow.updateSequence(Business_Model,"SEQ_BUSINESS_MODEL","BM");
+    relations = {
+        [
+            'relationSet'   : BusinessModel_WarningScore,
+            'sequenceName'  : "SEQ_MODEL_SCORE",
+            'sequencePrefix': "WS"
+        ],
+        [
+            'relationSet'   : BusinessModel_BusinessRule,
+            'sequenceName'  : "SEQ_SCORE_BR",
+            'sequencePrefix': "BMR"
+        ],
+        [
+            'relationSet'   : BusinessModel_Workspace,
+            'sequenceName'  : "SEQ_BM_WKS",
+            'sequencePrefix': "BW"
+        ]
+    };
+} ELSE IF (entityName == "WarningScore_Matrix"){
+    maxSequence = LIB_Workflow.updateSequence(WarningScore_Matrix,"SEQ_WarningScore_Matrix","WSM");
+    relations = {
+        [
+            'relationSet'   : WarningScoreMatrix_Workspace,
+            'sequenceName'  : "SEQ_WSMatrix_Workspace",
+            'sequencePrefix': "MW"
+        ],[
+            'relationSet'   : WSMatrix_BusinessModel,
+            'sequenceName'  : "SEQ_WSMatrix_BM",
+            'sequencePrefix': "MB"
+        ],[
+            'relationSet'   : WSMatrix_Color,
+            'sequenceName'  : "SEQ_WSMATRIX_COLOR",
+            'sequencePrefix': "MXC"
+        ],[
+            'relationSet'   : WSMatrix_WarningScore,
+            'sequenceName'  : "SEQ_WSMATRIX_WS",
+            'sequencePrefix': "MW"
+        ]
+    };
+} ELSE IF (entityName == "Workspace"){
+    maxSequence = LIB_Workflow.updateSequence(Workspace,"SEQ_WORKSPACE","WS");
+    relations = {
+        [
+            'relationSet'   : Workspace_BusinessLine,
+            'sequenceName'  : "SEQ_WKS_BL",
+            'sequencePrefix': "BMR"
+        ],[
+            'relationSet'   : Workspace_TargetVariable,
+            'sequenceName'  : "SEQ_WKS_TV",
+            'sequencePrefix': "BMR"
+        ]
+    };
+}
+
+IF (SIZE(relations) > 0){
+    FOREACH(relations as rel){
+        LIB_Workflow.updateSequence(rel['relationSet'],rel['sequenceName'],rel['sequencePrefix']);
+    }
+}
+
+IF (SIZE(components) > 0){
+    FOREACH(components as cmp){
+        LIB_Workflow.updateSequence(cmp['componentSet'],cmp['sequenceName'],cmp['sequencePrefix']);
+    }
+}
+
+DEBUGMESSAGE(formulaName, "END");
+RETURN maxSequence;

@@ -5,15 +5,29 @@
 
 DEBUGMESSAGE("LIB_RISK_EW.updateOutputIrisTable.fe"); # stacktrace
 
-
 VAR analysisUnitID = Param1;
+
+VAR logActionName = "updateOutputIris";
+
+SAVE_LOG("Info", logActionName, "Start Update outputIris Generica");
+
+
+VAR result 			= null;
 
 IF (analysisUnitID == "CUSTOMER") THEN {
 	LIB_EWS_IT.updateOutputIrisTable_IT(analysisUnitID);
+	if(result <> NULL) THEN {
+		SAVE_LOG("Info", logActionName, "Update output Iris Italia Completata");
+		result = null;
+	}
+	else{
+		SAVE_LOG("Error", logActionName, "Errore Update output Iris Italia");
+	}	
 }
 else {
-	DEBUGMESSAGE("LIB_RISK_EW.updateOutputIrisTable.fe Formula not found "+analysisUnitID)
+	DEBUGMESSAGE("LIB_RISK_EW.updateOutputIrisTable.fe Formula not found "+analysisUnitID);
 }
 
+SAVE_LOG("Info", logActionName, "End Update outputIris Generica");
 
 return now();

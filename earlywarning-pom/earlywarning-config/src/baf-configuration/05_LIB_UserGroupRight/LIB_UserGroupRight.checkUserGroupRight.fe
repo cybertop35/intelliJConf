@@ -1,14 +1,17 @@
-VAR formulaName = "[LIB_UserGroupRight.checkUserGroupRight.fe] ";
+VAR formulaName = "[LIB_UserGroupRight.checkUserGroupRight] ";
 DEBUGMESSAGE(formulaName, "START");
 
 # FEBoolean resultValue = LIB_UserGroupRight.checkUserGroupRight.fe(user,entity,function);
 # EFFECTS       -               -
+
 # var canEdit = LIB_UserGroupRight.checkUserGroupRight.fe('claimsanalyst','Workspace','EDIT');
 
-var user 	= Param1;
-var entity 	= Param2;
+var user = Param1;
+var entity = Param2;
 var function = Param3;
-var groups = null;
+var missingDef = Param4;
+
+var groups;
 
 var sql = "select distinct groups from FWU_11_USER_AUTHORIZATIONS";
 
@@ -22,6 +25,7 @@ if(groups <> null and size(groups) == 1){
 }
 
 var rights;
+var missingCount = 0;
 foreach (groups as group) {
 	rights = User_Group_Right[Group=$group AND Entity=$entity AND Function=$function];
     if (size(rights) > 0) {
@@ -32,8 +36,14 @@ foreach (groups as group) {
             }
         }
     }
+    else {
+        missingCount = missingCount + 1;
+    }
 }
 
+if (missingCount == SIZE(groups)) {
+    return missingDef;
+}
 
 DEBUGMESSAGE(formulaName, "END");
 return false;
