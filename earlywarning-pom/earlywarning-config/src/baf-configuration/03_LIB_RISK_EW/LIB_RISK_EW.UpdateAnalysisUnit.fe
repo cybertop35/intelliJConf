@@ -23,7 +23,7 @@ IF (analysisUnitID == "CUSTOMER") THEN {
 		SAVE_LOG("Error", logActionName, "Errore Update AnalysisUnit Italia");
 	}		
 }
-ELSE IF (analysisUnitID == "CUSTOMER_BE") THEN {
+ELSE IF (analysisUnitID == "COUNTERPARTY_BIB") THEN {
 	result = LIB_EWS_BE.updateOutputIrisTable_BE(analysisUnitID);
 	
 	if(result <> NULL) THEN {

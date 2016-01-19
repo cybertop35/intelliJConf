@@ -3,7 +3,7 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "SELECT NDG 
+sql = "SELECT NDG as SNDG,EXPOSURE_AMOUNT AS EXPOSURE,null as TARGET
 	," + LIB_EWS_BE.INDICATOR_1() +"  
 	," + LIB_EWS_BE.INDICATOR_2() +"   
 	," + LIB_EWS_BE.INDICATOR_3() +"  
