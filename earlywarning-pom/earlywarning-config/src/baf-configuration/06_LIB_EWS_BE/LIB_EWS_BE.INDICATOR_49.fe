@@ -3,7 +3,7 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "FLG_BANKRUPT_APPL_DEBTOR AS IND_49";
+sql = "CAST(FLG_BANKRUPT_APPL_DEBTOR AS CHAR(1)) AS IND_49";
 
 
 DEBUGMESSAGE(formulaName, sql);
