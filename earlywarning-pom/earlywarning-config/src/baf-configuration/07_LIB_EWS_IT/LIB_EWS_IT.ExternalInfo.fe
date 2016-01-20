@@ -1,0 +1,4 @@
+var setup =["CRR_INDICATOR":"IND_02",
+			"HAVE_ERROR_MESSAGE":true	];
+
+return setup;

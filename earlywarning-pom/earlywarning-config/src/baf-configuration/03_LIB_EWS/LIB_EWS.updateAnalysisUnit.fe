@@ -24,7 +24,7 @@ IF (analysisUnitID == "CUSTOMER") THEN {
 	}		
 }
 ELSE IF (analysisUnitID == "COUNTERPARTY_BIB") THEN {
-	result = LIB_EWS_BE.updateOutputIrisTable_BE(analysisUnitID);
+	result = LIB_EWS_BE.UpdateAnalysisUnit_BE(analysisUnitID);
 	
 	if(result <> NULL) THEN {
 		SAVE_LOG("Info", logActionName, "Update AnalysisUnit Italia Banche estere");

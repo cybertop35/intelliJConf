@@ -1,9 +1,9 @@
-# FENull returnNull LIB_RISK_EW.backTesting;
+# FENull returnNull LIB_EWS.backTesting;
 # RETURN VALUE: FENull      -
 # EFFETCS:      -           updateAnalyticaltable
-# Param1:       FEInstance      analysisUnit instance id
+# Param1:       FEInstance  analysisUnit instance id
 
-DEBUGMESSAGE("LIB_RISK_EW.backTesting.fe"); # stacktrace
+DEBUGMESSAGE("LIB_EWS.backTesting.fe"); # stacktrace
 
 VAR analysisUnitID = Param1;
 
@@ -11,15 +11,21 @@ VAR SQL_COLUMNS;
 VAR COLUMNS;
 VAR SQL ;
 
-
-VAR backTestingHistoryTable = "BACK_TESTING_HISTORY";
-VAR backTestingHistoryView 	= "BACK_TESTING_V";
-VAR backTestingCRRTable		= "SNDG_CRR_DEFAULT";
 VAR logActionName 			= "BackTesting";
 
-VAR JDBC_NAME 				= Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
 VAR analysisUnit 			= Analysis_Unit[ID=$analysisUnitID];
 VAR analysisUnitTable 		= analysisUnit.AnalyticalTable;
+VAR backTestingHistoryView	= analysisUnit.BktestAnalyticalTable;
+
+VAR backTestingHistoryTable = analysisUnitTable+"_H";
+VAR backTestingCRRTable		= analysisUnitTable+"_CRR_DEF";
+
+VAR externalInfoFormula 	= analysisUnit.CustomerInfoFormula;	
+VAR JDBC_NAME 				= Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
+
+VAR SETUP = EVAL(externalInfoFormula, {});
+VAR  CRR_COLUMN_NAME = SETUP["CRR_INDICATOR"];
+
 
 ########################
 ## Creazione Tabelle  ##
@@ -60,7 +66,7 @@ SQL ="Create view "+backTestingHistoryView+" as
 			) CRR ON h.sndg =crr.sndg
 		where EXTRACT (YEAR FROM H.HISTORY_DATE) = EXTRACT (YEAR  FROM ADD_MONTHS( CURRENT_DATE,-7)) 
 			and EXTRACT (MONTH FROM H.HISTORY_DATE) = EXTRACT (MONTH FROM ADD_MONTHS( CURRENT_DATE,-7))
-			and ind_02 <> 1" ;
+			and "+CRR_COLUMN_NAME+" <> 1" ;
   
 IF (not LIB_DB.isTableExisting(backTestingHistoryView,JDBC_NAME)) {
 	SQLEXECUTE(SQL,JDBC_NAME,0,{});
@@ -81,7 +87,7 @@ IF(Utils.isLastOfMonth()){
 SQL = "INSERT INTO "+backTestingCRRTable+" 
 		SELECT SNDG,CURRENT_DATE as HISTORY_DATE 
 		FROM "+analysisUnitTable +" 
-		where IND_02=1 
+		where "+CRR_COLUMN_NAME+"=1 
 			and sndg not in (select sndg from  "+backTestingCRRTable+" 
 								where EXTRACT (YEAR FROM Load_date) = EXTRACT (YEAR FROM CURRENT_DATE) 
 								  and EXTRACT (MONTH FROM Load_date) = EXTRACT (MONTH FROM CURRENT_DATE)  

@@ -141,10 +141,10 @@ public class ISPAuthorization implements AuthorizationProvider {
 			
 			user.setUserId(username);
 			user.setName(username);	
-			user.setEmail(username+"@autocreato.it");
+			user.setEmail(username+"@autoc.it");
 			user.setActive(true);
 			user.setStartEnabled(new Date());
-			user.setLanguage("it");
+			user.setLanguage("en");
 			
 			actionFacadeLocal.persist(user);
 			
