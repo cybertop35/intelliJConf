@@ -3,7 +3,7 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "FLG_BLOCKED_ACCOUNT AS IND_3";
+sql = "CAST(FLG_BLOCKED_ACCOUNT AS CHAR(1) ) IND_3";
 
 
 DEBUGMESSAGE(formulaName, sql);
