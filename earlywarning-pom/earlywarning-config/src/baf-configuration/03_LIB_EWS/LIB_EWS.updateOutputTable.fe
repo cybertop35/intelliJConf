@@ -55,7 +55,7 @@ if(MATRIX <> NULL) THEN {
 	ORDER = analysisUnitInstance.AnalysisUnit_Variable.Variable order by [ColumnName ASC];
 	
     foreach (ORDER as v){
- 		IF( v.ColumnName <> "TARGET" and v.ColumnName <> "EXPOSURE" and v.ColumnName <> "SNDG"){
+ 		IF( v.ColumnName <> "TARGET" and v.ColumnName <> "EXPOSURE" and v.ColumnName <> "SNDG" and v.ColumnName <> "SEGMENT"){
 			IF(v.Variable_DataType.Data_Type.ID == "STRING") {
 				SQL = SQL +",cast("+UNIT_TABLE+"."+v.ColumnName+" as VARCHAR(50) ) as "+v.ColumnName ;
 			}
