@@ -106,6 +106,8 @@ public class ISPAuthorization implements AuthorizationProvider {
 					else if(user != null && distinctGroup.size() == 0){
 						disableUser(user);
 					}
+					else if(user != null && distinctGroup.size() > 0 && !user.isActive())
+						activeUser(user);
 					
 					authorizations = new UserAuthorizations(username, distinctGroup);	
 					
@@ -129,6 +131,13 @@ public class ISPAuthorization implements AuthorizationProvider {
 	private void disableUser(UserTO user){
 		ActionFacadeLocal actionFacadeLocal = ServiceLocator.getInstance().getEJB(ActionFacadeLocal.class, ActionFacadeBean.class, CoreModuleName.getModuleName());
 		user.setActive(false);
+		actionFacadeLocal.update(user);
+		
+	}
+	
+	private void activeUser(UserTO user){
+		ActionFacadeLocal actionFacadeLocal = ServiceLocator.getInstance().getEJB(ActionFacadeLocal.class, ActionFacadeBean.class, CoreModuleName.getModuleName());
+		user.setActive(true);
 		actionFacadeLocal.update(user);
 		
 	}
