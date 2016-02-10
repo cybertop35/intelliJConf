@@ -3,7 +3,9 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "DAYS_PAST_DUE AS IND_1";
+sql = "CASE WHEN DAYS_PAST_DUE IS NULL THEN 0
+ELSE DAYS_PAST_DUE
+END AS IND_1";
 
 
 DEBUGMESSAGE(formulaName, sql);
