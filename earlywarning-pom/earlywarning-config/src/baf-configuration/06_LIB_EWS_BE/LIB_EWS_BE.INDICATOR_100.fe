@@ -4,9 +4,6 @@ DEBUGMESSAGE(formulaName, "START");
 VAR sql = "";
 
 sql = "
-
-select
-
 NULL AS MISSING_VALUE_IND_100,
 
 CASE
@@ -99,9 +96,6 @@ CASE
 	WHEN (DEN_IND_100 IS NULL AND NUM_IND_100 IS NULL) THEN 'ERROR; ' else ''
 
 END AS ERROR_MSG_IND_100
-
-from tewsa0d.customer_table_estere
-
 ";
 
 

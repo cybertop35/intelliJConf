@@ -4,8 +4,6 @@ DEBUGMESSAGE(formulaName, "START");
 VAR sql = "";
 
 sql = "
-select
-
 CASE 
 	WHEN REGULAMENTARY_SEGMENT = 'Corporate' THEN 0.02171407
 	WHEN REGULAMENTARY_SEGMENT = 'Retail' THEN 0.01998575
@@ -104,9 +102,6 @@ CASE
 	WHEN (DEN_IND_116 IS NULL AND NUM_IND_116 IS NULL) THEN 'ERROR; ' else ''
 
 END AS ERROR_MSG_IND_116
-
-from tewsa0d.customer_table_estere
-
 ";
 
 
