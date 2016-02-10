@@ -4,11 +4,49 @@ DEBUGMESSAGE(formulaName, "START");
 VAR sql = "";
 
 sql = "CASE 
-	WHEN WORKING_CAPITAL_Y1 = 0 AND  WORKING_CAPITAL_Y0 > 0 THEN NULL
-	WHEN WORKING_CAPITAL_Y1 = 0 AND  WORKING_CAPITAL_Y0 < 0 THEN NULL
-	WHEN WORKING_CAPITAL_Y1 = 0 AND  WORKING_CAPITAL_Y0 = 0 THEN NULL
-	ELSE ((WORKING_CAPITAL_Y0/WORKING_CAPITAL_Y1 ) -1)
-END AS IND_70";
+                WHEN (WORKING_CAPITAL_Y1 > 0 AND WORKING_CAPITAL_Y0 >0) THEN (WORKING_CAPITAL_Y0) / (WORKING_CAPITAL_Y1)
+                WHEN (WORKING_CAPITAL_Y1 > 0 AND WORKING_CAPITAL_Y0 =0) THEN (WORKING_CAPITAL_Y0) / (WORKING_CAPITAL_Y1)
+                WHEN (WORKING_CAPITAL_Y1 > 0 AND WORKING_CAPITAL_Y0 <0) THEN (WORKING_CAPITAL_Y0) / (WORKING_CAPITAL_Y1)
+                WHEN (WORKING_CAPITAL_Y1 > 0 AND WORKING_CAPITAL_Y0 IS NULL) THEN 0
+                
+                WHEN (WORKING_CAPITAL_Y1 = 0 AND WORKING_CAPITAL_Y0 >0) THEN 0         
+                WHEN (WORKING_CAPITAL_Y1 = 0 AND WORKING_CAPITAL_Y0 <0) THEN 0
+                WHEN (WORKING_CAPITAL_Y1 = 0 AND WORKING_CAPITAL_Y0 =0) THEN 0
+                WHEN (WORKING_CAPITAL_Y1 = 0 AND WORKING_CAPITAL_Y0 IS NULL) THEN 0
+                
+                WHEN (WORKING_CAPITAL_Y1 < 0 AND WORKING_CAPITAL_Y0 >0) THEN (WORKING_CAPITAL_Y0) / (WORKING_CAPITAL_Y1)        
+                WHEN (WORKING_CAPITAL_Y1 < 0 AND WORKING_CAPITAL_Y0 <0) THEN (WORKING_CAPITAL_Y0) / (WORKING_CAPITAL_Y1)
+                WHEN (WORKING_CAPITAL_Y1 < 0 AND WORKING_CAPITAL_Y0 =0) THEN (WORKING_CAPITAL_Y0) / (WORKING_CAPITAL_Y1)
+                WHEN (WORKING_CAPITAL_Y1 < 0 AND WORKING_CAPITAL_Y0 IS NULL) THEN 0
+                
+                WHEN (WORKING_CAPITAL_Y1 IS NULL AND WORKING_CAPITAL_Y0 >0) THEN 0
+                WHEN (WORKING_CAPITAL_Y1 IS NULL AND WORKING_CAPITAL_Y0 <0) THEN 0
+                WHEN (WORKING_CAPITAL_Y1 IS NULL AND WORKING_CAPITAL_Y0 =0) THEN 0
+                WHEN (WORKING_CAPITAL_Y1 IS NULL AND WORKING_CAPITAL_Y0 IS NULL) THEN 0
+                
+                ELSE ((WORKING_CAPITAL_Y0/WORKING_CAPITAL_Y1 ) -1)
+END AS IND_70,
+                CASE 
+                                                                  WHEN (WORKING_CAPITAL_Y1 > 0 AND WORKING_CAPITAL_Y0 IS NULL) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (WORKING_CAPITAL_Y1 = 0 AND WORKING_CAPITAL_Y0 >0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (WORKING_CAPITAL_Y1 = 0 AND WORKING_CAPITAL_Y0 <0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (WORKING_CAPITAL_Y1 = 0 AND WORKING_CAPITAL_Y0 =0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (WORKING_CAPITAL_Y1 = 0 AND WORKING_CAPITAL_Y0 IS NULL) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (WORKING_CAPITAL_Y1 < 0 AND WORKING_CAPITAL_Y0 IS NULL) THEN 'ERROR; ' else ''
+                END || CASE   
+                                                                  WHEN (WORKING_CAPITAL_Y1 IS NULL AND WORKING_CAPITAL_Y0 >0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (WORKING_CAPITAL_Y1 IS NULL AND WORKING_CAPITAL_Y0 <0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (WORKING_CAPITAL_Y1 IS NULL AND WORKING_CAPITAL_Y0 =0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (WORKING_CAPITAL_Y1 IS NULL AND WORKING_CAPITAL_Y0 IS NULL) THEN 'ERROR;' else ''
+                END AS ERROR_MSG_IND_70";
 
 
 DEBUGMESSAGE(formulaName, sql);
