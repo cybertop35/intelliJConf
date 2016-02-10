@@ -3,12 +3,51 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "(CASE 
-WHEN ST_LIABILITIES_Y1 = 0 AND ST_LIABILITIES_Y0 > 0 THEN NULL
-WHEN ST_LIABILITIES_Y1 = 0 AND ST_LIABILITIES_Y0 < 0 THEN NULL
-WHEN ST_LIABILITIES_Y1 = 0 AND ST_LIABILITIES_Y0 = 0 THEN NULL
-ELSE ((ST_LIABILITIES_Y0/ST_LIABILITIES_Y1)-1)
-END) AS IND_77";
+sql = "CASE 
+                WHEN (ST_LIABILITIES_Y1 > 0 AND ST_LIABILITIES_Y0 >0) THEN (ST_LIABILITIES_Y0) / (ST_LIABILITIES_Y1)
+                WHEN (ST_LIABILITIES_Y1 > 0 AND ST_LIABILITIES_Y0 =0) THEN (ST_LIABILITIES_Y0) / (ST_LIABILITIES_Y1)
+                WHEN (ST_LIABILITIES_Y1 > 0 AND ST_LIABILITIES_Y0 <0) THEN (ST_LIABILITIES_Y0) / (ST_LIABILITIES_Y1)
+                WHEN (ST_LIABILITIES_Y1 > 0 AND ST_LIABILITIES_Y0 IS NULL) THEN 0
+                
+                WHEN (ST_LIABILITIES_Y1 = 0 AND ST_LIABILITIES_Y0 >0) THEN 0         
+                WHEN (ST_LIABILITIES_Y1 = 0 AND ST_LIABILITIES_Y0 <0) THEN 0
+                WHEN (ST_LIABILITIES_Y1 = 0 AND ST_LIABILITIES_Y0 =0) THEN 0
+                WHEN (ST_LIABILITIES_Y1 = 0 AND ST_LIABILITIES_Y0 IS NULL) THEN 0
+                
+                WHEN (ST_LIABILITIES_Y1 < 0 AND ST_LIABILITIES_Y0 >0) THEN (ST_LIABILITIES_Y0) / (ST_LIABILITIES_Y1)         
+                WHEN (ST_LIABILITIES_Y1 < 0 AND ST_LIABILITIES_Y0 <0) THEN (ST_LIABILITIES_Y0) / (ST_LIABILITIES_Y1)
+                WHEN (ST_LIABILITIES_Y1 < 0 AND ST_LIABILITIES_Y0 =0) THEN (ST_LIABILITIES_Y0) / (ST_LIABILITIES_Y1)
+                WHEN (ST_LIABILITIES_Y1 < 0 AND ST_LIABILITIES_Y0 IS NULL) THEN 0
+                
+                WHEN (ST_LIABILITIES_Y1 IS NULL AND ST_LIABILITIES_Y0 >0) THEN 0
+                WHEN (ST_LIABILITIES_Y1 IS NULL AND ST_LIABILITIES_Y0 <0) THEN 0
+                WHEN (ST_LIABILITIES_Y1 IS NULL AND ST_LIABILITIES_Y0 =0) THEN 0
+                WHEN (ST_LIABILITIES_Y1 IS NULL AND ST_LIABILITIES_Y0 IS NULL) THEN 0
+                
+                ELSE ((ST_LIABILITIES_Y0)/(ST_LIABILITIES_Y1))-1
+END AS IND_77,
+                CASE 
+                                                                  WHEN (ST_LIABILITIES_Y1 > 0 AND ST_LIABILITIES_Y0 IS NULL) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (ST_LIABILITIES_Y1 = 0 AND ST_LIABILITIES_Y0 >0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (ST_LIABILITIES_Y1 = 0 AND ST_LIABILITIES_Y0 <0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (ST_LIABILITIES_Y1 = 0 AND ST_LIABILITIES_Y0 =0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (ST_LIABILITIES_Y1 = 0 AND ST_LIABILITIES_Y0 IS NULL) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (ST_LIABILITIES_Y1 < 0 AND ST_LIABILITIES_Y0 IS NULL) THEN 'ERROR; ' else ''
+                END || CASE   
+                                                                  WHEN (ST_LIABILITIES_Y1 IS NULL AND ST_LIABILITIES_Y0 >0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (ST_LIABILITIES_Y1 IS NULL AND ST_LIABILITIES_Y0 <0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (ST_LIABILITIES_Y1 IS NULL AND ST_LIABILITIES_Y0 =0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (ST_LIABILITIES_Y1 IS NULL AND ST_LIABILITIES_Y0 IS NULL) THEN 'ERROR;' else ''
+                END 
+AS ERROR_MSG_IND_77";
 
 
 DEBUGMESSAGE(formulaName, sql);

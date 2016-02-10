@@ -4,11 +4,50 @@ DEBUGMESSAGE(formulaName, "START");
 VAR sql = "";
 
 sql = "CASE 
-	WHEN SALES_Y0 = 0 AND EBITDA_Y0 > 0 THEN NULL
-	WHEN SALES_Y0 = 0 AND EBITDA_Y0 < 0 THEN NULL
-	WHEN SALES_Y0 = 0 AND EBITDA_Y0 = 0 THEN NULL
-	ELSE (EBITDA_Y0/SALES_Y0) 
-END AS IND_88";
+                WHEN (SALES_Y0 > 0 AND EBITDA_Y0 >0) THEN (EBITDA_Y0) / (SALES_Y0)
+                WHEN (SALES_Y0 > 0 AND EBITDA_Y0 =0) THEN (EBITDA_Y0) / (SALES_Y0)
+                WHEN (SALES_Y0 > 0 AND EBITDA_Y0 <0) THEN (EBITDA_Y0) / (SALES_Y0)
+                WHEN (SALES_Y0 > 0 AND EBITDA_Y0 IS NULL) THEN 0
+                
+                WHEN (SALES_Y0 = 0 AND EBITDA_Y0 >0) THEN 0         
+                WHEN (SALES_Y0 = 0 AND EBITDA_Y0 <0) THEN 0
+                WHEN (SALES_Y0 = 0 AND EBITDA_Y0 =0) THEN 0
+                WHEN (SALES_Y0 = 0 AND EBITDA_Y0 IS NULL) THEN 0
+                
+                WHEN (SALES_Y0 < 0 AND EBITDA_Y0 >0) THEN (EBITDA_Y0) / (SALES_Y0)         
+                WHEN (SALES_Y0 < 0 AND EBITDA_Y0 <0) THEN (EBITDA_Y0) / (SALES_Y0)
+                WHEN (SALES_Y0 < 0 AND EBITDA_Y0 =0) THEN (EBITDA_Y0)/ (SALES_Y0)
+                WHEN (SALES_Y0 < 0 AND EBITDA_Y0 IS NULL) THEN 0
+                
+                WHEN (SALES_Y0 IS NULL AND EBITDA_Y0 >0) THEN 0
+                WHEN (SALES_Y0 IS NULL AND EBITDA_Y0 <0) THEN 0
+                WHEN (SALES_Y0 IS NULL AND EBITDA_Y0 =0) THEN 0
+                WHEN (SALES_Y0 IS NULL AND EBITDA_Y0 IS NULL) THEN 0
+                
+                ELSE (EBITDA_Y0) / (SALES_Y0)
+END AS IND_88,
+                CASE 
+                                                                  WHEN (SALES_Y0 > 0 AND EBITDA_Y0 IS NULL) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (SALES_Y0 = 0 AND EBITDA_Y0 >0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (SALES_Y0 = 0 AND EBITDA_Y0 <0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (SALES_Y0 = 0 AND EBITDA_Y0 =0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (SALES_Y0 = 0 AND EBITDA_Y0 IS NULL) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (SALES_Y0 < 0 AND EBITDA_Y0 IS NULL) THEN 'ERROR; ' else ''
+                END || CASE   
+                                                                  WHEN (SALES_Y0 IS NULL AND EBITDA_Y0 >0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (SALES_Y0 IS NULL AND EBITDA_Y0 <0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (SALES_Y0 IS NULL AND EBITDA_Y0 =0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (SALES_Y0 IS NULL AND EBITDA_Y0 IS NULL) THEN 'ERROR;' else ''
+                END
+AS ERROR_MSG_IND_88";
 
 
 DEBUGMESSAGE(formulaName, sql);

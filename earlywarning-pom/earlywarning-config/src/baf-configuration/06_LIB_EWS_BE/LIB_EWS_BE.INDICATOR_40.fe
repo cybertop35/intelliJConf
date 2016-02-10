@@ -3,12 +3,56 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "(CASE 
-WHEN TOTAL_COLLATERAL = 0 AND APPROVED_LOANS > 0 THEN NULL
-WHEN TOTAL_COLLATERAL = 0 AND APPROVED_LOANS < 0 THEN NULL
-WHEN TOTAL_COLLATERAL = 0 AND APPROVED_LOANS = 0 THEN NULL
-ELSE (APPROVED_LOANS/TOTAL_COLLATERAL)
-END) AS IND_40";
+sql = "CASE 
+          		 WHEN REGULAMENTARY_SEGMENT = 'Corporate' THEN  0.79426789
+   			     WHEN REGULAMENTARY_SEGMENT = 'Retail' THEN  0.58823532
+ELSE NULL
+END AS MISSING_VALUE_IND_40,
+CASE 
+                WHEN (TOTAL_COLLATERAL > 0 AND APPROVED_LOANS >0) THEN (APPROVED_LOANS) / (TOTAL_COLLATERAL)
+                WHEN (TOTAL_COLLATERAL > 0 AND APPROVED_LOANS =0) THEN (APPROVED_LOANS) / (TOTAL_COLLATERAL)
+                WHEN (TOTAL_COLLATERAL > 0 AND APPROVED_LOANS <0) THEN (APPROVED_LOANS) / (TOTAL_COLLATERAL)
+                WHEN (TOTAL_COLLATERAL > 0 AND APPROVED_LOANS IS NULL) THEN MISSING_VALUE_IND_40
+                
+                WHEN (TOTAL_COLLATERAL = 0 AND APPROVED_LOANS >0) THEN MISSING_VALUE_IND_40         
+                WHEN (TOTAL_COLLATERAL = 0 AND APPROVED_LOANS <0) THEN MISSING_VALUE_IND_40
+                WHEN (TOTAL_COLLATERAL = 0 AND APPROVED_LOANS =0) THEN MISSING_VALUE_IND_40
+                WHEN (TOTAL_COLLATERAL = 0 AND APPROVED_LOANS IS NULL) THEN MISSING_VALUE_IND_40
+                
+                WHEN (TOTAL_COLLATERAL < 0 AND APPROVED_LOANS >0) THEN (APPROVED_LOANS) / (TOTAL_COLLATERAL)         
+                WHEN (TOTAL_COLLATERAL < 0 AND APPROVED_LOANS <0) THEN (APPROVED_LOANS) / (TOTAL_COLLATERAL)
+                WHEN (TOTAL_COLLATERAL < 0 AND APPROVED_LOANS =0) THEN (APPROVED_LOANS) / (TOTAL_COLLATERAL)
+                WHEN (TOTAL_COLLATERAL < 0 AND APPROVED_LOANS IS NULL) THEN MISSING_VALUE_IND_40
+                
+                WHEN (TOTAL_COLLATERAL IS NULL AND APPROVED_LOANS >0) THEN MISSING_VALUE_IND_40
+                WHEN (TOTAL_COLLATERAL IS NULL AND APPROVED_LOANS <0) THEN MISSING_VALUE_IND_40
+                WHEN (TOTAL_COLLATERAL IS NULL AND APPROVED_LOANS =0) THEN MISSING_VALUE_IND_40
+                WHEN (TOTAL_COLLATERAL IS NULL AND APPROVED_LOANS IS NULL) THEN MISSING_VALUE_IND_40
+                
+                ELSE (APPROVED_LOANS) / (TOTAL_COLLATERAL)
+END AS IND_40,
+                CASE 
+                                                                  WHEN (TOTAL_COLLATERAL > 0 AND APPROVED_LOANS IS NULL) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (TOTAL_COLLATERAL = 0 AND APPROVED_LOANS >0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (TOTAL_COLLATERAL = 0 AND APPROVED_LOANS <0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (TOTAL_COLLATERAL = 0 AND APPROVED_LOANS =0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (TOTAL_COLLATERAL = 0 AND APPROVED_LOANS IS NULL) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (TOTAL_COLLATERAL < 0 AND APPROVED_LOANS IS NULL) THEN 'ERROR; ' else ''
+                END || CASE   
+                                                                  WHEN (TOTAL_COLLATERAL IS NULL AND APPROVED_LOANS >0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (TOTAL_COLLATERAL IS NULL AND APPROVED_LOANS <0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (TOTAL_COLLATERAL IS NULL AND APPROVED_LOANS =0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (TOTAL_COLLATERAL IS NULL AND APPROVED_LOANS IS NULL) THEN 'ERROR;' else ''
+                END
+AS ERROR_MSG_IND_40";
 
 
 DEBUGMESSAGE(formulaName, sql);

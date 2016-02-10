@@ -4,11 +4,50 @@ DEBUGMESSAGE(formulaName, "START");
 VAR sql = "";
 
 sql = "CASE 
-WHEN SALES_Y0 = 0 AND LABOUR_COST_Y0 > 0 THEN NULL
-WHEN SALES_Y0 = 0 AND LABOUR_COST_Y0 < 0 THEN NULL
-WHEN SALES_Y0 = 0 AND LABOUR_COST_Y0 = 0 THEN NULL
-ELSE(LABOUR_COST_Y0/SALES_Y0)
-END AS IND_102";
+                WHEN (SALES_Y0 > 0 AND LABOUR_COST_Y0 >0) THEN (LABOUR_COST_Y0) / (SALES_Y0)
+                WHEN (SALES_Y0 > 0 AND LABOUR_COST_Y0 =0) THEN (LABOUR_COST_Y0) / (SALES_Y0)
+                WHEN (SALES_Y0 > 0 AND LABOUR_COST_Y0 <0) THEN (LABOUR_COST_Y0) / (SALES_Y0)
+                WHEN (SALES_Y0 > 0 AND LABOUR_COST_Y0 IS NULL) THEN NULL
+                
+                WHEN (SALES_Y0 = 0 AND LABOUR_COST_Y0 >0) THEN NULL         
+                WHEN (SALES_Y0 = 0 AND LABOUR_COST_Y0 <0) THEN NULL
+                WHEN (SALES_Y0 = 0 AND LABOUR_COST_Y0 =0) THEN NULL
+                WHEN (SALES_Y0 = 0 AND LABOUR_COST_Y0 IS NULL) THEN NULL
+                
+                WHEN (SALES_Y0 < 0 AND LABOUR_COST_Y0 >0) THEN (LABOUR_COST_Y0) / (SALES_Y0)         
+                WHEN (SALES_Y0 < 0 AND LABOUR_COST_Y0 <0) THEN (LABOUR_COST_Y0) / (SALES_Y0)
+                WHEN (SALES_Y0 < 0 AND LABOUR_COST_Y0 =0) THEN (LABOUR_COST_Y0) / (SALES_Y0)
+                WHEN (SALES_Y0 < 0 AND LABOUR_COST_Y0 IS NULL) THEN NULL
+                
+                WHEN (SALES_Y0 IS NULL AND LABOUR_COST_Y0 >0) THEN NULL
+                WHEN (SALES_Y0 IS NULL AND LABOUR_COST_Y0 <0) THEN NULL
+                WHEN (SALES_Y0 IS NULL AND LABOUR_COST_Y0 =0) THEN NULL
+                WHEN (SALES_Y0 IS NULL AND LABOUR_COST_Y0 IS NULL) THEN NULL
+                
+                ELSE (LABOUR_COST_Y0) / (SALES_Y0)
+END AS IND_102,
+                CASE 
+                                                                  WHEN (SALES_Y0 > 0 AND LABOUR_COST_Y0 IS NULL) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (SALES_Y0 = 0 AND LABOUR_COST_Y0 >0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (SALES_Y0 = 0 AND LABOUR_COST_Y0 <0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (SALES_Y0 = 0 AND LABOUR_COST_Y0 =0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (SALES_Y0 = 0 AND LABOUR_COST_Y0 IS NULL) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (SALES_Y0 < 0 AND LABOUR_COST_Y0 IS NULL) THEN 'ERROR; ' else ''
+                END || CASE   
+                                                                  WHEN (SALES_Y0 IS NULL AND LABOUR_COST_Y0 >0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (SALES_Y0 IS NULL AND LABOUR_COST_Y0 <0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (SALES_Y0 IS NULL AND LABOUR_COST_Y0 =0) THEN 'ERROR; ' else ''
+                END || CASE
+                                                                  WHEN (SALES_Y0 IS NULL AND LABOUR_COST_Y0 IS NULL) THEN 'ERROR;' else ''
+                END
+AS ERROR_MSG_IND_102";
 
 
 DEBUGMESSAGE(formulaName, sql);
