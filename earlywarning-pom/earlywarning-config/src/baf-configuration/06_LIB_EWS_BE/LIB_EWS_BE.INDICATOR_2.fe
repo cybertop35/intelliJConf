@@ -10,7 +10,12 @@ sql = "CAST (CASE
 			END
 			AS
 			CHAR(1)	
-		) AS IND_2";
+		) AS IND_2,
+	(CASE
+				WHEN NULLIF(DAYS_PAST_DUE,'') IS NULL THEN 'ERROR;' ELSE ''
+			END
+		) AS ERROR_MSG_IND_2
+		";
 
 
 DEBUGMESSAGE(formulaName, sql);
