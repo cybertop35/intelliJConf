@@ -3,51 +3,22 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "CASE 
-                WHEN (ST_LIABILITIES_Y0 > 0 AND INTEREST_EXPENSES_Y0 >0) THEN (INTEREST_EXPENSES_Y0) / (ST_LIABILITIES_Y0)
-                WHEN (ST_LIABILITIES_Y0 > 0 AND INTEREST_EXPENSES_Y0 =0) THEN (INTEREST_EXPENSES_Y0) / (ST_LIABILITIES_Y0)
-                WHEN (ST_LIABILITIES_Y0 > 0 AND INTEREST_EXPENSES_Y0 <0) THEN (INTEREST_EXPENSES_Y0) / (ST_LIABILITIES_Y0)
-                WHEN (ST_LIABILITIES_Y0 > 0 AND INTEREST_EXPENSES_Y0 IS NULL) THEN 0
-                
-                WHEN (ST_LIABILITIES_Y0 = 0 AND INTEREST_EXPENSES_Y0 >0) THEN 0         
-                WHEN (ST_LIABILITIES_Y0 = 0 AND INTEREST_EXPENSES_Y0 <0) THEN 0
-                WHEN (ST_LIABILITIES_Y0 = 0 AND INTEREST_EXPENSES_Y0 =0) THEN 0
-                WHEN (ST_LIABILITIES_Y0 = 0 AND INTEREST_EXPENSES_Y0 IS NULL) THEN 0
-                
-                WHEN (ST_LIABILITIES_Y0 < 0 AND INTEREST_EXPENSES_Y0 >0) THEN (INTEREST_EXPENSES_Y0) / (ST_LIABILITIES_Y0)         
-                WHEN (ST_LIABILITIES_Y0 < 0 AND INTEREST_EXPENSES_Y0 <0) THEN (INTEREST_EXPENSES_Y0) / (ST_LIABILITIES_Y0)
-                WHEN (ST_LIABILITIES_Y0 < 0 AND INTEREST_EXPENSES_Y0 =0) THEN (INTEREST_EXPENSES_Y0) / (ST_LIABILITIES_Y0)
-                WHEN (ST_LIABILITIES_Y0 < 0 AND INTEREST_EXPENSES_Y0 IS NULL) THEN 0
-                
-               WHEN (ST_LIABILITIES_Y0 IS NULL AND INTEREST_EXPENSES_Y0 >0) THEN 0
-                WHEN (ST_LIABILITIES_Y0 IS NULL AND INTEREST_EXPENSES_Y0 <0) THEN 0
-                WHEN (ST_LIABILITIES_Y0 IS NULL AND INTEREST_EXPENSES_Y0 =0) THEN 0
-                WHEN (ST_LIABILITIES_Y0 IS NULL AND INTEREST_EXPENSES_Y0 IS NULL) THEN 0
-                
-                ELSE (INTEREST_EXPENSES_Y0) / (ST_LIABILITIES_Y0)
+sql = "
+CASE
+                WHEN (ST_LIABILITIES_Y0 <> 0 AND ST_LIABILITIES_Y0 IS NOT NULL AND INTEREST_EXPENSES_Y0 IS NOT NULL) THEN (INTEREST_EXPENSES_Y0 / (ST_LIABILITIES_Y0))
+                WHEN (INTEREST_EXPENSES_Y0 IS NULL) THEN 0
+                WHEN (ST_LIABILITIES_Y0 = 0) THEN 0
+                WHEN (ST_LIABILITIES_Y0 IS NULL) THEN 0
 END AS IND_90,
-                CASE 
-                                                                  WHEN (ST_LIABILITIES_Y0 > 0 AND INTEREST_EXPENSES_Y0 IS NULL) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (ST_LIABILITIES_Y0 = 0 AND INTEREST_EXPENSES_Y0 >0) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (ST_LIABILITIES_Y0 = 0 AND INTEREST_EXPENSES_Y0 <0) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (ST_LIABILITIES_Y0 = 0 AND INTEREST_EXPENSES_Y0 =0) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (ST_LIABILITIES_Y0 = 0 AND INTEREST_EXPENSES_Y0 IS NULL) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (ST_LIABILITIES_Y0 < 0 AND INTEREST_EXPENSES_Y0 IS NULL) THEN 'ERROR; ' else ''
-                END || CASE   
-                                                                  WHEN (ST_LIABILITIES_Y0 IS NULL AND INTEREST_EXPENSES_Y0 >0) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (ST_LIABILITIES_Y0 IS NULL AND INTEREST_EXPENSES_Y0 <0) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (ST_LIABILITIES_Y0 IS NULL AND INTEREST_EXPENSES_Y0 =0) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (ST_LIABILITIES_Y0 IS NULL AND INTEREST_EXPENSES_Y0 IS NULL) THEN 'ERROR;' else ''
-                END
-AS ERROR_MSG_IND_90";
+
+
+CASE 
+                WHEN (ST_LIABILITIES_Y0 <> 0 AND ST_LIABILITIES_Y0 IS NOT NULL AND INTEREST_EXPENSES_Y0 IS NOT NULL) THEN ''
+                WHEN (INTEREST_EXPENSES_Y0 IS NULL) THEN 'ERROR; '
+                WHEN (ST_LIABILITIES_Y0 = 0) THEN 'ERROR; '
+                WHEN (ST_LIABILITIES_Y0 IS NULL) THEN 'ERROR; ' 
+END AS ERROR_MSG_IND_90
+";
 
 
 DEBUGMESSAGE(formulaName, sql);
