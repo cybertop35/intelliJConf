@@ -3,7 +3,7 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "UNPAID_INSTAL_LOANS AS IND_197";
+sql = "/*UNPAID_INSTAL_LOANS AS IND_197*/ NULL AS IND_197";
 
 
 DEBUGMESSAGE(formulaName, sql);

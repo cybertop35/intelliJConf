@@ -3,7 +3,7 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "CAST(FLG_DEFAULT_STATUS AS CHAR(1) ) IND_16";
+sql = "/*CAST(FLG_DEFAULT_STATUS AS CHAR(1) )*/ NULL AS IND_16";
 
 
 DEBUGMESSAGE(formulaName, sql);
