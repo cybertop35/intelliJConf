@@ -3,7 +3,7 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "
+sql = "/*
 CASE 
                 WHEN (ST_ASSETS_Y1 > 0 AND ST_ASSETS_Y0 >0) THEN (ST_ASSETS_Y0) / (ST_ASSETS_Y1)
                 WHEN (ST_ASSETS_Y1 > 0 AND ST_ASSETS_Y0 =0) THEN (ST_ASSETS_Y0) / (ST_ASSETS_Y1)
@@ -48,7 +48,7 @@ END AS IND_74,
                 END || CASE
                                                                   WHEN (ST_ASSETS_Y1 IS NULL AND ST_ASSETS_Y0 IS NULL) THEN 'ERROR;' else ''
                 END
-AS ERROR_MSG_IND_74
+AS ERROR_MSG_IND_74*/ NULL AS IND_74
 ";
 
 DEBUGMESSAGE(formulaName, sql);

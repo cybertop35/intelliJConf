@@ -3,7 +3,7 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "BLOCKADE_ENTRIES_SIX AS IND_213";
+sql = "/*BLOCKADE_ENTRIES_SIX AS IND_213*/ NULL AS IND_213";
 
 
 DEBUGMESSAGE(formulaName, sql);
