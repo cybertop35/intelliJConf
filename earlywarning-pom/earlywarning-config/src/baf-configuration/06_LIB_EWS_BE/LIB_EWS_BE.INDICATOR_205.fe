@@ -3,7 +3,7 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "CASE 
+sql = "/*CASE 
                 WHEN (LOANS_INIT_APPR > 0 AND LOANS_OVERDUE >0) THEN (LOANS_OVERDUE) / (LOANS_INIT_APPR)
                 WHEN (LOANS_INIT_APPR > 0 AND LOANS_OVERDUE =0) THEN (LOANS_OVERDUE) / (LOANS_INIT_APPR)
                 WHEN (LOANS_INIT_APPR > 0 AND LOANS_OVERDUE <0) THEN (LOANS_OVERDUE) / (LOANS_INIT_APPR)
@@ -47,7 +47,7 @@ END AS IND_205,
                 END || CASE
                                                                   WHEN (LOANS_INIT_APPR IS NULL AND LOANS_OVERDUE IS NULL) THEN 'ERROR;' else ''
                 END
-AS ERROR_MSG_IND_205";
+AS ERROR_MSG_IND_205*/ NULL AS IND_205";
 
 
 DEBUGMESSAGE(formulaName, sql);

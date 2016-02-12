@@ -12,10 +12,10 @@ END AS MISSING_VALUE_IND_62,
                                                ACCOUNT_BALANCE_M5+ACCOUNT_BALANCE_M6+ACCOUNT_BALANCE_M7+ACCOUNT_BALANCE_M8+ACCOUNT_BALANCE_M9+ACCOUNT_BALANCE_M10+
                                                ACCOUNT_BALANCE_M11)/12) as MEDIA_IND62,
 CASE 
-                WHEN NULLIF(ACCOUNT_BALANCE_M0, '') IS NULL OR NULLIF(ACCOUNT_BALANCE_M1, '') IS NULL OR NULLIF(ACCOUNT_BALANCE_M2, '') IS NULL OR
-                                                               NULLIF(ACCOUNT_BALANCE_M3, '') IS NULL OR NULLIF(ACCOUNT_BALANCE_M4, '') IS NULL OR NULLIF(ACCOUNT_BALANCE_M5, '') IS NULL OR
-                                                               NULLIF(ACCOUNT_BALANCE_M6, '') IS NULL OR NULLIF(ACCOUNT_BALANCE_M7, '') IS NULL OR NULLIF(ACCOUNT_BALANCE_M8, '') IS NULL OR
-                                                               NULLIF(ACCOUNT_BALANCE_M9, '') IS NULL OR NULLIF(ACCOUNT_BALANCE_M10, '') IS NULL OR NULLIF(ACCOUNT_BALANCE_M11, '') IS NULL
+                WHEN (ACCOUNT_BALANCE_M0 IS NULL OR  ACCOUNT_BALANCE_M1 IS NULL OR ACCOUNT_BALANCE_M2 IS NULL OR
+                                                                ACCOUNT_BALANCE_M3 IS NULL OR  ACCOUNT_BALANCE_M4 IS NULL OR  ACCOUNT_BALANCE_M5 IS NULL OR
+                                                               ACCOUNT_BALANCE_M6  IS NULL OR  ACCOUNT_BALANCE_M7 IS NULL OR  ACCOUNT_BALANCE_M8 IS NULL OR
+                                                               ACCOUNT_BALANCE_M9 IS NULL OR  ACCOUNT_BALANCE_M10 IS NULL OR  ACCOUNT_BALANCE_M11 IS NULL)
                                                                THEN MISSING_VALUE_IND_62
                 ELSE SQRT((((ACCOUNT_BALANCE_M0-MEDIA_IND62)**2)
 +((ACCOUNT_BALANCE_M1-MEDIA_IND62)**2)
@@ -32,29 +32,29 @@ CASE
 )
 END AS IND_62,
 case 
-when NULLIF(ACCOUNT_BALANCE_M0, '') IS NULL then 'ERROR; ' else '' end || 
+when ACCOUNT_BALANCE_M0 IS NULL then 'ERROR; ' else '' end || 
 case 
-when NULLIF(ACCOUNT_BALANCE_M1, '') IS NULL then 'ERROR; ' else '' end || 
+when ACCOUNT_BALANCE_M1 IS NULL then 'ERROR; ' else '' end || 
 case 
-when NULLIF(ACCOUNT_BALANCE_M2, '') IS NULL then 'ERROR; ' else '' end || 
+when ACCOUNT_BALANCE_M2 IS NULL then 'ERROR; ' else '' end || 
 case 
-when NULLIF(ACCOUNT_BALANCE_M3, '') IS NULL then 'ERROR; ' else '' end || 
+when ACCOUNT_BALANCE_M3 IS NULL then 'ERROR; ' else '' end || 
 case 
-when NULLIF(ACCOUNT_BALANCE_M4, '') IS NULL then 'ERROR; ' else '' end || 
+when ACCOUNT_BALANCE_M4 IS NULL then 'ERROR; ' else '' end || 
 case 
-when NULLIF(ACCOUNT_BALANCE_M5, '') IS NULL then 'ERROR; ' else '' end || 
+when ACCOUNT_BALANCE_M5 IS NULL then 'ERROR; ' else '' end || 
 case 
-when NULLIF(ACCOUNT_BALANCE_M6, '') IS NULL then 'ERROR; ' else '' end || 
+when ACCOUNT_BALANCE_M6 IS NULL then 'ERROR; ' else '' end || 
 case 
-when NULLIF(ACCOUNT_BALANCE_M7, '') IS NULL then 'ERROR; ' else '' end || 
+when ACCOUNT_BALANCE_M7 IS NULL then 'ERROR; ' else '' end || 
 case 
-when NULLIF(ACCOUNT_BALANCE_M8, '') IS NULL then 'ERROR; ' else '' end || 
+when ACCOUNT_BALANCE_M8 IS NULL then 'ERROR; ' else '' end || 
 case
-when NULLIF(ACCOUNT_BALANCE_M9, '') IS NULL then 'ERROR; ' else '' end || 
+when ACCOUNT_BALANCE_M9 IS NULL then 'ERROR; ' else '' end || 
 case 
-when NULLIF(ACCOUNT_BALANCE_M10, '') IS NULL then 'ERROR; ' else '' end || 
+when ACCOUNT_BALANCE_M10 IS NULL then 'ERROR; ' else '' end || 
 case 
-when NULLIF(ACCOUNT_BALANCE_M11, '') IS NULL THEN  'ERROR; ' ELSE ''
+when ACCOUNT_BALANCE_M11 IS NULL THEN  'ERROR; ' ELSE ''
 END AS ERROR_MSG_IND_62";
 
 

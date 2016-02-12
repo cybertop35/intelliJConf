@@ -3,7 +3,7 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "CASE 
+sql = "/*CASE 
                 WHEN (EBITDA_Y0 > 0 AND MAX_TOT_DEBT_1Y >0) THEN (MAX_TOT_DEBT_1Y) / (EBITDA_Y0)
                 WHEN (EBITDA_Y0 > 0 AND MAX_TOT_DEBT_1Y =0) THEN (MAX_TOT_DEBT_1Y) / (EBITDA_Y0)
                 WHEN (EBITDA_Y0 > 0 AND MAX_TOT_DEBT_1Y <0) THEN (MAX_TOT_DEBT_1Y) / (EBITDA_Y0)
@@ -47,7 +47,7 @@ END AS IND_66,
                 END || CASE
                                                                   WHEN (EBITDA_Y0 IS NULL AND MAX_TOT_DEBT_1Y IS NULL) THEN 'ERROR;' else ''
                 END
-AS ERROR_MSG_IND_66";
+AS ERROR_MSG_IND_66*/ NULL AS IND_66";
 
 
 DEBUGMESSAGE(formulaName, sql);
