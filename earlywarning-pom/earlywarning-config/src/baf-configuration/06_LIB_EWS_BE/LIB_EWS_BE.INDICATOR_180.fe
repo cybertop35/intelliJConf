@@ -3,51 +3,25 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "CASE 
-                WHEN (OVERDRAFT_LIMIT_M0 > 0 AND INFLOWS_ACCOUNT_M0 >0) THEN (INFLOWS_ACCOUNT_M0) / (OVERDRAFT_LIMIT_M0)
-                WHEN (OVERDRAFT_LIMIT_M0 > 0 AND INFLOWS_ACCOUNT_M0 =0) THEN (INFLOWS_ACCOUNT_M0) / (OVERDRAFT_LIMIT_M0)
-                WHEN (OVERDRAFT_LIMIT_M0 > 0 AND INFLOWS_ACCOUNT_M0 <0) THEN (INFLOWS_ACCOUNT_M0) / (OVERDRAFT_LIMIT_M0)
-                WHEN (OVERDRAFT_LIMIT_M0 > 0 AND INFLOWS_ACCOUNT_M0 IS NULL) THEN 0
-                
-                WHEN (OVERDRAFT_LIMIT_M0 = 0 AND INFLOWS_ACCOUNT_M0 >0) THEN 0         
-                WHEN (OVERDRAFT_LIMIT_M0 = 0 AND INFLOWS_ACCOUNT_M0 <0) THEN 0
-                WHEN (OVERDRAFT_LIMIT_M0 = 0 AND INFLOWS_ACCOUNT_M0 =0) THEN 0
-                WHEN (OVERDRAFT_LIMIT_M0 = 0 AND INFLOWS_ACCOUNT_M0 IS NULL) THEN 0
-                
-                WHEN (OVERDRAFT_LIMIT_M0 < 0 AND INFLOWS_ACCOUNT_M0 >0) THEN (INFLOWS_ACCOUNT_M0) / (OVERDRAFT_LIMIT_M0)         
-                WHEN (OVERDRAFT_LIMIT_M0 < 0 AND INFLOWS_ACCOUNT_M0 <0) THEN (INFLOWS_ACCOUNT_M0) / (OVERDRAFT_LIMIT_M0)
-                WHEN (OVERDRAFT_LIMIT_M0 < 0 AND INFLOWS_ACCOUNT_M0 =0) THEN (INFLOWS_ACCOUNT_M0) / (OVERDRAFT_LIMIT_M0)
-                WHEN (OVERDRAFT_LIMIT_M0 < 0 AND INFLOWS_ACCOUNT_M0 IS NULL) THEN 0
-                
-                WHEN (OVERDRAFT_LIMIT_M0 IS NULL AND INFLOWS_ACCOUNT_M0 >0) THEN 0
-                WHEN (OVERDRAFT_LIMIT_M0 IS NULL AND INFLOWS_ACCOUNT_M0 <0) THEN 0
-                WHEN (OVERDRAFT_LIMIT_M0 IS NULL AND INFLOWS_ACCOUNT_M0 =0) THEN 0
-                WHEN (OVERDRAFT_LIMIT_M0 IS NULL AND INFLOWS_ACCOUNT_M0 IS NULL) THEN 0
-                
-                ELSE ((INFLOWS_ACCOUNT_M0) / (OVERDRAFT_LIMIT_M0))
+sql = "
+
+0 AS MISSING_VALUE_IND_180,
+
+CASE
+	WHEN (OVERDRAFT_LIMIT_M0 <> 0 AND OVERDRAFT_LIMIT_M0 IS NOT NULL AND INFLOWS_ACCOUNT_M0 IS NOT NULL) THEN (INFLOWS_ACCOUNT_M0 / OVERDRAFT_LIMIT_M0)
+	WHEN (INFLOWS_ACCOUNT_M0 IS NULL) THEN MISSING_VALUE_IND_180
+	WHEN (OVERDRAFT_LIMIT_M0 = 0) THEN MISSING_VALUE_IND_180
+	WHEN (OVERDRAFT_LIMIT_M0 IS NULL) THEN MISSING_VALUE_IND_180 
 END AS IND_180,
-                CASE 
-                                                                  WHEN (OVERDRAFT_LIMIT_M0 > 0 AND INFLOWS_ACCOUNT_M0 IS NULL) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (OVERDRAFT_LIMIT_M0 = 0 AND INFLOWS_ACCOUNT_M0 >0) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (OVERDRAFT_LIMIT_M0 = 0 AND INFLOWS_ACCOUNT_M0 <0) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (OVERDRAFT_LIMIT_M0 = 0 AND INFLOWS_ACCOUNT_M0 =0) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (OVERDRAFT_LIMIT_M0 = 0 AND INFLOWS_ACCOUNT_M0 IS NULL) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (OVERDRAFT_LIMIT_M0 < 0 AND INFLOWS_ACCOUNT_M0 IS NULL) THEN 'ERROR; ' else ''
-                END || CASE   
-                                                                  WHEN (OVERDRAFT_LIMIT_M0 IS NULL AND INFLOWS_ACCOUNT_M0 >0) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (OVERDRAFT_LIMIT_M0 IS NULL AND INFLOWS_ACCOUNT_M0 <0) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (OVERDRAFT_LIMIT_M0 IS NULL AND INFLOWS_ACCOUNT_M0 =0) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (OVERDRAFT_LIMIT_M0 IS NULL AND INFLOWS_ACCOUNT_M0 IS NULL) THEN 'ERROR;' else ''
-                END
-AS ERROR_MSG_IND_180";
+
+CASE 
+	WHEN (OVERDRAFT_LIMIT_M0 <> 0 AND OVERDRAFT_LIMIT_M0 IS NOT NULL AND INFLOWS_ACCOUNT_M0 IS NOT NULL) THEN ''
+	WHEN (INFLOWS_ACCOUNT_M0 IS NULL) THEN 'ERROR; '
+	WHEN (OVERDRAFT_LIMIT_M0 = 0) THEN 'ERROR; '
+	WHEN (OVERDRAFT_LIMIT_M0 IS NULL) THEN 'ERROR; ' 
+END AS ERROR_MSG_IND_180
+
+";
 
 
 DEBUGMESSAGE(formulaName, sql);

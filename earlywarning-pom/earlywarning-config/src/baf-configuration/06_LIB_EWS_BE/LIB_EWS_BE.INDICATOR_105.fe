@@ -3,56 +3,30 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "CASE 
+sql = "
+
+
+CASE 
 WHEN REGULAMENTARY_SEGMENT = 'Corporate' THEN 3.6227205
 WHEN REGULAMENTARY_SEGMENT = 'Retail' THEN 2.1221309
 ELSE NULL
 END AS MISSING_VALUE_IND_105, 
-CASE 
-                WHEN (SALES_Y0 > 0 AND MATERIAL_COSTS_Y0 >0) THEN (MATERIAL_COSTS_Y0) / (SALES_Y0)
-                WHEN (SALES_Y0 > 0 AND MATERIAL_COSTS_Y0 =0) THEN (MATERIAL_COSTS_Y0) / (SALES_Y0)
-                WHEN (SALES_Y0 > 0 AND MATERIAL_COSTS_Y0 <0) THEN (MATERIAL_COSTS_Y0) / (SALES_Y0)
-                WHEN (SALES_Y0 > 0 AND MATERIAL_COSTS_Y0 IS NULL) THEN MISSING_VALUE_IND_105
-                
-                WHEN (SALES_Y0 = 0 AND MATERIAL_COSTS_Y0 >0) THEN MISSING_VALUE_IND_105         
-                WHEN (SALES_Y0 = 0 AND MATERIAL_COSTS_Y0 <0) THEN MISSING_VALUE_IND_105
-                WHEN (SALES_Y0 = 0 AND MATERIAL_COSTS_Y0 =0) THEN MISSING_VALUE_IND_105
-                WHEN (SALES_Y0 = 0 AND MATERIAL_COSTS_Y0 IS NULL) THEN MISSING_VALUE_IND_105
-                
-                WHEN (SALES_Y0 < 0 AND MATERIAL_COSTS_Y0 >0) THEN (MATERIAL_COSTS_Y0) / (SALES_Y0)         
-                WHEN (SALES_Y0 < 0 AND MATERIAL_COSTS_Y0 <0) THEN (MATERIAL_COSTS_Y0) / (SALES_Y0)
-                WHEN (SALES_Y0 < 0 AND MATERIAL_COSTS_Y0 =0) THEN (MATERIAL_COSTS_Y0) / (SALES_Y0)
-                WHEN (SALES_Y0 < 0 AND MATERIAL_COSTS_Y0 IS NULL) THEN MISSING_VALUE_IND_105
-                
-                WHEN (SALES_Y0 IS NULL AND MATERIAL_COSTS_Y0 >0) THEN MISSING_VALUE_IND_105
-                WHEN (SALES_Y0 IS NULL AND MATERIAL_COSTS_Y0 <0) THEN MISSING_VALUE_IND_105
-                WHEN (SALES_Y0 IS NULL AND MATERIAL_COSTS_Y0 =0) THEN MISSING_VALUE_IND_105
-                WHEN (SALES_Y0 IS NULL AND MATERIAL_COSTS_Y0 IS NULL) THEN MISSING_VALUE_IND_105
-                
-                ELSE (MATERIAL_COSTS_Y0) / (SALES_Y0)
+CASE
+                WHEN (SALES_Y0 <> 0 AND SALES_Y0 IS NOT NULL AND MATERIAL_COSTS_Y0 IS NOT NULL) THEN (MATERIAL_COSTS_Y0 / SALES_Y0)
+                WHEN (MATERIAL_COSTS_Y0 IS NULL) THEN MISSING_VALUE_IND_105
+                WHEN (SALES_Y0 = 0) THEN MISSING_VALUE_IND_105
+                WHEN (SALES_Y0 IS NULL) THEN MISSING_VALUE_IND_105 
 END AS IND_105,
-                CASE 
-                                                                  WHEN (SALES_Y0 > 0 AND MATERIAL_COSTS_Y0 IS NULL) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (SALES_Y0 = 0 AND MATERIAL_COSTS_Y0 >0) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (SALES_Y0 = 0 AND MATERIAL_COSTS_Y0 <0) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (SALES_Y0 = 0 AND MATERIAL_COSTS_Y0 =0) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (SALES_Y0 = 0 AND MATERIAL_COSTS_Y0 IS NULL) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (SALES_Y0 < 0 AND MATERIAL_COSTS_Y0 IS NULL) THEN 'ERROR; ' else ''
-                END || CASE   
-                                                                  WHEN (SALES_Y0 IS NULL AND MATERIAL_COSTS_Y0 >0) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (SALES_Y0 IS NULL AND MATERIAL_COSTS_Y0 <0) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (SALES_Y0 IS NULL AND MATERIAL_COSTS_Y0 =0) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (SALES_Y0 IS NULL AND MATERIAL_COSTS_Y0 IS NULL) THEN 'ERROR;' else ''
-                END
-AS ERROR_MSG_IND_105";
+
+CASE 
+                WHEN (SALES_Y0 <> 0 AND SALES_Y0 IS NOT NULL AND MATERIAL_COSTS_Y0 IS NOT NULL) THEN ''
+                WHEN (MATERIAL_COSTS_Y0 IS NULL) THEN 'ERROR;'
+                WHEN (SALES_Y0 = 0) THEN 'ERROR;'
+                WHEN (SALES_Y0 IS NULL) THEN 'ERROR;' 
+END AS ERROR_MSG_IND_105
+
+
+";
 
 
 DEBUGMESSAGE(formulaName, sql);
