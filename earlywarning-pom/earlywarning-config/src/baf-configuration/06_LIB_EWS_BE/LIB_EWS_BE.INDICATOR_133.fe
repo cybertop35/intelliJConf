@@ -3,51 +3,26 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "CASE 
-                WHEN (SALES_Y1 > 0 AND SALES_Y0 >0) THEN (SALES_Y0) / (SALES_Y1)
-                WHEN (SALES_Y1 > 0 AND SALES_Y0 =0) THEN (SALES_Y0) / (SALES_Y1)
-                WHEN (SALES_Y1 > 0 AND SALES_Y0 <0) THEN (SALES_Y0) / (SALES_Y1)
-                WHEN (SALES_Y1 > 0 AND SALES_Y0 IS NULL) THEN 0
-                
-                WHEN (SALES_Y1 = 0 AND SALES_Y0 >0) THEN 0         
-                WHEN (SALES_Y1 = 0 AND SALES_Y0 <0) THEN 0
-                WHEN (SALES_Y1 = 0 AND SALES_Y0 =0) THEN 0
-                WHEN (SALES_Y1 = 0 AND SALES_Y0 IS NULL) THEN 0
-                
-                WHEN (SALES_Y1 < 0 AND SALES_Y0 >0) THEN (SALES_Y0) / (SALES_Y1)         
-                WHEN (SALES_Y1 < 0 AND SALES_Y0 <0) THEN (SALES_Y0) / (SALES_Y1)
-                WHEN (SALES_Y1 < 0 AND SALES_Y0 =0) THEN (SALES_Y0) / (SALES_Y1)
-                WHEN (SALES_Y1 < 0 AND SALES_Y0 IS NULL) THEN 0
-                
-                WHEN (SALES_Y1 IS NULL AND SALES_Y0 >0) THEN 0
-                WHEN (SALES_Y1 IS NULL AND SALES_Y0 <0) THEN 0
-                WHEN (SALES_Y1 IS NULL AND SALES_Y0 =0) THEN 0
-                WHEN (SALES_Y1 IS NULL AND SALES_Y0 IS NULL) THEN 0
-                
-                ELSE ((SALES_Y0) / (SALES_Y1))-1
+sql = "
+
+0 AS MISSING_VALUE_IND_133,
+
+CASE
+	WHEN (SALES_Y1 <> 0 AND SALES_Y1 IS NOT NULL AND SALES_Y0 IS NOT NULL) THEN (SALES_Y0 / SALES_Y1)-1
+	WHEN (SALES_Y0 IS NULL) THEN MISSING_VALUE_IND_133
+	WHEN (SALES_Y1 = 0) THEN MISSING_VALUE_IND_133
+	WHEN (SALES_Y1 IS NULL) THEN MISSING_VALUE_IND_133 
 END AS IND_133,
-                CASE 
-                                                                  WHEN (SALES_Y1 > 0 AND SALES_Y0 IS NULL) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (SALES_Y1 = 0 AND SALES_Y0 >0) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (SALES_Y1 = 0 AND SALES_Y0 <0) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (SALES_Y1 = 0 AND SALES_Y0 =0) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (SALES_Y1 = 0 AND SALES_Y0 IS NULL) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (SALES_Y1 < 0 AND SALES_Y0 IS NULL) THEN 'ERROR; ' else ''
-                END || CASE   
-                                                                  WHEN (SALES_Y1 IS NULL AND SALES_Y0 >0) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (SALES_Y1 IS NULL AND SALES_Y0 <0) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (SALES_Y1 IS NULL AND SALES_Y0 =0) THEN 'ERROR; ' else ''
-                END || CASE
-                                                                  WHEN (SALES_Y1 IS NULL AND SALES_Y0 IS NULL) THEN 'ERROR;' else ''
-                END
-AS ERROR_MSG_IND_133";
+
+CASE 
+	WHEN (SALES_Y1 <> 0 AND SALES_Y1 IS NOT NULL AND SALES_Y0 IS NOT NULL) THEN ''
+	WHEN (SALES_Y0 IS NULL) THEN 'ERROR; '
+	WHEN (SALES_Y1 = 0) THEN 'ERROR; '
+	WHEN (SALES_Y1 IS NULL) THEN 'ERROR; ' 
+END AS ERROR_MSG_IND_133
+
+
+";
 
 
 DEBUGMESSAGE(formulaName, sql);
