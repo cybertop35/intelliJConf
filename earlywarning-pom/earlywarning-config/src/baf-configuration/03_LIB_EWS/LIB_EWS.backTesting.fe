@@ -76,9 +76,21 @@ IF (not LIB_DB.isTableExisting(backTestingHistoryView,JDBC_NAME)) {
 ##################################
 ######### POPOLA TABELLE #########
 ##################################
+VAR month;
+VAR currentMonth;
+currentMonth = GETMONTH(NOW());
 
-IF(Utils.isLastOfMonth()){
-	SQL = "INSERT INTO "+backTestingHistoryTable+" SELECT "+SQL_COLUMNS+" FROM "+analysisUnitTable;
+SQL = "SELECT DISTINCT EXTRACT (MONTH FROM HISTORY_DATE) from "+backTestingHistoryTable;
+month = SQLEXECUTE(SQL,JDBC_NAME,0,{});
+
+if(SIZE(month) > 0 ) {
+	month = month[0][0];
+ }
+else
+	month = 0;
+    
+IF (currentMonth > month){
+	SQL = "INSERT INTO "+backTestingHistoryTable+" SELECT "+SQL_COLUMNS+" FROM "+analysisUnitTable+"_BCK";
     SQLEXECUTE(SQL,JDBC_NAME,0,{});
     SAVE_LOG("Info", logActionName, "Insert table "+backTestingCRRTable);
 }
