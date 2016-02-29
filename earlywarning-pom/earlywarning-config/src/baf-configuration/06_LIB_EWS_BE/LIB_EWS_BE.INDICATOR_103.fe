@@ -3,11 +3,7 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "
-CASE 
-                WHEN REGULAMENTARY_SEGMENT = 'Corporate' THEN 0.07693736
-                WHEN REGULAMENTARY_SEGMENT = 'Retail' THEN 0.09840684
-                ELSE NULL
+sql = "CASE WHEN COUNTRY = 'BIB' THEN 0 ELSE NULL
 END AS MISSING_VALUE_IND_103,
 
 CASE
