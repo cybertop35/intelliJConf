@@ -3,51 +3,28 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "/*CASE 
-                WHEN (SALES_Y0 > 0 AND LABOUR_COST_Y0 >0) THEN (LABOUR_COST_Y0) / (SALES_Y0)
-                WHEN (SALES_Y0 > 0 AND LABOUR_COST_Y0 =0) THEN (LABOUR_COST_Y0) / (SALES_Y0)
-                WHEN (SALES_Y0 > 0 AND LABOUR_COST_Y0 <0) THEN (LABOUR_COST_Y0) / (SALES_Y0)
-                WHEN (SALES_Y0 > 0 AND LABOUR_COST_Y0 IS NULL) THEN NULL
-                
-                WHEN (SALES_Y0 = 0 AND LABOUR_COST_Y0 >0) THEN NULL         
-                WHEN (SALES_Y0 = 0 AND LABOUR_COST_Y0 <0) THEN NULL
-                WHEN (SALES_Y0 = 0 AND LABOUR_COST_Y0 =0) THEN NULL
-                WHEN (SALES_Y0 = 0 AND LABOUR_COST_Y0 IS NULL) THEN NULL
-                
-                WHEN (SALES_Y0 < 0 AND LABOUR_COST_Y0 >0) THEN (LABOUR_COST_Y0) / (SALES_Y0)         
-                WHEN (SALES_Y0 < 0 AND LABOUR_COST_Y0 <0) THEN (LABOUR_COST_Y0) / (SALES_Y0)
-                WHEN (SALES_Y0 < 0 AND LABOUR_COST_Y0 =0) THEN (LABOUR_COST_Y0) / (SALES_Y0)
-                WHEN (SALES_Y0 < 0 AND LABOUR_COST_Y0 IS NULL) THEN NULL
-                
-                WHEN (SALES_Y0 IS NULL AND LABOUR_COST_Y0 >0) THEN NULL
-                WHEN (SALES_Y0 IS NULL AND LABOUR_COST_Y0 <0) THEN NULL
-                WHEN (SALES_Y0 IS NULL AND LABOUR_COST_Y0 =0) THEN NULL
-                WHEN (SALES_Y0 IS NULL AND LABOUR_COST_Y0 IS NULL) THEN NULL
-                
-                ELSE (LABOUR_COST_Y0) / (SALES_Y0)
+sql = "
+CASE 
+	WHEN COUNTRY = 'BIB' AND REGULAMENTARY_SEGMENT = 'Corporate' THEN 0.07693736
+	WHEN COUNTRY = 'BIB' AND REGULAMENTARY_SEGMENT = 'Retail' THEN 0.09840684
+	ELSE NULL
+END AS MISSING_VALUE_IND_102,
+
+CASE
+                WHEN (SALES_Y0 <> 0 AND SALES_Y0 IS NOT NULL AND LABOUR_COST_Y0 IS NOT NULL) THEN (LABOUR_COST_Y0 / SALES_Y0)-1
+                WHEN (LABOUR_COST_Y0 IS NULL) THEN MISSING_VALUE_IND_102
+                WHEN (SALES_Y0 = 0) THEN MISSING_VALUE_IND_102
+                WHEN (SALES_Y0 IS NULL) THEN MISSING_VALUE_IND_102 
 END AS IND_102,
-                CASE 
-                                                                  WHEN (SALES_Y0 > 0 AND LABOUR_COST_Y0 IS NULL) THEN 'E0001 ' else ''
-                END || CASE
-                                                                  WHEN (SALES_Y0 = 0 AND LABOUR_COST_Y0 >0) THEN 'E0001 ' else ''
-                END || CASE
-                                                                  WHEN (SALES_Y0 = 0 AND LABOUR_COST_Y0 <0) THEN 'E0001 ' else ''
-                END || CASE
-                                                                  WHEN (SALES_Y0 = 0 AND LABOUR_COST_Y0 =0) THEN 'E0001 ' else ''
-                END || CASE
-                                                                  WHEN (SALES_Y0 = 0 AND LABOUR_COST_Y0 IS NULL) THEN 'E0001 ' else ''
-                END || CASE
-                                                                  WHEN (SALES_Y0 < 0 AND LABOUR_COST_Y0 IS NULL) THEN 'E0001 ' else ''
-                END || CASE   
-                                                                  WHEN (SALES_Y0 IS NULL AND LABOUR_COST_Y0 >0) THEN 'E0001 ' else ''
-                END || CASE
-                                                                  WHEN (SALES_Y0 IS NULL AND LABOUR_COST_Y0 <0) THEN 'E0001 ' else ''
-                END || CASE
-                                                                  WHEN (SALES_Y0 IS NULL AND LABOUR_COST_Y0 =0) THEN 'E0001 ' else ''
-                END || CASE
-                                                                  WHEN (SALES_Y0 IS NULL AND LABOUR_COST_Y0 IS NULL) THEN 'E0001' else ''
-                END
-AS ERROR_MSG_IND_102*/ NULL AS IND_102";
+
+CASE 
+                WHEN (SALES_Y0 <> 0 AND SALES_Y0 IS NOT NULL AND LABOUR_COST_Y0 IS NOT NULL) THEN ''
+                WHEN (LABOUR_COST_Y0 IS NULL) THEN 'E0001 '
+                WHEN (SALES_Y0 = 0) THEN 'E0001 '
+                WHEN (SALES_Y0 IS NULL) THEN 'E0001 ' 
+END AS ERROR_MSG_IND_102
+
+";
 
 
 DEBUGMESSAGE(formulaName, sql);

@@ -6,9 +6,8 @@ VAR sql = "";
 sql = "
 
 CASE 
-                WHEN REGULAMENTARY_SEGMENT = 'Corporate' THEN 0.805116
-                WHEN REGULAMENTARY_SEGMENT = 'Retail' THEN 0.6816625
-                ELSE NULL
+	WHEN COUNTRY = 'BIB' THEN 0 
+	ELSE NULL 
 END AS MISSING_VALUE_IND_130,
 
 CASE
