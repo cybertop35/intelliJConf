@@ -72,25 +72,25 @@ ELSE (NUM_IND_93/DEN_IND_93)-1
 END AS IND_93,
 
 CASE 
-                WHEN (DEN_IND_93 > 0 AND NUM_IND_93 IS NULL) THEN 'ERROR; ' else ''
+                WHEN (DEN_IND_93 > 0 AND NUM_IND_93 IS NULL) THEN 'E0001 ' else ''
                 END || CASE
-                WHEN (DEN_IND_93  = 0 AND NUM_IND_93 >0) THEN 'ERROR; ' else ''
+                WHEN (DEN_IND_93  = 0 AND NUM_IND_93 >0) THEN 'E0001 ' else ''
                 END || CASE
-                WHEN (DEN_IND_93 = 0 AND NUM_IND_93 <0) THEN 'ERROR; ' else ''
+                WHEN (DEN_IND_93 = 0 AND NUM_IND_93 <0) THEN 'E0001 ' else ''
                 END || CASE
-                WHEN (DEN_IND_93 = 0 AND NUM_IND_93 =0) THEN 'ERROR; ' else ''
+                WHEN (DEN_IND_93 = 0 AND NUM_IND_93 =0) THEN 'E0001 ' else ''
                 END || CASE
-                WHEN (DEN_IND_93 = 0 AND NUM_IND_93 IS NULL) THEN 'ERROR; ' else ''
+                WHEN (DEN_IND_93 = 0 AND NUM_IND_93 IS NULL) THEN 'E0001 ' else ''
                 END || CASE
-                WHEN (DEN_IND_93 < 0 AND NUM_IND_93 IS NULL) THEN 'ERROR; ' else ''
+                WHEN (DEN_IND_93 < 0 AND NUM_IND_93 IS NULL) THEN 'E0001 ' else ''
                 END || CASE
-                WHEN (DEN_IND_93 IS NULL AND NUM_IND_93 >0) THEN 'ERROR; ' else ''
+                WHEN (DEN_IND_93 IS NULL AND NUM_IND_93 >0) THEN 'E0001 ' else ''
                 END || CASE   
-                WHEN (DEN_IND_93 IS NULL AND NUM_IND_93 <0) THEN 'ERROR; ' else ''
+                WHEN (DEN_IND_93 IS NULL AND NUM_IND_93 <0) THEN 'E0001 ' else ''
                 END || CASE
-                WHEN (DEN_IND_93 IS NULL AND NUM_IND_93 =0) THEN 'ERROR; ' else ''
+                WHEN (DEN_IND_93 IS NULL AND NUM_IND_93 =0) THEN 'E0001 ' else ''
                 END || CASE
-                WHEN (DEN_IND_93 IS NULL AND NUM_IND_93 IS NULL) THEN 'ERROR; ' else ''
+                WHEN (DEN_IND_93 IS NULL AND NUM_IND_93 IS NULL) THEN 'E0001 ' else ''
 
 END AS ERROR_MSG_IND_93*/ NULL AS IND_93
 ";

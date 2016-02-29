@@ -28,25 +28,25 @@ CASE
                 ELSE ((ST_ASSETS_Y0) / (ST_ASSETS_Y1))-1
 END AS IND_74,
                 CASE 
-                                                                  WHEN (ST_ASSETS_Y1 > 0 AND ST_ASSETS_Y0 IS NULL) THEN 'ERROR; ' else ''
+                                                                  WHEN (ST_ASSETS_Y1 > 0 AND ST_ASSETS_Y0 IS NULL) THEN 'E0001 ' else ''
                 END || CASE
-                                                                  WHEN (ST_ASSETS_Y1 = 0 AND ST_ASSETS_Y0 >0) THEN 'ERROR; ' else ''
+                                                                  WHEN (ST_ASSETS_Y1 = 0 AND ST_ASSETS_Y0 >0) THEN 'E0001 ' else ''
                 END || CASE
-                                                                  WHEN (ST_ASSETS_Y1 = 0 AND ST_ASSETS_Y0 <0) THEN 'ERROR; ' else ''
+                                                                  WHEN (ST_ASSETS_Y1 = 0 AND ST_ASSETS_Y0 <0) THEN 'E0001 ' else ''
                 END || CASE
-                                                                  WHEN (ST_ASSETS_Y1 = 0 AND ST_ASSETS_Y0 =0) THEN 'ERROR; ' else ''
+                                                                  WHEN (ST_ASSETS_Y1 = 0 AND ST_ASSETS_Y0 =0) THEN 'E0001 ' else ''
                 END || CASE
-                                                                  WHEN (ST_ASSETS_Y1 = 0 AND ST_ASSETS_Y0 IS NULL) THEN 'ERROR; ' else ''
+                                                                  WHEN (ST_ASSETS_Y1 = 0 AND ST_ASSETS_Y0 IS NULL) THEN 'E0001 ' else ''
                 END || CASE
-                                                                  WHEN (ST_ASSETS_Y1 < 0 AND ST_ASSETS_Y0 IS NULL) THEN 'ERROR; ' else ''
+                                                                  WHEN (ST_ASSETS_Y1 < 0 AND ST_ASSETS_Y0 IS NULL) THEN 'E0001 ' else ''
                 END || CASE   
-                                                                  WHEN (ST_ASSETS_Y1 IS NULL AND ST_ASSETS_Y0 >0) THEN 'ERROR; ' else ''
+                                                                  WHEN (ST_ASSETS_Y1 IS NULL AND ST_ASSETS_Y0 >0) THEN 'E0001 ' else ''
                 END || CASE
-                                                                  WHEN (ST_ASSETS_Y1 IS NULL AND ST_ASSETS_Y0 <0) THEN 'ERROR; ' else ''
+                                                                  WHEN (ST_ASSETS_Y1 IS NULL AND ST_ASSETS_Y0 <0) THEN 'E0001 ' else ''
                 END || CASE
-                                                                  WHEN (ST_ASSETS_Y1 IS NULL AND ST_ASSETS_Y0 =0) THEN 'ERROR; ' else ''
+                                                                  WHEN (ST_ASSETS_Y1 IS NULL AND ST_ASSETS_Y0 =0) THEN 'E0001 ' else ''
                 END || CASE
-                                                                  WHEN (ST_ASSETS_Y1 IS NULL AND ST_ASSETS_Y0 IS NULL) THEN 'ERROR;' else ''
+                                                                  WHEN (ST_ASSETS_Y1 IS NULL AND ST_ASSETS_Y0 IS NULL) THEN 'E0001' else ''
                 END
 AS ERROR_MSG_IND_74*/ NULL AS IND_74
 ";

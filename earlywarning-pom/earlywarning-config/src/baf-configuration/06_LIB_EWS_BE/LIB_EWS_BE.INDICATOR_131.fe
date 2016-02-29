@@ -12,9 +12,9 @@ END AS IND_131,
 
 CASE 
                 WHEN (SALES_Y0 <> 0 AND SALES_Y0 IS NOT NULL AND TOTAL_DEBT_Y0 IS NOT NULL) THEN ''
-                WHEN (TOTAL_DEBT_Y0 IS NULL) THEN 'ERROR; '
-                WHEN (SALES_Y0 = 0) THEN 'ERROR; '
-                WHEN (SALES_Y0 IS NULL) THEN 'ERROR; ' 
+                WHEN (TOTAL_DEBT_Y0 IS NULL) THEN 'E0001 '
+                WHEN (SALES_Y0 = 0) THEN 'E0001 '
+                WHEN (SALES_Y0 IS NULL) THEN 'E0001 ' 
 END AS ERROR_MSG_IND_131";
 
 

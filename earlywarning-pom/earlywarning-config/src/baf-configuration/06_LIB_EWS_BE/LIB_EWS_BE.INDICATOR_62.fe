@@ -32,29 +32,29 @@ CASE
 )
 END AS IND_62,
 case 
-when ACCOUNT_BALANCE_M0 IS NULL then 'ERROR; ' else '' end || 
+when ACCOUNT_BALANCE_M0 IS NULL then 'E0001 ' else '' end || 
 case 
-when ACCOUNT_BALANCE_M1 IS NULL then 'ERROR; ' else '' end || 
+when ACCOUNT_BALANCE_M1 IS NULL then 'E0001 ' else '' end || 
 case 
-when ACCOUNT_BALANCE_M2 IS NULL then 'ERROR; ' else '' end || 
+when ACCOUNT_BALANCE_M2 IS NULL then 'E0001 ' else '' end || 
 case 
-when ACCOUNT_BALANCE_M3 IS NULL then 'ERROR; ' else '' end || 
+when ACCOUNT_BALANCE_M3 IS NULL then 'E0001 ' else '' end || 
 case 
-when ACCOUNT_BALANCE_M4 IS NULL then 'ERROR; ' else '' end || 
+when ACCOUNT_BALANCE_M4 IS NULL then 'E0001 ' else '' end || 
 case 
-when ACCOUNT_BALANCE_M5 IS NULL then 'ERROR; ' else '' end || 
+when ACCOUNT_BALANCE_M5 IS NULL then 'E0001 ' else '' end || 
 case 
-when ACCOUNT_BALANCE_M6 IS NULL then 'ERROR; ' else '' end || 
+when ACCOUNT_BALANCE_M6 IS NULL then 'E0001 ' else '' end || 
 case 
-when ACCOUNT_BALANCE_M7 IS NULL then 'ERROR; ' else '' end || 
+when ACCOUNT_BALANCE_M7 IS NULL then 'E0001 ' else '' end || 
 case 
-when ACCOUNT_BALANCE_M8 IS NULL then 'ERROR; ' else '' end || 
+when ACCOUNT_BALANCE_M8 IS NULL then 'E0001 ' else '' end || 
 case
-when ACCOUNT_BALANCE_M9 IS NULL then 'ERROR; ' else '' end || 
+when ACCOUNT_BALANCE_M9 IS NULL then 'E0001 ' else '' end || 
 case 
-when ACCOUNT_BALANCE_M10 IS NULL then 'ERROR; ' else '' end || 
+when ACCOUNT_BALANCE_M10 IS NULL then 'E0001 ' else '' end || 
 case 
-when ACCOUNT_BALANCE_M11 IS NULL THEN  'ERROR; ' ELSE ''
+when ACCOUNT_BALANCE_M11 IS NULL THEN  'E0001 ' ELSE ''
 END AS ERROR_MSG_IND_62";
 
 

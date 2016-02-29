@@ -27,25 +27,25 @@ sql = "/*CASE
                 ELSE (MAX_TOT_DEBT_1Y) / (EBITDA_Y0)
 END AS IND_66,
                 CASE 
-                                                                  WHEN (EBITDA_Y0 > 0 AND MAX_TOT_DEBT_1Y IS NULL) THEN 'ERROR; ' else ''
+                                                                  WHEN (EBITDA_Y0 > 0 AND MAX_TOT_DEBT_1Y IS NULL) THEN 'E0001 ' else ''
                 END || CASE
-                                                                  WHEN (EBITDA_Y0 = 0 AND MAX_TOT_DEBT_1Y >0) THEN 'ERROR; ' else ''
+                                                                  WHEN (EBITDA_Y0 = 0 AND MAX_TOT_DEBT_1Y >0) THEN 'E0001 ' else ''
                 END || CASE
-                                                                  WHEN (EBITDA_Y0 = 0 AND MAX_TOT_DEBT_1Y <0) THEN 'ERROR; ' else ''
+                                                                  WHEN (EBITDA_Y0 = 0 AND MAX_TOT_DEBT_1Y <0) THEN 'E0001 ' else ''
                 END || CASE
-                                                                  WHEN (EBITDA_Y0 = 0 AND MAX_TOT_DEBT_1Y =0) THEN 'ERROR; ' else ''
+                                                                  WHEN (EBITDA_Y0 = 0 AND MAX_TOT_DEBT_1Y =0) THEN 'E0001 ' else ''
                 END || CASE
-                                                                  WHEN (EBITDA_Y0 = 0 AND MAX_TOT_DEBT_1Y IS NULL) THEN 'ERROR; ' else ''
+                                                                  WHEN (EBITDA_Y0 = 0 AND MAX_TOT_DEBT_1Y IS NULL) THEN 'E0001 ' else ''
                 END || CASE
-                                                                  WHEN (EBITDA_Y0 < 0 AND MAX_TOT_DEBT_1Y IS NULL) THEN 'ERROR; ' else ''
+                                                                  WHEN (EBITDA_Y0 < 0 AND MAX_TOT_DEBT_1Y IS NULL) THEN 'E0001 ' else ''
                 END || CASE   
-                                                                  WHEN (EBITDA_Y0 IS NULL AND MAX_TOT_DEBT_1Y >0) THEN 'ERROR; ' else ''
+                                                                  WHEN (EBITDA_Y0 IS NULL AND MAX_TOT_DEBT_1Y >0) THEN 'E0001 ' else ''
                 END || CASE
-                                                                  WHEN (EBITDA_Y0 IS NULL AND MAX_TOT_DEBT_1Y <0) THEN 'ERROR; ' else ''
+                                                                  WHEN (EBITDA_Y0 IS NULL AND MAX_TOT_DEBT_1Y <0) THEN 'E0001 ' else ''
                 END || CASE
-                                                                  WHEN (EBITDA_Y0 IS NULL AND MAX_TOT_DEBT_1Y =0) THEN 'ERROR; ' else ''
+                                                                  WHEN (EBITDA_Y0 IS NULL AND MAX_TOT_DEBT_1Y =0) THEN 'E0001 ' else ''
                 END || CASE
-                                                                  WHEN (EBITDA_Y0 IS NULL AND MAX_TOT_DEBT_1Y IS NULL) THEN 'ERROR;' else ''
+                                                                  WHEN (EBITDA_Y0 IS NULL AND MAX_TOT_DEBT_1Y IS NULL) THEN 'E0001' else ''
                 END
 AS ERROR_MSG_IND_66*/ NULL AS IND_66";
 

@@ -27,25 +27,25 @@ sql = "/*CASE
                 ELSE (LOANS_OVERDUE) / (LOANS_INIT_APPR)
 END AS IND_205,
                 CASE 
-                                                                  WHEN (LOANS_INIT_APPR > 0 AND LOANS_OVERDUE IS NULL) THEN 'ERROR; ' else ''
+                                                                  WHEN (LOANS_INIT_APPR > 0 AND LOANS_OVERDUE IS NULL) THEN 'E0001 ' else ''
                 END || CASE
-                                                                  WHEN (LOANS_INIT_APPR = 0 AND LOANS_OVERDUE >0) THEN 'ERROR; ' else ''
+                                                                  WHEN (LOANS_INIT_APPR = 0 AND LOANS_OVERDUE >0) THEN 'E0001 ' else ''
                 END || CASE
-                                                                  WHEN (LOANS_INIT_APPR = 0 AND LOANS_OVERDUE <0) THEN 'ERROR; ' else ''
+                                                                  WHEN (LOANS_INIT_APPR = 0 AND LOANS_OVERDUE <0) THEN 'E0001 ' else ''
                 END || CASE
-                                                                  WHEN (LOANS_INIT_APPR = 0 AND LOANS_OVERDUE =0) THEN 'ERROR; ' else ''
+                                                                  WHEN (LOANS_INIT_APPR = 0 AND LOANS_OVERDUE =0) THEN 'E0001 ' else ''
                 END || CASE
-                                                                  WHEN (LOANS_INIT_APPR = 0 AND LOANS_OVERDUE IS NULL) THEN 'ERROR; ' else ''
+                                                                  WHEN (LOANS_INIT_APPR = 0 AND LOANS_OVERDUE IS NULL) THEN 'E0001 ' else ''
                 END || CASE
-                                                                  WHEN (LOANS_INIT_APPR < 0 AND LOANS_OVERDUE IS NULL) THEN 'ERROR; ' else ''
+                                                                  WHEN (LOANS_INIT_APPR < 0 AND LOANS_OVERDUE IS NULL) THEN 'E0001 ' else ''
                 END || CASE   
-                                                                  WHEN (LOANS_INIT_APPR IS NULL AND LOANS_OVERDUE >0) THEN 'ERROR; ' else ''
+                                                                  WHEN (LOANS_INIT_APPR IS NULL AND LOANS_OVERDUE >0) THEN 'E0001 ' else ''
                 END || CASE
-                                                                  WHEN (LOANS_INIT_APPR IS NULL AND LOANS_OVERDUE <0) THEN 'ERROR; ' else ''
+                                                                  WHEN (LOANS_INIT_APPR IS NULL AND LOANS_OVERDUE <0) THEN 'E0001 ' else ''
                 END || CASE
-                                                                  WHEN (LOANS_INIT_APPR IS NULL AND LOANS_OVERDUE =0) THEN 'ERROR; ' else ''
+                                                                  WHEN (LOANS_INIT_APPR IS NULL AND LOANS_OVERDUE =0) THEN 'E0001 ' else ''
                 END || CASE
-                                                                  WHEN (LOANS_INIT_APPR IS NULL AND LOANS_OVERDUE IS NULL) THEN 'ERROR;' else ''
+                                                                  WHEN (LOANS_INIT_APPR IS NULL AND LOANS_OVERDUE IS NULL) THEN 'E0001' else ''
                 END
 AS ERROR_MSG_IND_205*/ NULL AS IND_205";
 

@@ -13,9 +13,9 @@ END AS IND_88,
 
 CASE 
                 WHEN (SALES_Y0 <> 0 AND SALES_Y0 IS NOT NULL AND EBITDA_Y0 IS NOT NULL) THEN ''
-                WHEN (EBITDA_Y0 IS NULL) THEN 'ERROR; '
-                WHEN (SALES_Y0 = 0) THEN 'ERROR; '
-                WHEN (SALES_Y0 IS NULL) THEN 'ERROR; ' 
+                WHEN (EBITDA_Y0 IS NULL) THEN 'E0001 '
+                WHEN (SALES_Y0 = 0) THEN 'E0001 '
+                WHEN (SALES_Y0 IS NULL) THEN 'E0001 ' 
 END AS ERROR_MSG_IND_88
 ";
 
