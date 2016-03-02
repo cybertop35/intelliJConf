@@ -4,8 +4,8 @@ DEBUGMESSAGE(formulaName, "START");
 VAR sql = "";
 
 sql = "CASE 
-                WHEN REGULAMENTARY_SEGMENT = 'Corporate' THEN 10391.223
-                WHEN REGULAMENTARY_SEGMENT = 'Retail' THEN 353.39893
+                WHEN COUNTRY = 'BIB' AND REGULAMENTARY_SEGMENT = 'Corporate' THEN 10391.223
+                WHEN COUNTRY = 'BIB' AND REGULAMENTARY_SEGMENT = 'Retail' THEN 353.39893
                 ELSE NULL
 END AS MISSING_VALUE_IND_62,
 
