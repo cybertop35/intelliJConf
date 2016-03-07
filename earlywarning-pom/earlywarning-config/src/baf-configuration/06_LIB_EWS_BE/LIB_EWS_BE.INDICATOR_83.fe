@@ -3,8 +3,7 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = " ((EBIT/EBIT_t-1)-1)/(((Total Debt - Cash and cash equivalents))/(Total Debt_t-1 - Cash and cash equivalents_t-1))-1)
-		((EBIT/EBIT_t-1)-1)/(((Total Debt - Cash and cash equivalents))/(Total Debt_t-1 - Cash and cash equivalents_t-1))-1
+sql = "
 CASE 
             WHEN COUNTRY = 'BIB' THEN 0
             ELSE NULL
