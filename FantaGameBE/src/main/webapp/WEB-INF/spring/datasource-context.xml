@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+						http://www.springframework.org/schema/context 	http://www.springframework.org/schema/context/spring-context-3.1.xsd
+						http://www.springframework.org/schema/tx    	http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+       					http://www.springframework.org/schema/aop       http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
+
+	<tx:annotation-driven proxy-target-class="false" transaction-manager="transactionManager"  />
+	
+	<context:component-scan base-package="com.fantagame.be.business.data.dao" />
+	
+	<bean id="fantaGameDataSource" class="org.springframework.jndi.JndiObjectFactoryBean">
+		<property name="jndiName"  value="java:/comp/env/jdbc/fantagameDB"></property>
+	</bean>
+		
+	<bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="dataSource" ref="fantaGameDataSource"/>
+		<property name="persistenceUnitName" value="fantagame-jpa"/> 
+		<!--	
+			Non necessario perchè org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean individua
+			automaticamnte la piattaforma usata
+			(in questo caso il set è stato eseguito per Tomcat 5+)
+		 <property name="loadTimeWeaver">
+    		<bean class="org.springframework.instrument.classloading.ReflectiveLoadTimeWeaver"/>
+  		</property>
+		-->       
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+        </property>
+	
+	</bean>
+	
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+          <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+<!--     bean post-processor for JPA annotations -->
+  	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
+  	<bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/> 
+  	
+  	 <aop:config>
+  	  	<aop:pointcut id="serviceMethods" expression="execution( * com.fantagame.be.business.data.dao.jpa.*.*(..))"/>
+ 	  	<aop:advisor advice-ref="txAdvice" pointcut-ref="serviceMethods"/>
+ 	 </aop:config>
+    
+   	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+    	<tx:attributes>
+      		<tx:method name="save" propagation="REQUIRES_NEW"/>
+      		<tx:method name="merge" propagation="REQUIRED"/>
+	  		<tx:method name="remove" propagation="REQUIRED"/>       
+         	<tx:method name="*" propagation="SUPPORTS" read-only="true"/>
+    	</tx:attributes>
+  	</tx:advice>
+  	
+<!-- DAO -->
+	<bean id="andamentoDao" 	name="andamentoDao" 	class="com.fantagame.be.business.data.dao.jpa.JpaAndamentoDao" />
+	<bean id="authoritiesDao"  	name="authoritiesDao"  	class="com.fantagame.be.business.data.dao.jpa.JpaAuthoritiesDao"  />
+	<bean id="calendarioDao" 	name="calendarioDao" 	class="com.fantagame.be.business.data.dao.jpa.JpaCalendarioDao" />
+	<bean id="classificaDao" 	name="classificaDao" 	class="com.fantagame.be.business.data.dao.jpa.JpaClassificaDao" />
+	<bean id="gruppoDao"  		name="gruppoDao"  		class="com.fantagame.be.business.data.dao.jpa.JpaGruppoDao"  />
+  	<bean id="personaDao" 		name="personaDao" 		class="com.fantagame.be.business.data.dao.jpa.JpaPersonaDao" />
+   	<bean id="userLoginDao" 	name="userLoginDao" 	class="com.fantagame.be.business.data.dao.jpa.JpaUserLoginDao" />
+
+	<bean id="fantaSquadraDao"  name="fantaSquadraDao"  class="com.fantagame.be.business.data.dao.jpa.squadra.JpaFantaSquadraDao"  />
+	<bean id="realSqudraDao" 	name="realSqudraDao" 	class="com.fantagame.be.business.data.dao.jpa.squadra.JpaRealSqudraDao" />
+
+	<bean id="formazioneDao" 	name="formazioneDao"  	class="com.fantagame.be.business.data.dao.jpa.squadra.rosa.JpaFormazioneDao"  />
+	<bean id="giocatoreDao" 	name="giocatoreDao"  	class="com.fantagame.be.business.data.dao.jpa.squadra.rosa.JpaGiocatoreDao"  />
+	<bean id="ruoloDao" 		name="ruoloDao" 		class="com.fantagame.be.business.data.dao.jpa.squadra.rosa.JpaRuoloDao" />	
+	
+</beans>

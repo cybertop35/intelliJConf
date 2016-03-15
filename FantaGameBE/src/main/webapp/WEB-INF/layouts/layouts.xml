@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+
+<tiles-definitions>
+	
+	<!-- Layout -->
+	<definition name="standard-layout"  template="/WEB-INF/layouts/default/standard.jsp">
+		<put-attribute name="title" value="WellCome in My Site" />
+		<put-attribute name="header" value="/WEB-INF/layouts/default/header.jsp" />
+		<put-attribute name="navigationDX" value="/WEB-INF/pub/loggin/login.jsp" />
+		<put-attribute name="body"  value="/WEB-INF/pub/home.jsp" />
+		<put-attribute name="navigation" value="/WEB-INF/pub/menu.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/layouts/default/footer.jsp" />
+		
+	</definition>
+	
+	<definition name="oauth-layout"  template="/WEB-INF/layouts/default/OauthStandard.jsp">
+		<put-attribute name="title" value="Oauth" />
+		<put-attribute name="body"  value="/WEB-INF/pub/home.jsp" />
+	</definition>
+	
+	<!-- Layout -->
+	
+	
+	<definition name="logged-layout"  template="/WEB-INF/layouts/default/standard.jsp">
+		<put-attribute name="title" value="WellCome in Secure Area" />
+		<put-attribute name="header" value="/WEB-INF/layouts/default/header.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/layouts/default/footer.jsp" />
+		
+		<put-attribute name="navigationDX" value="/WEB-INF/pub/loggin/login.jsp" />	
+		<put-attribute name="body"  value="/WEB-INF/secure/home.jsp" />
+		<put-attribute name="navigation" value="/WEB-INF/secure/menu.jsp" />
+		
+	</definition>
+	
+	<definition name="admin-layout"  template="/WEB-INF/layouts/default/standard.jsp">
+		<put-attribute name="title" value="WellCome in Admin Area" />
+		<put-attribute name="header" value="/WEB-INF/layouts/default/header.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/layouts/default/footer.jsp" />
+		<put-attribute name="navigationDX" value="/WEB-INF/pub/loggin/login.jsp" />		
+		
+		<put-attribute name="body"  value="/WEB-INF/secure/admin/home.jsp" />
+		<put-attribute name="navigation" value="/WEB-INF/secure/admin/menu.jsp" />
+		
+	</definition>
+</tiles-definitions>

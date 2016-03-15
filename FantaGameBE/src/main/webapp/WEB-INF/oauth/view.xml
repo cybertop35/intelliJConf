@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE tiles-definitions PUBLIC
+	"-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+	"http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+
+<tiles-definitions>
+
+	 <definition name="oauth/requestTokenAuth" extends="oauth-layout">
+			<put-attribute name="title" value="oauth/requestTokenAuth" />
+			<put-attribute name="body" value="/WEB-INF/oauth/request_token_authorized.jsp" />
+	</definition>
+	
+	 <definition name="oauth/confirm_access" extends="oauth-layout">
+			<put-attribute name="title" value="confirm_access" />
+			<put-attribute name="body" value="/WEB-INF/oauth/access_confirmation.jsp" />
+	</definition>
+	
+</tiles-definitions>

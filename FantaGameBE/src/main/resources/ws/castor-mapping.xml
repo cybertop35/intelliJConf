@@ -1,0 +1,452 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mapping> 
+<!-- WS -->
+    
+	 <class name="com.fantagame.be.business.service.model.MessageResponseService">
+        <map-to xml="messageResponseService-Response" ns-uri="http://fantagame.it/app/ws/type"/>
+        <field name="code" type="int">
+            <bind-xml name="code" node="attribute"/>
+        </field>
+        <field name="message" type="java.lang.String">
+            <bind-xml name="message" node="element"/>
+        </field>
+        <field name="clazzToCast" type="java.lang.String">
+            <bind-xml name="clazzToCast" node="element"/>
+        </field>
+         <field name="result" type="java.lang.Object">
+            <bind-xml name="result" node="element"/>
+        </field>
+    </class>
+    
+    <class name="com.fantagame.be.ws.model.MessageUser">
+        <map-to xml="messageUser-Request" ns-uri="http://fantagame.it/app/ws/type"/>
+        <field name="persona" type="com.fantagame.be.business.data.bean.Persona">
+            <bind-xml name="persona" node="element"/>
+        </field>
+        <field name="command" type="int">
+            <bind-xml name="command" node="element"/>
+        </field>
+     </class>
+     
+     <class name="com.fantagame.be.ws.model.MessageGroup">
+        <map-to xml="messageGroup-Request" ns-uri="http://fantagame.it/app/ws/type"/>
+        <field name="gruppo" type="com.fantagame.be.business.data.bean.Gruppo">
+            <bind-xml name="gruppo" node="element"/>
+        </field>
+        <field name="command" type="int">
+            <bind-xml name="command" node="element"/>
+        </field>
+         <field name="message" type="string">
+            <bind-xml name="message" node="element"/>
+        </field>
+                <field name="subject" type="string">
+            <bind-xml name="subject" node="element"/>
+        </field>
+                <field name="email" type="strings">
+            <bind-xml name="email" node="element"/>
+        </field>
+     </class>
+	
+	<!-- END WS -->
+	
+    <class name="com.fantagame.be.business.data.bean.squadra.rosa.Ruolo">
+      <map-to xml="ruolo" ns-uri="http://fantagame.it/app/ws/type"/>
+        <field name="desc" type="java.lang.String">
+            <bind-xml name="desc" node="element"/>
+        </field>
+        <field name="idRuolo" type="java.lang.Integer">
+            <bind-xml name="idRuolo" node="element"/>
+        </field>
+        <field name="id" type="java.lang.Integer">
+            <bind-xml name="id" node="element"/>
+        </field>
+    </class>
+
+    <class name="com.fantagame.be.business.data.bean.UserLogin">
+        <map-to xml="userLogin" ns-uri="http://fantagame.it/app/ws/type"/>
+        <field name="accountNonLocked" type="boolean">
+            <bind-xml name="accountNonLocked" node="attribute"/>
+        </field>
+        <field name="accountNonExpired" type="boolean">
+            <bind-xml name="accountNoNexpired" node="attribute"/>
+        </field>
+        <field name="enabled" type="boolean">
+            <bind-xml name="enabled" node="attribute"/>
+        </field>
+        <field name="credentialsNonExpired" type="boolean">
+            <bind-xml name="credentialsNonExpired" node="attribute"/>
+        </field>
+        <field name="nick" type="java.lang.String">
+            <bind-xml name="nick" node="element"/>
+        </field>
+        <field name="id" type="java.io.Serializable">
+            <bind-xml name="id" node="element"/>
+        </field>
+        <field name="attivo" type="java.lang.Boolean">
+            <bind-xml name="attivo" node="element"/>
+        </field>
+        <field name="username" type="java.lang.String">
+            <bind-xml name="username" node="element"/>
+        </field>
+        <field name="persona" type="com.fantagame.be.business.data.bean.Persona">
+            <bind-xml name="persona" node="element"/>
+        </field>
+        <field name="authorities" type="java.util.ArrayList">
+            <bind-xml name="authorities" node="element"/>
+        </field>
+        <field name="password" type="java.lang.String">
+            <bind-xml name="password" node="element"/>
+        </field>
+        <field name="activationCode" type="java.lang.String">
+            <bind-xml name="activationCode" node="element"/>
+        </field>
+    </class>
+
+    <class name="com.fantagame.be.business.data.bean.Gruppo">
+        <map-to xml="gruppo" ns-uri="http://fantagame.it/app/ws/type"/>
+        <field name="nome" type="java.lang.String">
+            <bind-xml name="nome" node="element"/>
+        </field>
+        <field name="id" type="java.io.Serializable">
+            <bind-xml name="id" node="element"/>
+        </field>
+        <field name="owner" type="com.fantagame.be.business.data.bean.Persona">
+            <bind-xml name="owner" node="element"/>
+        </field>
+        <field name="idGruppo" type="java.lang.Integer">
+            <bind-xml name="idGruppo" node="element"/>
+        </field>
+        <field name="maxPortieri" type="java.lang.Integer">
+            <bind-xml name="maxPortieri" node="element"/>
+        </field>
+        <field name="maxCredito" type="java.lang.Integer">
+            <bind-xml name="maxCredito" node="element"/>
+        </field>
+        <field name="maxDifensori" type="java.lang.Integer">
+            <bind-xml name="maxDifensori" node="element"/>
+        </field>
+        <field name="maxAttaccanti" type="java.lang.Integer">
+            <bind-xml name="maxAttaccanti" node="element"/>
+        </field>
+        <field name="maxCentroCamposti" type="java.lang.Integer">
+            <bind-xml name="maxCentroCamposti" node="element"/>
+        </field>
+        <field name="dateCreazione" type="java.util.Date">
+            <bind-xml name="dateCreazione" node="element"/>
+        </field>
+    </class>
+
+    <class name="com.fantagame.be.business.data.bean.squadra.RealSquadra">
+        <map-to xml="realSquadra" ns-uri="http://fantagame.it/app/ws/type"/>
+        <field name="photoContent" type="java.io.InputStream">
+            <bind-xml name="photoContent" node="element"/>
+        </field>
+        <field name="img" type="bytes">
+            <bind-xml name="img" node="element"/>
+        </field>
+        <field name="rosa" type="java.util.ArrayList">
+            <bind-xml name="rosa" node="element"/>
+        </field>
+        <field name="idSquadra" type="java.lang.Integer">
+            <bind-xml name="idSquadra" node="element"/>
+        </field>
+        <field name="nome" type="java.lang.String">
+            <bind-xml name="nome" node="element"/>
+        </field>
+        <field name="id" type="java.lang.Integer">
+            <bind-xml name="id" node="element"/>
+        </field>
+    </class>
+
+    <class name="com.fantagame.be.business.data.bean.Calendario">
+        <map-to xml="calendario" ns-uri="http://fantagame.it/app/ws/type"/>
+        <field name="id" type="java.io.Serializable">
+            <bind-xml name="id" node="element"/>
+        </field>
+        <field name="idSquadraCasa" type="java.lang.Integer">
+            <bind-xml name="idSquadraCasa" node="element"/>
+        </field>
+        <field name="date" type="java.util.Date">
+            <bind-xml name="date" node="element"/>
+        </field>
+        <field name="categoria" type="java.lang.String">
+            <bind-xml name="categoria" node="element"/>
+        </field>
+        <field name="giornata" type="java.lang.Integer">
+            <bind-xml name="giornata" node="element"/>
+        </field>
+        <field name="squadraOspite" type="com.fantagame.be.business.data.bean.squadra.RealSquadra">
+            <bind-xml name="squadraOspite" node="element"/>
+        </field>
+        <field name="campionato" type="java.lang.String">
+            <bind-xml name="campionato" node="element"/>
+        </field>
+        <field name="risultatoB" type="java.lang.Integer">
+            <bind-xml name="risultatoB" node="element"/>
+        </field>
+        <field name="risultatoA" type="java.lang.Integer">
+            <bind-xml name="risultatoA" node="element"/>
+        </field>
+        <field name="squadraCasa" type="com.fantagame.be.business.data.bean.squadra.RealSquadra">
+            <bind-xml name="squadraCasa" node="element"/>
+        </field>
+        <field name="idSquadraOspiti" type="java.lang.Integer">
+            <bind-xml name="idSquadraOspiti" node="element"/>
+        </field>
+    </class>
+
+    <class name="com.fantagame.be.business.data.bean.squadra.AbstractSquadra">
+        <map-to xml="abstractSquadra" ns-uri="http://fantagame.it/app/ws/type"/>
+        <field name="idSquadra" type="java.lang.Integer">
+            <bind-xml name="idSquadra" node="element"/>
+        </field>
+        <field name="nome" type="java.lang.String">
+            <bind-xml name="nome" node="element"/>
+        </field>
+        <field name="id" type="java.lang.Integer">
+            <bind-xml name="id" node="element"/>
+        </field>
+    </class>
+
+    <class name="com.fantagame.be.business.data.bean.Authorities">
+        <map-to xml="authorities" ns-uri="http://fantagame.it/app/ws/type"/>
+        <field name="userLogin" type="com.fantagame.be.business.data.bean.UserLogin">
+            <bind-xml name="userLogin" node="element"/>
+        </field>
+        <field name="authority" type="java.lang.String">
+            <bind-xml name="authority" node="element"/>
+        </field>
+        <field name="idAuthorities" type="java.lang.Integer">
+            <bind-xml name="idAuthorities" node="element"/>
+        </field>
+        <field name="id" type="java.io.Serializable">
+            <bind-xml name="id" node="element"/>
+        </field>
+    </class>
+
+    <class name="com.fantagame.be.business.data.bean.Persona">
+        <map-to xml="persona" ns-uri="http://fantagame.it/app/ws/type"/>
+        <field name="idUser" type="int">
+            <bind-xml name="idUser" node="element"/>
+        </field>
+        <field name="sesso" type="char">
+            <bind-xml name="sesso" node="attribute"/>
+        </field>
+        <field name="dataNascita" type="java.util.Date">
+            <bind-xml name="dataNascita" node="element"/>
+        </field>
+        <field name="id" type="java.io.Serializable">
+            <bind-xml name="id" node="element"/>
+        </field>
+        <field name="nome" type="java.lang.String">
+            <bind-xml name="nome" node="element"/>
+        </field>
+        <field name="userLogin" type="com.fantagame.be.business.data.bean.UserLogin">
+            <bind-xml name="userLogin" node="element"/>
+        </field>
+        <field name="accCond" type="java.lang.Boolean">
+            <bind-xml name="accCond" node="element"/>
+        </field>
+        <field name="email" type="java.lang.String">
+            <bind-xml name="email" node="element"/>
+        </field>
+        <field name="fantaSquadre" type="java.util.ArrayList">
+            <bind-xml name="fantaSquadre" node="element"/>
+        </field>
+        <field name="telefono" type="java.lang.String">
+            <bind-xml name="telefono" node="element"/>
+        </field>
+        <field name="cognome" type="java.lang.String">
+            <bind-xml name="cognome" node="element"/>
+        </field>
+        <field name="gruppi" type="java.util.ArrayList">
+            <bind-xml name="gruppi" node="element"/>
+        </field>
+    </class>
+
+    <class name="com.fantagame.be.business.data.bean.squadra.rosa.Formazione">
+        <map-to xml="formazione" ns-uri="http://fantagame.it/app/ws/type"/>
+        <field name="giocatore" type="com.fantagame.be.business.data.bean.squadra.rosa.Giocatore">
+            <bind-xml name="giocatore" node="element"/>
+        </field>
+        <field name="titolare" type="java.lang.Boolean">
+            <bind-xml name="titolare" node="element"/>
+        </field>
+        <field name="fantaSquadra" type="com.fantagame.be.business.data.bean.squadra.FantaSquadra">
+            <bind-xml name="fantaSquadra" node="element"/>
+        </field>
+        <field name="idGiocatore" type="java.lang.Integer">
+            <bind-xml name="idGiocatore" node="element"/>
+        </field>
+        <field name="panchina" type="java.lang.Integer">
+            <bind-xml name="panchina" node="element"/>
+        </field>
+        <field name="idFantaSquadra" type="java.lang.Integer">
+            <bind-xml name="idFantaSquadra" node="element"/>
+        </field>
+        <field name="id" type="java.io.Serializable">
+            <bind-xml name="id" node="element"/>
+        </field>
+    </class>
+  
+    <class name="com.fantagame.be.business.data.bean.Classifica">
+        <map-to xml="classifica" ns-uri="http://fantagame.it/app/ws/type"/>
+        <field name="fantaSquadra" type="com.fantagame.be.business.data.bean.squadra.FantaSquadra">
+            <bind-xml name="fantaSquadra" node="element"/>
+        </field>
+        <field name="idClassifica" type="java.lang.Integer">
+            <bind-xml name="idClassifica" node="element"/>
+        </field>
+        <field name="date" type="java.util.Date">
+            <bind-xml name="date" node="element"/>
+        </field>
+        <field name="punti" type="java.lang.Double">
+            <bind-xml name="punti" node="element"/>
+        </field>
+        <field name="id" type="java.io.Serializable">
+            <bind-xml name="id" node="element"/>
+        </field>
+    </class>
+
+    <class name="com.fantagame.be.business.data.bean.squadra.rosa.Giocatore">
+        <map-to xml="giocatore" ns-uri="http://fantagame.it/app/ws/type"/>
+        <field name="id" type="java.io.Serializable">
+            <bind-xml name="id" node="element"/>
+        </field>
+        <field name="nome" type="java.lang.String">
+            <bind-xml name="nome" node="element"/>
+        </field>
+        <field name="quotazione" type="java.lang.Integer">
+            <bind-xml name="quotazione" node="element"/>
+        </field>
+        <field name="ruolo" type="com.fantagame.be.business.data.bean.squadra.rosa.Ruolo">
+            <bind-xml name="ruolo" node="element"/>
+        </field>
+        <field name="eta" type="java.lang.Integer">
+            <bind-xml name="eta" node="element"/>
+        </field>
+        <field name="realSquadra" type="com.fantagame.be.business.data.bean.squadra.RealSquadra">
+            <bind-xml name="realSquadra" node="element"/>
+        </field>
+        <field name="idGiocatore" type="java.lang.Integer">
+            <bind-xml name="idGiocatore" node="element"/>
+        </field>
+        <field name="andamenti" type="java.util.ArrayList">
+            <bind-xml name="andamenti" node="element"/>
+        </field>
+        <field name="cognome" type="java.lang.String">
+            <bind-xml name="cognome" node="element"/>
+        </field>
+    </class>
+
+    <class name="com.fantagame.be.business.data.bean.complexId.AndamentoAssociationId">
+        <map-to xml="andamentoAssociationId" ns-uri="http://fantagame.it/app/ws/type"/>
+        <field name="idGiocatore" type="java.lang.Integer">
+            <bind-xml name="idGiocatore" node="element"/>
+        </field>
+    </class>
+
+    <class name="com.fantagame.be.business.data.bean.squadra.FantaSquadra">
+        <map-to xml="fantaSquadra" ns-uri="http://fantagame.it/app/ws/type"/>
+        <field name="persona" type="com.fantagame.be.business.data.bean.Persona">
+            <bind-xml name="persona" node="element"/>
+        </field>
+        <field name="rosa" type="java.util.ArrayList">
+            <bind-xml name="rosa" node="element"/>
+        </field>
+        <field name="gruppo" type="com.fantagame.be.business.data.bean.Gruppo">
+            <bind-xml name="gruppo" node="element"/>
+        </field>
+        <field name="classifica" type="java.util.ArrayList">
+            <bind-xml name="classifica" node="element"/>
+        </field>
+        <field name="idSquadra" type="java.lang.Integer">
+            <bind-xml name="idSquadra" node="element"/>
+        </field>
+        <field name="nome" type="java.lang.String">
+            <bind-xml name="nome" node="element"/>
+        </field>
+        <field name="id" type="java.lang.Integer">
+            <bind-xml name="id" node="element"/>
+        </field>
+    </class>
+   
+   <class name="com.fantagame.be.business.data.bean.complexId.CalendarioId">
+        <map-to xml="calendarioId" ns-uri="http://fantagame.it/app/ws/type"/>
+        <field name="idSquadraOspiti" type="java.lang.Integer">
+            <bind-xml name="idSquadraOspiti" node="element"/>
+        </field>
+        <field name="idSquadraCasa" type="java.lang.Integer">
+            <bind-xml name="idSquadraCasa" node="element"/>
+        </field>
+    </class>
+
+    <class name="com.fantagame.be.business.data.bean.Andamento">
+        <map-to xml="andamento" ns-uri="http://fantagame.it/app/ws/type"/>
+        <field name="titolare" type="boolean">
+            <bind-xml name="titolare" node="attribute"/>
+        </field>
+        <field name="noVoto" type="boolean">
+            <bind-xml name="noVoto" node="attribute"/>
+        </field>
+        <field name="ammonito" type="boolean">
+            <bind-xml name="ammonito" node="attribute"/>
+        </field>
+        <field name="espulso" type="boolean">
+            <bind-xml name="espulso" node="attribute"/>
+        </field>
+        <field name="votoCDS" type="java.lang.Double">
+            <bind-xml name="votoCDS" node="element"/>
+        </field>
+        <field name="giornata" type="java.lang.Integer">
+            <bind-xml name="giornata" node="element"/>
+        </field>
+        <field name="mediaVotoFVCDS" type="java.lang.Double">
+            <bind-xml name="mediaVotoFVCDS" node="element"/>
+        </field>
+        <field name="mediaVotoCDS" type="java.lang.Double">
+            <bind-xml name="mediaVotoCDS" node="element"/>
+        </field>
+        <field name="golSubiti" type="java.lang.Integer">
+            <bind-xml name="golSubiti" node="element"/>
+        </field>
+        <field name="mediaVotoFVG" type="java.lang.Double">
+            <bind-xml name="mediaVotoFVG" node="element"/>
+        </field>
+        <field name="mediaVotoG" type="java.lang.Double">
+            <bind-xml name="mediaVotoG" node="element"/>
+        </field>
+        <field name="idGiocatore" type="java.lang.Integer">
+            <bind-xml name="idGiocatore" node="element"/>
+        </field>
+        <field name="FVCDS" type="java.lang.Double">
+            <bind-xml name="FVCDS" node="element"/>
+        </field>
+        <field name="FVG" type="java.lang.Double">
+            <bind-xml name="FVG" node="element"/>
+        </field>
+        <field name="golFatti" type="java.lang.Integer">
+            <bind-xml name="golFatti" node="element"/>
+        </field>
+        <field name="id" type="java.io.Serializable">
+            <bind-xml name="id" node="element"/>
+        </field>
+        <field name="votoG" type="java.lang.Double">
+            <bind-xml name="votoG" node="element"/>
+        </field>
+        <field name="data" type="java.util.Date">
+            <bind-xml name="data" node="element"/>
+        </field>
+    </class>
+   
+    <class name="com.fantagame.be.business.data.bean.complexId.GiocatoreAssociationId">
+        <map-to xml="giocatoreAssociationId" ns-uri="http://fantagame.it/app/ws/type"/>
+        <field name="idGiocatore" type="java.lang.Integer">
+            <bind-xml name="idGiocatore" node="element"/>
+        </field>
+        <field name="idFantaSquadra" type="java.lang.Integer">
+            <bind-xml name="idFantaSquadra" node="element"/>
+        </field>
+    </class>
+        
+</mapping>

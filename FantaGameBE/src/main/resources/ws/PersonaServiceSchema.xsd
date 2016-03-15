@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+		elementFormDefault="qualified" 
+		attributeFormDefault="qualified"
+        targetNamespace="http://fantagame.it/app/ws/type"
+        xmlns:tns="http://fantagame.it/app/ws/type">
+
+  <complexType name="persona">
+    <sequence>
+      <element name="accCond" type="boolean" tns:minOccurs="0"/>
+      <element name="cognome" type="string" tns:minOccurs="0"/>
+      <element name="email" type="string" tns:minOccurs="0"/>
+      <element name="idUser" type="int"/>
+      <element name="nome" type="string" tns:minOccurs="0"/>
+      <element name="sesso" type="unsignedShort"/>
+      <element name="telefono" type="string" tns:minOccurs="0"/>
+      <element name="dataNascita" type="dateTime" tns:minOccurs="0"/>
+      <element name="userLogin" type="tns:userLogin" tns:minOccurs="0"/>
+      <!-- 
+       <element name="fantaSquadre" type="tns:fantaSquadra" tns:nillable="true" tns:minOccurs="0" tns:maxOccurs="unbounded"/>
+      	<element name="gruppi" type="tns:gruppo" tns:nillable="true" tns:minOccurs="0" tns:maxOccurs="unbounded"/>
+     -->
+    </sequence>
+  </complexType>
+<!-- 
+  <complexType name="fantaSquadra">
+    <complexContent>
+      <extension base="tns:abstractSquadra">
+        <sequence>
+          <element name="classifica" type="tns:classifica" tns:nillable="true" tns:minOccurs="0" tns:maxOccurs="unbounded"/>
+          <element name="gruppo" type="tns:gruppo" tns:minOccurs="0"/>
+          <element name="persona" type="tns:persona" tns:minOccurs="0"/>
+          <element name="rosa" type="tns:formazione" tns:nillable="true" tns:minOccurs="0" tns:maxOccurs="unbounded"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <complexType name="abstractSquadra" abstract="true">
+    <sequence>
+      <element name="idSquadra" type="int" tns:minOccurs="0"/>
+      <element name="nome" type="string" tns:minOccurs="0"/>
+    </sequence>
+  </complexType>
+
+  <complexType name="classifica">
+    <sequence>
+      <element name="date" type="dateTime" tns:minOccurs="0"/>
+      <element name="fantaSquadra" type="tns:fantaSquadra" tns:minOccurs="0"/>
+      <element name="idClassifica" type="int" tns:minOccurs="0"/>
+      <element name="punti" type="double" tns:minOccurs="0"/>
+    </sequence>
+  </complexType>
+
+  <complexType name="gruppo">
+    <sequence>
+      <element name="dateCreazione" type="dateTime" tns:minOccurs="0"/>
+      <element name="idGruppo" type="int" tns:minOccurs="0"/>
+      <element name="maxAttaccanti" type="int" tns:minOccurs="0"/>
+      <element name="maxCentroCamposti" type="int" tns:minOccurs="0"/>
+      <element name="maxCredito" type="int" tns:minOccurs="0"/>
+      <element name="maxDifensori" type="int" tns:minOccurs="0"/>
+      <element name="maxPortieri" type="int" tns:minOccurs="0"/>
+      <element name="nome" type="string" tns:minOccurs="0"/>
+      <element name="owner" type="tns:persona" tns:minOccurs="0"/>
+    </sequence>
+  </complexType>
+
+  <complexType name="formazione">
+    <sequence>
+      <element name="fantaSquadra" type="tns:fantaSquadra" tns:minOccurs="0"/>
+      <element name="giocatore" type="tns:giocatore" tns:minOccurs="0"/>
+      <element name="idFantaSquadra" type="int" tns:minOccurs="0"/>
+      <element name="idGiocatore" type="int" tns:minOccurs="0"/>
+      <element name="panchina" type="int" tns:minOccurs="0"/>
+      <element name="titolare" type="boolean" tns:minOccurs="0"/>
+    </sequence>
+  </complexType>
+
+  <complexType name="giocatore">
+    <sequence>
+      <element name="andamenti" type="tns:andamento" tns:nillable="true" tns:minOccurs="0" tns:maxOccurs="unbounded"/>
+      <element name="cognome" type="string" tns:minOccurs="0"/>
+      <element name="eta" type="int" tns:minOccurs="0"/>
+      <element name="idGiocatore" type="int" tns:minOccurs="0"/>
+      <element name="nome" type="string" tns:minOccurs="0"/>
+      <element name="quotazione" type="int" tns:minOccurs="0"/>
+      <element name="realSquadra" type="tns:realSquadra" tns:minOccurs="0"/>
+      <element name="ruolo" type="tns:ruolo" tns:minOccurs="0"/>
+    </sequence>
+  </complexType>
+
+  <complexType name="andamento">
+    <sequence>
+      <element name="ammonito" type="boolean"/>
+      <element name="data" type="dateTime" tns:minOccurs="0"/>
+      <element name="espulso" type="boolean"/>
+      <element name="FVCDS" type="double" tns:minOccurs="0"/>
+      <element name="FVG" type="double" tns:minOccurs="0"/>
+      <element name="giornata" type="int" tns:minOccurs="0"/>
+      <element name="golFatti" type="int" tns:minOccurs="0"/>
+      <element name="golSubiti" type="int" tns:minOccurs="0"/>
+      <element name="idGiocatore" type="int" tns:minOccurs="0"/>
+      <element name="mediaVotoCDS" type="double" tns:minOccurs="0"/>
+      <element name="mediaVotoFVCDS" type="double" tns:minOccurs="0"/>
+      <element name="mediaVotoFVG" type="double" tns:minOccurs="0"/>
+      <element name="mediaVotoG" type="double" tns:minOccurs="0"/>
+      <element name="noVoto" type="boolean"/>
+      <element name="titolare" type="boolean"/>
+      <element name="votoCDS" type="double" tns:minOccurs="0"/>
+      <element name="votoG" type="double" tns:minOccurs="0"/>
+    </sequence>
+  </complexType>
+
+  <complexType name="realSquadra">
+    <complexContent>
+      <extension base="tns:abstractSquadra">
+        <sequence>
+          <element name="img" type="base64Binary" tns:minOccurs="0"/>
+          <element name="photoContent" type="tns:inputStream" tns:minOccurs="0"/>
+          <element name="rosa" type="tns:giocatore" tns:nillable="true" tns:minOccurs="0" tns:maxOccurs="unbounded"/>
+        </sequence>
+      </extension>
+    </complexContent>
+  </complexType>
+
+  <complexType name="inputStream" abstract="true">
+    <sequence/>
+  </complexType>
+
+  <complexType name="ruolo">
+    <sequence>
+      <element name="desc" type="string" tns:minOccurs="0"/>
+      <element name="idRuolo" type="int" tns:minOccurs="0"/>
+    </sequence>
+  </complexType>
+ -->
+  <complexType name="userLogin">
+    <sequence>
+      <element name="activationCode" type="string" tns:minOccurs="0"/>
+      <element name="attivo" type="boolean" tns:minOccurs="0"/>
+      <element name="nick" type="string" tns:minOccurs="0"/>
+      <element name="password" type="string" tns:minOccurs="0"/>
+     <!-- 
+      <element name="persona" type="tns:persona" tns:minOccurs="0"/>
+      <element name="authorities" type="tns:authorities" tns:nillable="true" tns:minOccurs="0" tns:maxOccurs="unbounded"/>
+       -->
+    </sequence>
+  </complexType>
+<!-- 
+  <complexType name="authorities">
+	 <sequence>
+      <element name="idAuthorities" type="int" />
+      <element name="authority" type="string"  />
+      <element name="userLogin" type="tns:userLogin" />
+    </sequence>
+	</complexType>
+-->
+  <complexType name="messageResponseService-Response">
+    <sequence>
+      <element name="clazzToCast" type="string" tns:minOccurs="0"/>
+      <element name="code" type="int"/>
+      <element name="message" type="string" tns:minOccurs="0"/>
+      <element name="result" type="anyType" tns:minOccurs="0"/>
+    </sequence>
+  </complexType>
+  
+    <complexType name="messageUser-Request">
+   		<sequence>
+      		<element name="persona" type="tns:persona" tns:minOccurs="0" />
+      		<element name="command" type="int" tns:minOccurs="0"/>
+    	</sequence>
+  </complexType>
+  
+ <!-- 
+   <element name="realSquadra" type="tns:realSquadra"/>
+  
+  <element name="authorities" type="tns:authorities"/>
+
+  <element name="ruolo" type="tns:ruolo"/>
+        
+  <element name="andamento" type="tns:andamento"/>
+
+  <element name="classifica" type="tns:classifica"/>
+
+  <element name="fantaSquadra" type="tns:fantaSquadra"/>
+
+  <element name="formazione" type="tns:formazione"/>
+
+  <element name="giocatore" type="tns:giocatore"/>
+
+  <element name="gruppo" type="tns:gruppo"/>
+-->
+ 
+  <element name="persona" type="tns:persona"/>
+  <element name="userLogin" type="tns:userLogin"/>
+  <element name="messageResponseService-Response" type="tns:messageResponseService-Response"/>
+  <element name="registerUser-Request" type="tns:messageUser-Request"/>
+  
+  
+</schema>
+
