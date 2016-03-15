@@ -16,23 +16,28 @@
 							</ul>
 						</div>
 					</li>
-					<li><a href="page-login.html">Login</a></li>
+					<li><a href="#/auth/login">Login</a></li>
 				</ul>
 			</div>
 		</div>
 		<!-- START MAIN MENU -->
 		<div class="row">
 			<div class="logo-wrapper col-sm-2">
-				<a href="index.html"> <img src="resources/img/logo.jpg">
+				<a href="#/"> <img src="resources/img/logo.jpg">
 				</a>
 			</div>
 
 			<div ng-controller='navbarDirectiveTestCtrl'
 				class="col-sm-10 nopadding">
 				<!-- Here's the "Angled Navbar" directive in use -->
-				<angled-navbar affixed='' brand='brand' inverse='false'
-					menus='menus' navfn='navfn(action)' search='search'
-					searchfn='searchfn()'> </angled-navbar>
+				<angled-navbar affixed=''
+							   brand='brand' 
+							   inverse='false'
+							   menus='menus' 
+							   search='search'
+							   searchfn='searchfn()'
+<!-- 							   navfn='navfn(action)' -->
+							   /> 
 				<!-- /angled-navbar -->
 			</div>
 		</div>

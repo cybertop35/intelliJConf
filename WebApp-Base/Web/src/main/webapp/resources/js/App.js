@@ -1,6 +1,20 @@
-angular.module('marcosApp',['ngResource','ngSanitize'] )
+angular.module('marcosApp',['ngResource'
+                            ,'ngRoute'
+                            ,'ngSanitize'] )
 
-.controller('loadSlide',function($scope){
+
+.config(['$httpProvider', '$routeProvider', function ($httpProvider, $routeProvider) {
+    // Spring security will respond with a "WWW-Authenticate" header
+    // if the "X-Request-With" header is not sent in the request.
+    // This will in turn trigger a login popup in the browser.
+    $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+    $routeProvider
+        .otherwise({
+            redirectTo: '/'
+        });
+}])
+
+.controller('loadSlide',function(){
 		 var options = {
 		        nextButton: false,
 		        prevButton: false,
@@ -15,7 +29,7 @@ angular.module('marcosApp',['ngResource','ngSanitize'] )
 	
 })
 
-.controller('navbarDirectiveTestCtrl', function($scope) {
+.controller('navbarDirectiveTestCtrl',['$scope', '$location', function ($scope, $location ) {
     //=== Variables ===//
 
     $scope.affixed = 'top';
@@ -52,26 +66,10 @@ angular.module('marcosApp',['ngResource','ngSanitize'] )
       alert('Attempting search on: "' + $scope.search.terms + '"');
     }; // searchfn
 
-    $scope.navfn = function(action) {
-      switch (action) {
-        case 'item.one':
-          $scope.item = 'Item one selected.';
-          break;
-        case 'item.two':
-          $scope.item = 'Item two selected.';
-          break;
-        case 'item.three':
-          $scope.item = 'Item three selected.';
-          break;
-        case 'singular':
-          $scope.item = 'Singular link item selected.';
-          break;
-        default:
-          $scope.item = 'Default selection.';
-          break;
-      }; // end switch
-    }; // end navfn
-
+    $scope.navfn = function(action){
+    	$location.path(action);
+    };
+    
     $scope.toggleStyling = function() {
       $scope.inverse = !$scope.inverse;
       if (angular.equals($scope.inverse, true))
@@ -89,7 +87,7 @@ angular.module('marcosApp',['ngResource','ngSanitize'] )
     }; // end toggleSearchForm
 
 
-  }) // end navbarDirectiveTestCtrl
+  }]) // end navbarDirectiveTestCtrl
 
 /**
  * Angled Navbar Directive
@@ -109,7 +107,7 @@ angular.module('marcosApp',['ngResource','ngSanitize'] )
         inverse: '='
       },
       templateUrl: 'tmpls/nav/navbar.html',
-      controller: function($scope, $element, $attrs) {
+      controller: function($scope, $element, $attrs,$location) {
         //=== Scope/Attributes Defaults ===//
 
         $scope.defaults = {
@@ -166,7 +164,7 @@ angular.module('marcosApp',['ngResource','ngSanitize'] )
         //=== Methods ===//
 
         $scope.noop = function() {
-          angular.noop();
+        	$location.path("/");
         }; // end noop
 
         $scope.navAction = function(action) {

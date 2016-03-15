@@ -33,12 +33,12 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * Set -Dspring.profiles.active=development to activate this config.
  *
  */
-@Configuration
-@EnableJpaRepositories(
-			basePackages = { "org.cybertop.back.app" },
-			entityManagerFactoryRef="webEntityManagerFactory", 
-			transactionManagerRef = "webTransactionManager")
-@EnableTransactionManagement
+//@Configuration
+//@EnableJpaRepositories(
+//			basePackages = { "org.cybertop.back.app" },
+//			entityManagerFactoryRef="webEntityManagerFactory", 
+//			transactionManagerRef = "webTransactionManager")
+//@EnableTransactionManagement
 public class DatabaseConfiguration {
 	
 	private static final Logger log = Logger.getLogger(DatabaseConfiguration.class);
