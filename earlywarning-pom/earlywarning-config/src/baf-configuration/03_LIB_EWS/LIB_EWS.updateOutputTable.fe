@@ -50,6 +50,8 @@ IF(SIZE (MATRIX_LIST ) == 0) {
 	RETURN;
 }
 
+VAR BM;
+var a ;
 FOREACH ( MATRIX_LIST as MATRIX ){
 	
     BR = MATRIX.WSMatrix_BusinessModel.Business_Model.BusinessModel_BusinessRule.Business_Rule order by [NAME];
@@ -63,7 +65,20 @@ FOREACH ( MATRIX_LIST as MATRIX ){
     SQL_UNION_MATRIX = SQL_UNION_MATRIX + " SELECT * FROM "+MATRIX.ResultTableName;
     SQL_UNION_MATRIX = SQL_UNION_MATRIX + " UNION ALL";
 
-	SQL_UNION_BM = SQL_UNION_BM + " SELECT * FROM " +MATRIX.WSMatrix_BusinessModel.Business_Model.ResultTableName;
+	BM = MATRIX.WSMatrix_BusinessModel.Business_Model;
+   
+	SQL_UNION_BM = SQL_UNION_BM + " SELECT "+BM.ResultTableName+".* 
+    				  ,( CASE 
+                      		WHEN WARNING_SCORE = '05_NONE' THEN ''
+                      		WHEN WARNING_SCORE = '04_LOW' 		THEN '" +LIB_EWS.getExpressionQuery(BM,'04_LOW')+"'
+                            WHEN WARNING_SCORE = '03_MEDIUM' 	THEN '" +LIB_EWS.getExpressionQuery(BM,'03_MEDIUM')+"'
+                            WHEN WARNING_SCORE = '02_HIGH'		THEN '" +LIB_EWS.getExpressionQuery(BM,'02_HIGH')+"'
+                            WHEN WARNING_SCORE = '01_VERY_HIGH' THEN '" +LIB_EWS.getExpressionQuery(BM,'01_VERY_HIGH')+"'
+                        END
+                      
+                      ) AS BR_DETAILS 
+                    
+                    FROM " +BM.ResultTableName +" "+ BM.ResultTableName;
     SQL_UNION_BM = SQL_UNION_BM + " UNION ALL";
 	
 }
@@ -71,6 +86,7 @@ FOREACH ( MATRIX_LIST as MATRIX ){
 SQL_UNION_MATRIX = SUBSTRING(SQL_UNION_MATRIX, 0, LENGTH(SQL_UNION_MATRIX) - 10);
 SQL_UNION_BM = SUBSTRING(SQL_UNION_BM, 0, LENGTH(SQL_UNION_BM) - 10);
 #BR_LIST = SORT (BR_LIST,'NAME',"ASC");
+
 
 
 SQL = "SELECT "+UNIT_TABLE+".SNDG";
@@ -105,6 +121,7 @@ foreach (BR_LIST as b){
 }
 
 SQL = SQL +" ,"+BM_TABLE+".WARNING_SCORE as WARNING_APP ";
+SQL = SQL +" ,"+BM_TABLE+".BR_DETAILS  as BR_DETAILS  ";
 SQL = SQL +" ,CAST("+MATRIX_TABLE+".COLOR as VARCHAR(50)) as COLOR_APP ";
 # SQL = SQL +",CAST(null as VARCHAR(50)) as WARNING_SYSTEM";
 SQL = SQL +" ,CAST(null as VARCHAR(50)) as COLOR_SYSTEM";
@@ -113,6 +130,8 @@ SQL = SQL +" FROM "+UNIT_TABLE +" "+UNIT_TABLE;
 
 SQL = SQL +" JOIN ("+SQL_UNION_MATRIX+" ) "+MATRIX_TABLE+ "  ON "+MATRIX_TABLE+".SNDG="+UNIT_TABLE+".SNDG";
 SQL = SQL +" JOIN ("+SQL_UNION_BM+") "+BM_TABLE+ "  ON "+BM_TABLE+".SNDG="+UNIT_TABLE+".SNDG";
+
+ 
 
 IF(LIB_DB.isTableExisting(T_OUT_TMP,DBCONNECTION)) THEN{
     SQLEXECUTE("DROP TABLE "+ T_OUT_TMP,DBCONNECTION,NULL,{});
