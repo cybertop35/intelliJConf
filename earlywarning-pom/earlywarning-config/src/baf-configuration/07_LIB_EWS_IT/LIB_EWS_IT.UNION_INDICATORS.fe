@@ -1,0 +1,31 @@
+VAR formulaName = "[LIB_EWS_IT.UNION_INDICATORS.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "select 
+		SNDG
+		,null as TARGET
+		,EXPOSURE_K_EURO_CTPY as EXPOSURE
+		,WORKSPACE as SEGMENT
+	,"+ LIB_EWS_IT.INDICATOR_1() +"  
+	,"+ LIB_EWS_IT.INDICATOR_2() +"   
+	,"+ LIB_EWS_IT.INDICATOR_3() +" 
+	,"+ LIB_EWS_IT.INDICATOR_4() +"
+	,"+ LIB_EWS_IT.INDICATOR_5() +"
+	,"+ LIB_EWS_IT.INDICATOR_6() +" 
+	,"+ LIB_EWS_IT.INDICATOR_7() +" 
+	,"+ LIB_EWS_IT.INDICATOR_8() +" 
+	,"+ LIB_EWS_IT.INDICATOR_9() +"
+	,"+ LIB_EWS_IT.INDICATOR_10() +" 
+	,"+ LIB_EWS_IT.INDICATOR_11() +" 
+	,"+ LIB_EWS_IT.INDICATOR_12() +" 
+	,"+ LIB_EWS_IT.INDICATOR_13() +" 
+	,"+ LIB_EWS_IT.INDICATOR_14() +"
+	from TEWSA0D.CUSTOMER_TABLE";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

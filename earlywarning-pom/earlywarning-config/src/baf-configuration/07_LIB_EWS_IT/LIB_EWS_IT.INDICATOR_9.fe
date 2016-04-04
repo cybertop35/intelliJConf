@@ -1,0 +1,17 @@
+VAR formulaName = "[LIB_EWS_IT.INDICATOR_9.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+
+OVERDRAFT_DD		AS IND_09,
+null AS ERROR_MSG_IND_09
+
+";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

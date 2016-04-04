@@ -1,0 +1,17 @@
+VAR formulaName = "[LIB_EWS_IT.INDICATOR_13.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+
+ISDA_CREDIT_EVENT_DECLARED_CDS 	as IND_13,
+NULL AS ERROR_MSG_IND_13
+
+";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;
