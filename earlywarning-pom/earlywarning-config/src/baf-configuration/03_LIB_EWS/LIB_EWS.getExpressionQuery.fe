@@ -1,10 +1,10 @@
-VAR BM = Param1;
+VAR FT = Param1;
 VAR ID = Param2;
 var expression;
 
-IF (BM == NULL OR ID == NULL) THEN RETURN '';
+IF (FT == NULL OR ID == NULL) THEN RETURN '';
 
-expression =(BM.BusinessModel_WarningScore[Warning_Score.ID=$ID].ExpressionQuery);
+expression = FT.FastTrack_Score[Categorical_Score.ID=$ID].ExpressionQuery;
 
 IF(SIZE(expression) > 0 ) THEN {
 	return TEXTFILETOSTRING(expression[0]);

@@ -18,7 +18,8 @@ var setup =["CRR_INDICATOR":"IND_02",
 			"HAVE_ERROR_MESSAGE":true,
 			"executableQuery" : "SELECT SNDG, EXPOSURE AS CI_EXPOSURE, SCONFINO AS CI_SCONFINO FROM " + analysisUnitInstance.AnalyticalTable,
 			"fieldList" : {"CI_EXPOSURE", "CI_SCONFINO"},
-			"keyColumn" : "SNDG"
+			"keyColumn" : "SNDG",
+			"updateOutput": "LIB_EWS_IT.updateOutputTable_IT(Param1);"
 		];
 DEBUGMESSAGE(formulaName, "END");
 return setup;
