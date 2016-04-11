@@ -1,6 +1,6 @@
 VAR formulaName = "[LIB_EWS_BE.UNION_INDICATORS.fe] ";
 DEBUGMESSAGE(formulaName, "START");
-
+VAR schema = Param1;
 VAR sql = "";
 
 sql = "SELECT SNDG as SNDG,
@@ -110,7 +110,13 @@ sql = "SELECT SNDG as SNDG,
 	,"+ LIB_EWS_BE.INDICATOR_217() +"  
 	,"+ LIB_EWS_BE.INDICATOR_218() +"
 	,"+ LIB_EWS_BE.INDICATOR_219() +"
-	from TEWSA0D.CUSTOMER_TABLE_ESTERE";
+	
+	,"+ LIB_EWS_BE.Model_1_Corporate() +"
+	,"+ LIB_EWS_BE.Model_2_Corporate() +"
+	,"+ LIB_EWS_BE.Model_1_Retail() +"
+	,"+ LIB_EWS_BE.Model_2_Retail() +"
+	
+	from "+schema+".CUSTOMER_TABLE_ESTERE";
 
 
 DEBUGMESSAGE(formulaName, sql);

@@ -1,33 +1,79 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    
+
     <parent>
-        <groupId>com.i4c.framework.java</groupId>
-        <artifactId>fwk-java-root</artifactId>
-        <version>7.0M2</version>
-        <relativePath/>
+        <groupId>com.i4c.framework.web</groupId>
+        <artifactId>fwk-packaged-app-root</artifactId>
+        <version>7.1-SNAPSHOT</version>
+		<relativePath/>
     </parent>
 
-    <groupId>com.i4c.antares.java</groupId>
+    <groupId>com.accenture.ews</groupId>
     <artifactId>earlywarning-config</artifactId>
-    <version>7.0M2.0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
-    <name>${project.artifactId} (${project.version})</name>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>ejb</packaging>
+	
+	<name>${project.artifactId} (${project.version})</name>
+    
+	<properties>
+        <aaap.version>${project.parent.version}</aaap.version>
+        <aaap.catalog.version>7.1.0.A-SNAPSHOT</aaap.catalog.version>
+        <aaap.deployPagesTo>${project.build.directory}/deploy</aaap.deployPagesTo>
+    </properties>
 
-
-    <dependencies>
-    </dependencies>
-
-	<build>
-    <plugins>
-        <plugin>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <configuration>
-                <compilerArgument>-proc:none</compilerArgument>
-            </configuration>
-        </plugin>
-    </plugins>
+    <build>
+        <plugins>
+            <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-dependency-plugin</artifactId></plugin>
+            <plugin><groupId>pl.allegro</groupId><artifactId>grunt-maven-plugin</artifactId></plugin>
+            <plugin><artifactId>maven-assembly-plugin</artifactId></plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-pages</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${aaap.deployPagesTo}</outputDirectory>
+                            <overwrite>true</overwrite>
+                            <resources>
+                                <resource>
+                                    <directory>target</directory>
+                                    <includes>
+                                        <include>layouts/**/*.*</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId><artifactId>truezip-maven-plugin</artifactId><version>1.0-beta-5</version>
+                <executions>
+                    <execution><id>zip-BAF-configurations</id><goals><goal>copy</goal></goals><phase>process-resources</phase>
+                        <configuration>
+                            <fileset>
+                                <directory>src/baf-configuration</directory>
+                                <outputDirectory>${project.build.directory}/${project.build.finalName}_BAF_configurations.zip/</outputDirectory>
+                                <includes><include>**/*</include></includes>
+                            </fileset>
+                        </configuration>
+                    </execution>
+                    <execution><id>zip-BAF-instances</id><goals><goal>copy</goal></goals><phase>process-resources</phase>
+                        <configuration>
+                            <fileset>
+                                <directory>src/baf-instances</directory>
+                                <outputDirectory>${project.build.directory}/${project.build.finalName}_BAF_instances.zip/</outputDirectory>
+                                <includes><include>**/*</include></includes>
+                            </fileset>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 </project>

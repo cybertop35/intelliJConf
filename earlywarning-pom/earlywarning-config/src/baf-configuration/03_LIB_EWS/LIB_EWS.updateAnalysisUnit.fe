@@ -13,7 +13,7 @@ SAVE_LOG("Info", logActionName, "Start Update AnalysisUnit Generica");
 
 IF (analysisUnitID == "CUSTOMER") THEN {
 	
-	result = LIB_EWS_IT.updateAnalysisUnit_IT(analysisUnitID);
+	result = LIB_EWS_IT.UpdateAnalysisUnit_IT(analysisUnitID);
 	
 	if(result <> NULL) THEN {
 		SAVE_LOG("Info", logActionName, "Update AnalysisUnit Italia Completata");

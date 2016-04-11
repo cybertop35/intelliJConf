@@ -1,42 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
-    <modelVersion>4.0.0</modelVersion>
-
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <groupId>com.i4c.framework.enterprise</groupId>
         <artifactId>fwk-enterprise-root</artifactId>
-        <version>7.0M2</version>
-        <relativePath />
+        <version>7.1-SNAPSHOT</version>
+		<relativePath/>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.i4c.antares.enterprise</groupId>
+    <groupId>com.accenture.ews</groupId>
     <artifactId>earlywarning-ear</artifactId>
-    <version>7.0M2.0.1-SNAPSHOT</version>
+    <version>1.0-SNAPSHOT</version>
     <packaging>ear</packaging>
-    <name>${project.artifactId} (${project.version})</name>
+	<name>${project.artifactId} (${project.version})</name>
+   
+   <properties>
+        <aaap.version>${project.parent.version}</aaap.version>
+        <aaap.catalog.version>7.1.0.A-SNAPSHOT</aaap.catalog.version>
+        <aaap.deployPagesTo>${project.build.directory}/deploy</aaap.deployPagesTo>
+        <aaap.deployWidgetsTo>${project.build.directory}/deploy</aaap.deployWidgetsTo>
+    </properties>
 
 
     <dependencies>
-        <dependency><version>${project.parent.version}</version><type>ejb</type><groupId>com.i4c.antares.ejb</groupId><artifactId>antares-core-ejb</artifactId></dependency>
-		
-        <dependency><version>${project.parent.version}</version><type>war</type><groupId>com.i4c.antares.web</groupId><artifactId>ux-web</artifactId></dependency>
-        <dependency><version>${project.parent.version}</version><type>pom</type><groupId>com.i4c.antares.web</groupId><artifactId>ux-web</artifactId></dependency>
-		
-		<dependency><version>${project.version}</version><type>war</type><groupId>com.i4c.antares.web</groupId><artifactId>earlywarning-web</artifactId></dependency>
-        <dependency><version>${project.version}</version><type>pom</type><groupId>com.i4c.antares.web</groupId><artifactId>earlywarning-web</artifactId></dependency>
-		
-        <dependency><version>${project.version}</version><type>ejb</type><groupId>com.i4c.antares.ejb</groupId><artifactId>commons-app-ejb</artifactId></dependency>
-        <dependency><version>${project.version}</version><type>ejb</type><groupId>com.i4c.antares.ejb</groupId><artifactId>predictive-app</artifactId></dependency>
-		<dependency><version>${project.version}</version><type>ejb</type><groupId>com.i4c.antares.ejb</groupId><artifactId>early-warning-app</artifactId></dependency>
-		
-		<dependency><version>${project.version}</version><type>ejb</type><groupId>com.i4c.antares.ejb</groupId><artifactId>earlywarning-auth-ejb</artifactId></dependency>
-        <dependency><version>${project.version}</version><type>jar</type><groupId>com.i4c.antares.java</groupId><artifactId>earlywarning-config</artifactId></dependency>
-    </dependencies>
+        <dependency><version>${aaap.version}</version><type>jar</type><groupId>com.i4c.antares.java</groupId><artifactId>antares-common-java</artifactId></dependency>
+        <dependency><version>${aaap.version}</version><type>ejb</type><groupId>com.i4c.antares.ejb</groupId><artifactId>antares-core-ejb</artifactId></dependency>
+      
+		<dependency><version>${aaap.version}</version><type>war</type><groupId>com.i4c.antares.web</groupId><artifactId>ux-web</artifactId></dependency>
+        <dependency><version>${aaap.version}</version><type>pom</type><groupId>com.i4c.antares.web</groupId><artifactId>ux-web</artifactId></dependency>
 
-    
+		
+		<dependency><version>${aaap.catalog.version}</version><type>ejb</type><groupId>com.i4c.antares.ejb</groupId><artifactId>commons-app-ejb</artifactId></dependency>
+        <dependency><version>${aaap.catalog.version}</version><type>ejb</type><groupId>com.i4c.antares.ejb</groupId><artifactId>predictive-module</artifactId></dependency>
+		<dependency><version>${aaap.catalog.version}</version><type>ejb</type><groupId>com.i4c.antares.ejb</groupId><artifactId>early-warning-app</artifactId></dependency>
+	
+				
+		<dependency><version>${project.version}</version><type>ejb</type><groupId>${project.groupId}</groupId><artifactId>earlywarning-auth-ejb</artifactId></dependency>
+		<dependency><version>${project.version}</version><type>war</type><groupId>${project.groupId}</groupId><artifactId>earlywarning-web</artifactId></dependency>
+        <dependency><version>${project.version}</version><type>pom</type><groupId>${project.groupId}</groupId><artifactId>earlywarning-web</artifactId></dependency>
+		<dependency><version>${project.version}</version><type>ejb</type><groupId>${project.groupId}</groupId><artifactId>earlywarning-config</artifactId></dependency>
+				             
+		<dependency><groupId>com.i4c.antares.ejb</groupId><artifactId>predictive-module</artifactId><version>${aaap.catalog.version}</version><classifier>pages</classifier><type>zip</type><optional>true</optional></dependency>					 
+        <dependency><groupId>${project.groupId}</groupId><artifactId>earlywarning-config</artifactId><version>${project.version}</version><classifier>pages</classifier><type>zip</type><optional>true</optional></dependency>
+		<dependency><groupId>${project.groupId}</groupId><artifactId>earlywarning-widgets</artifactId><version>${project.version}</version><classifier>widgets</classifier><type>zip</type><optional>true</optional></dependency>
+		
+        <dependency><groupId>com.i4c.antares.web</groupId><artifactId>widgets</artifactId><version>${aaap.version}</version><classifier>widgets</classifier><type>zip</type><optional>true</optional></dependency>
+        <dependency><groupId>com.i4c.antares.web</groupId><artifactId>widgets-appc</artifactId><version>${aaap.catalog.version}</version><classifier>widgets</classifier><type>zip</type><optional>true</optional></dependency>
+          
+	
+	</dependencies>
+
+
     <build>
         <plugins>
             <plugin>
@@ -46,36 +60,77 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
                     <displayName>${project.name}</displayName>
                     <modules>
                         <ejbModule><groupId>com.i4c.antares.ejb</groupId><artifactId>antares-core-ejb</artifactId></ejbModule>
+                        <!--<ejbModule><groupId>com.i4c.antares.ejb</groupId><artifactId>engine-forecaster-ejb</artifactId></ejbModule>-->
                         <ejbModule><groupId>com.i4c.antares.ejb</groupId><artifactId>commons-app-ejb</artifactId></ejbModule>
-						<ejbModule><groupId>com.i4c.antares.ejb</groupId><artifactId>earlywarning-auth-ejb</artifactId></ejbModule>
-						<!-- jarModule><groupId>com.i4c.antares.java</groupId><artifactId>earlywarning-config</artifactId></jarModule -->
-                        <webModule><groupId>com.i4c.antares.web</groupId><artifactId>ux-web</artifactId><contextRoot>/${i4c.uxContextRoot}</contextRoot></webModule>
-						<webModule><groupId>com.i4c.antares.web</groupId><artifactId>earlywarning-web</artifactId><contextRoot>/${i4c.contextRoot}</contextRoot></webModule>
+                        <ejbModule><groupId>${project.groupId}</groupId><artifactId>earlywarning-config</artifactId></ejbModule>
+
+                        <webModule><groupId>com.i4c.antares.web</groupId><artifactId>ux-web</artifactId><contextRoot>/$${appContextRoot}</contextRoot></webModule>
+                        <webModule><groupId>${project.groupId}</groupId><artifactId>earlywarning-web</artifactId><contextRoot>/$${legacyContextRoot}</contextRoot></webModule>
                     </modules>
                 </configuration>
             </plugin>
-	
-			<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
+            <plugin><artifactId>maven-assembly-plugin</artifactId>
+                <configuration><descriptorSourceDirectory>src/assembly</descriptorSourceDirectory></configuration>
+                <executions><execution><id>make-assembly</id><phase>install</phase><goals><goal>single</goal></goals></execution></executions>
+            </plugin>
+            <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-dependency-plugin</artifactId>
                 <executions>
-                    <execution>
-                        <id>copy-scripts</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy</goal>
-							<goal>unpack</goal>
-                        </goals>
+                    <execution><id>compose-pages</id><phase>package</phase><goals><goal>unpack-dependencies</goal></goals>
                         <configuration>
                             <outputDirectory>${project.build.directory}</outputDirectory>
-                            <artifactItems>
-                                <artifactItem><groupId>com.i4c.antares.ejb</groupId><artifactId>predictive-app</artifactId><version>${project.version}</version><classifier>pages</classifier><overWrite>true</overWrite><type>zip</type></artifactItem>
-                            </artifactItems>
+                            <classifier>pages</classifier>
+                            <type>zip</type>
+                            <excludeTransitive>true</excludeTransitive>
+                            <useSubDirectoryPerArtifact>false</useSubDirectoryPerArtifact>
+                        </configuration>
+                    </execution>
+                    <execution><id>compose-widgets</id><phase>package</phase><goals><goal>unpack-dependencies</goal></goals>
+                        <configuration><outputDirectory>${project.build.directory}</outputDirectory>
+                            <classifier>widgets</classifier>
+                            <type>zip</type>
+                            <excludeTransitive>true</excludeTransitive>
+                            <useSubDirectoryPerArtifact>false</useSubDirectoryPerArtifact>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
-		
+            <plugin><artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution><id>copy-pages</id><phase>install</phase><goals><goal>copy-resources</goal></goals>
+                        <configuration>
+                            <outputDirectory>${aaap.deployPagesTo}</outputDirectory><overwrite>true</overwrite>
+                            <resources><resource><directory>${project.build.directory}/pages/layouts</directory></resource></resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-widgets</id><phase>install</phase><goals><goal>copy-resources</goal></goals>
+                        <configuration>
+                            <outputDirectory>${aaap.deployWidgetsTo}</outputDirectory><overwrite>true</overwrite>
+                            <resources><resource><directory>target/widgets</directory>
+                                <includes><include>assets/**/*.*</include><include>widgets/**/*.*</include></includes></resource></resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile><id>download-suite</id>
+            <activation><property><name>downloadSuite</name></property></activation>
+            <build>
+                <plugins>
+                    <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-dependency-plugin</artifactId>
+                        <executions><execution><id>download-suite</id><phase>package</phase><goals><goal>copy</goal></goals>
+                            <configuration><outputDirectory>${project.build.directory}</outputDirectory>
+                                <artifactItems><artifactItem><groupId>com.i4c.framework</groupId><artifactId>jboss7-standalone-aaap</artifactId>
+                                    <version>${aaap.version}</version><classifier>suite</classifier><overWrite>true</overWrite><type>zip</type></artifactItem></artifactItems>
+                            </configuration></execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>

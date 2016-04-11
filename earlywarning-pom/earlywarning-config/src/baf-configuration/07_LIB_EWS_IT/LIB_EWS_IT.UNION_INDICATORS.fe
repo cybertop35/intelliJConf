@@ -1,6 +1,6 @@
 VAR formulaName = "[LIB_EWS_IT.UNION_INDICATORS.fe] ";
 DEBUGMESSAGE(formulaName, "START");
-
+VAR schema = Param1;
 VAR sql = "";
 
 sql = "select 
@@ -22,7 +22,7 @@ sql = "select
 	,"+ LIB_EWS_IT.INDICATOR_12() +" 
 	,"+ LIB_EWS_IT.INDICATOR_13() +" 
 	,"+ LIB_EWS_IT.INDICATOR_14() +"
-	from TEWSA0D.CUSTOMER_TABLE";
+	from "+schema+".CUSTOMER_TABLE";
 
 
 DEBUGMESSAGE(formulaName, sql);

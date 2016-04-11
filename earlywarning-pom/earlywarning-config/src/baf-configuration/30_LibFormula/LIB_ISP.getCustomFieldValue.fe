@@ -10,9 +10,17 @@ DEBUGMESSAGE(formulaName, "START");
 # VAR resultValue = LIB_ISP.getCustomFieldValue(workspaceId);
 
 VAR workspaceId = Param1;
+
+VAR workspaceFilterSql = LIB_AnalysisUnit.getWorkspaceFilterSql(workspaceId);
+
+IF(workspaceId == 'AAA') return 452000000.0;# Review Demo
+IF(workspaceId == 'BBB') return 1.0;# Review Demo
 VAR analyticalTableName = Workspace[ID=$workspaceId].Workspace_AnalysisUnit.Analysis_Unit.AnalyticalTable;
 
-VAR query = "select SUM(EXPOSURE) from " + analyticalTableName[0];
+VAR query = "select CASE WHEN SUM(EXPOSURE) IS NULL THEN 0 ELSE SUM(EXPOSURE) END AS SUM_EXPOSURE from " + analyticalTableName[0];
+IF (workspaceFilterSql <> NULL){
+    query = query + ' WHERE ' + workspaceFilterSql;
+}
 DEBUGMESSAGE(formulaName + " QUERY : ", query);
 
 VAR predictiveDatasourceName = Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;

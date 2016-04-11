@@ -1,50 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>com.i4c.framework.web</groupId>
+        <artifactId>fwk-delivery-web-root</artifactId>
+        <version>7.1-SNAPSHOT</version>
+        <relativePath/>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-	<modelVersion>4.0.0</modelVersion>
-
-	<parent>
-		<groupId>com.i4c.framework.web</groupId>
-		<artifactId>fwk-delivery-web-root</artifactId>
-		<version>7.0M2</version>
-        <relativePath />
-	</parent>
-
-	<groupId>com.i4c.antares.web</groupId>
-	<artifactId>earlywarning-web</artifactId>
-	<version>7.0M2.0.1-SNAPSHOT</version>
-	<name>${project.artifactId} (${project.version})</name>
+    <groupId>com.accenture.ews</groupId>
+    <artifactId>earlywarning-web</artifactId>
+    <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
-
-	<dependencies>
-		
-		<dependency><groupId>com.i4c.antares.web</groupId><artifactId>earlywarning-ws-web</artifactId><version>${project.version}</version><type>war</type><scope>provided</scope></dependency>
-		<dependency><groupId>com.i4c.antares.web</groupId><artifactId>earlywarning-ws-web</artifactId><version>${project.version}</version><type>pom</type></dependency>
-		
-		<dependency><groupId>com.i4c.antares.web</groupId><type>war</type><version>${project.parent.version}</version><artifactId>antares-web</artifactId><scope>provided</scope></dependency>
-		<dependency><groupId>com.i4c.antares.web</groupId><version>${project.parent.version}</version><type>pom</type><artifactId>antares-web</artifactId></dependency>
-
-		<dependency><groupId>com.i4c.antares.web</groupId><type>war</type><version>${project.parent.version}</version><artifactId>ux-web</artifactId><scope>provided</scope></dependency>
-		<dependency><groupId>com.i4c.antares.web</groupId><version>${project.parent.version}</version><type>pom</type><artifactId>ux-web</artifactId></dependency>
-
-	</dependencies>
+	<name>${project.artifactId} (${project.version})</name>
 	
-	
-		    <build>
+    <properties>
+        <aaap.version>${project.parent.version}</aaap.version>
+        <aaap.catalog.version>7.1.0.A-SNAPSHOT</aaap.catalog.version>
+    </properties>
+
+    <dependencies> <!-- add 2 dependencies for each included 'web' module -->
+        <dependency><groupId>com.i4c.antares.web</groupId><version>${aaap.version}</version><type>war</type><artifactId>antares-web</artifactId><scope>provided</scope></dependency>
+        <dependency><groupId>com.i4c.antares.web</groupId><version>${aaap.version}</version><type>pom</type><artifactId>antares-web</artifactId></dependency>
+
+        <!-- uncomment the following 2 lines to add Forecasting Pillar -->
+        <dependency><groupId>${project.groupId}</groupId><version>${project.version}</version><type>war</type><artifactId>earlywarning-ws-web</artifactId><scope>provided</scope></dependency>
+        <dependency><groupId>${project.groupId}</groupId><version>${project.version}</version><type>pom</type><artifactId>earlywarning-ws-web</artifactId></dependency>
+    </dependencies>
+
+    <build>
         <plugins>
             <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-war-plugin</artifactId>
                 <configuration>
                     <overlays> 
                         <overlay><groupId>com.i4c.antares.web</groupId><artifactId>antares-web</artifactId></overlay>
-<!-- 						<overlay><groupId>com.i4c.antares.web</groupId><artifactId>ux-web</artifactId></overlay> -->
-						<overlay><groupId>com.i4c.antares.web</groupId><artifactId>earlywarning-ws-web</artifactId></overlay>
+                        <overlay><groupId>${project.groupId}</groupId><artifactId>earlywarning-ws-web</artifactId></overlay>
                     </overlays>
                 </configuration>
             </plugin>
         </plugins>
-    </build> 
-	
-	
+    </build>
+
 </project>
 

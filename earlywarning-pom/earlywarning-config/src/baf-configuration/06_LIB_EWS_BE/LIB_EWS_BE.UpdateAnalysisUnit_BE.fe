@@ -14,6 +14,8 @@ VAR CAU_TABLE_NAME = Analysis_Unit[ID=$analysisUnitID].AnalyticalTable;
 VAR CAU_TMP_TABLE_NAME = CAU_TABLE_NAME+"_TMP";
 VAR CAU_BCK_TABLE_NAME = CAU_TABLE_NAME+"_BCK";
 
+VAR schema = Analysis_Unit[ID=$analysisUnitID].TeradataSchema;
+
 
 VAR DBCONNECTION = Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
 
@@ -26,7 +28,7 @@ IF(LIB_DB.isTableExisting(CAU_TMP_TABLE_NAME,DBCONNECTION)) THEN
 
 VAR QUERY ="CREATE TABLE "+ CAU_TMP_TABLE_NAME +" 
 			as ( 
-				"+LIB_EWS_BE.UNION_INDICATORS() +" 
+				"+LIB_EWS_BE.UNION_INDICATORS(schema) +" 
 			) WITH DATA";
 
 SQLEXECUTE(QUERY,DBCONNECTION,NULL,{});

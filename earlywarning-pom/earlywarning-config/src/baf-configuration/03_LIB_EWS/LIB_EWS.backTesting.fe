@@ -23,7 +23,7 @@ VAR backTestingCRRTable		= analysisUnitTable+"_CRR_DEF";
 VAR externalInfoFormula 	= analysisUnit.CustomerInfoFormula;	
 VAR JDBC_NAME 				= Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
 
-VAR SETUP = EVAL(externalInfoFormula, {});
+VAR SETUP = EVAL(externalInfoFormula, {analysisUnit});
 VAR  CRR_COLUMN_NAME = SETUP["CRR_INDICATOR"];
 
 
@@ -31,7 +31,7 @@ VAR  CRR_COLUMN_NAME = SETUP["CRR_INDICATOR"];
 ## Creazione Tabelle  ##
 ########################
 COLUMNS = analysisUnit.AnalysisUnit_Variable.Variable.ColumnName order by [ColumnName];
-SQL_COLUMNS = " SNDG,EXPOSURE,CURRENT_DATE as HISTORY_DATE";
+SQL_COLUMNS = " SNDG,CURRENT_DATE as HISTORY_DATE";
 
 FOREACH( COLUMNS as column ) {
 	if(column <> "TARGET" and column <> "SNDG"){

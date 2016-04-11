@@ -1,0 +1,17 @@
+VAR formulaName = "[LIB_EWS_BE.Model_1_Retail.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "(EXP(5.183951 + (0.4554721 	* IND_212)  
+					 + (0.18027 	* IND_213)
+					 + (0.0251268 	* IND_1)
+					 + (3.564812 	* IND_205)
+					 + (0.5329995 	* IND_56)
+					 ) 
+		) as MOD_RETAIL_1";
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

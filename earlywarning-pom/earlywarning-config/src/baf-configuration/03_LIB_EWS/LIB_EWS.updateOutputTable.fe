@@ -30,7 +30,7 @@ VAR T_OUT 		= analysisUnitInstance.ResultTableName;
 VAR T_OUT_VIEW 	= "OUTPUT_IRIS_WEB";
 
 VAR externalInfoFormula 	= analysisUnitInstance.CustomerInfoFormula;
-VAR SETUP = EVAL(externalInfoFormula, {});
+VAR SETUP = EVAL(externalInfoFormula, {analysisUnitInstance});
 VAR HAVE_ERROR_MESSAGE = SETUP["HAVE_ERROR_MESSAGE"];
 
 VAR DBCONNECTION = Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
