@@ -1,0 +1,22 @@
+VAR formulaName = "[LIB_EWS.geQueryScoreModel] ";
+DEBUGMESSAGE(formulaName, "START");
+
+var model = Param1;
+VAR matrix = Param2;
+VAR threshold = matrix.Matrix_Model[Model.ID=$model.ID].Matrix_Model_Threshold;
+
+VAR SQL;
+var tmp = "(CASE ";
+SQL =  "SELECT SNDG";
+
+foreach(threshold as t){
+	tmp = tmp+" WHEN "+model.ModelColumnName+" > "+t.From+" AND "+model.ModelColumnName+" <= "+t.To+" THEN '"+t.LabelKey+"'";
+}
+tmp = tmp+ " END ) as CATEGORICAL_SCORE";
+
+SQL =SQL +","+tmp;
+SQL =SQL +" FROM "+ model.ResultTableName;
+
+DEBUGMESSAGE(formulaName, "END");
+
+RETURN SQL;

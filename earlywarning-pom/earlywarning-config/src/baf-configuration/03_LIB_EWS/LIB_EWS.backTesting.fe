@@ -68,7 +68,7 @@ SQL ="Create view "+backTestingHistoryView+" as
 			and EXTRACT (MONTH FROM H.HISTORY_DATE) = EXTRACT (MONTH FROM ADD_MONTHS( CURRENT_DATE,-7))
 			and "+CRR_COLUMN_NAME+" <> 1" ;
   
-IF (not LIB_DB.isTableExisting(backTestingHistoryView,JDBC_NAME)) {
+IF (length(backTestingHistoryView) <> 0 AND not LIB_DB.isTableExisting(backTestingHistoryView,JDBC_NAME)) {
 	SQLEXECUTE(SQL,JDBC_NAME,0,{});
     SAVE_LOG("Info", logActionName, "Create view "+backTestingHistoryView);
 }

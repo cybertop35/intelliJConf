@@ -1,0 +1,48 @@
+VAR formulaName = "[LIB_EWS_BE.updateOutputTable_BE] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR analysisUnitID = Param1;
+
+VAR analysisUnitInstance = Analysis_Unit[ID=$analysisUnitID];
+VAR wp_list = analysisUnitInstance.Workspace_AnalysisUnit.Workspace.Workspace_Plan[Status="Production"];
+
+VAR T_OUT_TMP 		= analysisUnitInstance.ResultTableName+"_TMP";
+VAR T_OUT_BCK 		= analysisUnitInstance.ResultTableName+"_BCK";
+VAR T_OUT 			= analysisUnitInstance.ResultTableName;
+VAR DBCONNECTION 	= Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
+VAR SQL;
+VAR CREATED = FALSE;
+
+foreach(wp_list as wp){
+		SQL = SQL + LIB_EWS_BE.getQueryOutputForWorkplace(wp);
+		SQL = SQL + " UNION ALL ";
+}
+SQL = SUBSTRING(SQL, 0, LENGTH(SQL) - 10);
+
+IF(LIB_DB.isTableExisting(T_OUT_TMP,DBCONNECTION)) THEN{
+    SQLEXECUTE("DROP TABLE "+ T_OUT_TMP,DBCONNECTION,NULL,{});
+}
+    
+SQL = "CREATE TABLE "+T_OUT_TMP+" AS ( "+ SQL+" ) WITH DATA";
+SQLEXECUTE(SQL,DBCONNECTION,NULL,{});
+
+    
+CREATED = LIB_DB.isTableExistingAndHavingData(T_OUT_TMP, DBCONNECTION);
+
+IF(CREATED) THEN {
+    IF(LIB_DB.isTableExisting(T_OUT_BCK,DBCONNECTION)) THEN    {
+        SQLEXECUTE("DROP TABLE "+T_OUT_BCK,DBCONNECTION,NULL,{});
+    }
+    IF(LIB_DB.isTableExisting(T_OUT,DBCONNECTION)) THEN    {
+        LIB_DB.renameTable(T_OUT,T_OUT_BCK,DBCONNECTION);
+    }
+       
+    LIB_DB.renameTable(T_OUT_TMP,T_OUT,DBCONNECTION);
+ 			
+	return NOW();
+    
+}
+return null;
+
+DEBUGMESSAGE(formulaName, "END");
+

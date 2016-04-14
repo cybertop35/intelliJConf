@@ -1,0 +1,139 @@
+VAR formulaName = "[LIB_EWS_BE.getQueryOutputForWorkplace] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR workspacePlan =  Param1;
+
+VAR workspacePlanId = workspacePlan.ID;
+VAR fastTrackId 	= workspacePlan.WorkspacePlan_FastTrack.Fast_Track.ID;
+VAR matrixId 		= workspacePlan.WorkspacePlan_Matrix.Matrix.ID;
+
+
+VAR matrixInstance 		= Matrix[ID=$matrixId];
+VAR fastTrackInstance 	= Fast_Track[ID=$fastTrackId];
+var workspaceInstance 	= workspacePlan.Workspace;
+VAR models 				= matrixInstance.Matrix_Model.Model order by[NAME asc];
+var workspaceId 		= workspaceInstance.ID;
+
+VAR analysisUnitInstance 	= Utils.SingleSetToElement(workspaceInstance.Workspace_AnalysisUnit.Analysis_Unit);
+VAR externalInfoFormula 	= analysisUnitInstance.CustomerInfoFormula;	
+VAR JDBC_NAME 				= Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
+VAR SETUP 					= EVAL(externalInfoFormula, {analysisUnitInstance});
+VAR HAVE_ERROR_MESSAGE 		= SETUP["HAVE_ERROR_MESSAGE"];
+VAR typeOfDataToUse 		= "actual";
+VAR AnalysisTable 			= analysisUnitInstance.AnalyticalTable;
+VAR variables 				= analysisUnitInstance.AnalysisUnit_Variable.Variable order by [ColumnName ASC];
+VAR adjustments  			= matrixInstance.Adjustment ORDER BY [OrderPosition];
+
+
+
+VAR noneScore;
+VAR tableMatrix;
+VAR SQL;
+VAR ERROR_SQL;
+VAR maxModel=5;
+VAR configuration;
+
+
+##### RECUPERO FAST TRACK #####################
+VAR conditionForSingleCategoricalScore = Categorical_Score[IsFastTrackCategory=TRUE].[ID]  ORDER BY [OrderPosition];
+noneScore = conditionForSingleCategoricalScore[SIZE(conditionForSingleCategoricalScore)-1][0];
+var tableFT;
+if (fastTrackInstance <> NULL) {
+    conditionForSingleCategoricalScore = fastTrackInstance.FastTrack_Score.[Categorical_Score.ID,ExpressionQuery] ORDER BY [Categorical_Score.OrderPosition];
+}
+noneScore = conditionForSingleCategoricalScore[SIZE(conditionForSingleCategoricalScore)-1][0];
+VAR array = {};
+VAR expressionSQLQuery;
+foreach (conditionForSingleCategoricalScore as cs){
+    if (fastTrackInstance <> NULL) {
+        # obtaining SQL query
+        expressionSQLQuery = LIB_BRJson.getSQLquery(TEXTFILETOSTRING(cs[1]));
+        ADDELEMENT(array, {cs[0], expressionSQLQuery});
+    }
+    else {
+        ADDELEMENT(array, {cs[0], NULL});
+        }
+    }
+tableFT = "(" + LIB_AnalysisUnit.getDecisionListCalculationQuery(array, analysisUnitInstance, typeOfDataToUse, workspaceId) + ")";
+
+##### RECUPERO LA MATRICE #####################
+##NON CONSIDERO IL FAST_TRACK NEL CALCOLO #####
+configuration	= LIB_EWS.getMatrixConfiguration(matrixInstance,null,typeOfDataToUse);
+tableMatrix 	= LIB_AnalysisUnit.getMatrixCalculationQuery(configuration);
+
+
+##### RECUPERO ADJUSTAMENT ####################
+var adjConfiguration = {};
+var categoricalScores = {};
+expressionSQLQuery = {};
+foreach(adjustments as adj){
+    categoricalScores = {};
+    foreach (adj.Adjustment_Swap.Category_Swap.[Category_Swap_Old.Categorical_Score.ID, Category_Swap_New.Categorical_Score.ID] ORDER BY [OrderPosition] as cs){
+        ADDELEMENT(categoricalScores, [
+            'from'  : cs[0],
+            'to'    : cs[1]
+        ]);
+    }
+    expressionSQLQuery = LIB_BRJson.getSQLquery(TEXTFILETOSTRING(adj.ExpressionQuery));
+    ADDELEMENT(adjConfiguration, ['adjID': adj.ID, 'query': expressionSQLQuery, 'categoricalScores': categoricalScores]);
+}
+var calculationQueryWithAdj = LIB_AnalysisUnit.getAdjustmentCalculationQuery(adjConfiguration, tableMatrix, configuration['sourceTable'], configuration['keyColumn']);
+
+
+##### RECUPERO I MODELLI #####################
+VAR sqlModelJoin;
+VAR columnModel;
+var modelCount = 1;
+foreach (models as model){
+	sqlModelJoin = sqlModelJoin +" JOIN ( "+ LIB_EWS.getQueryScoreModel(model,matrixInstance,configuration['keyColumn']) +")"+model.ID+" ON "+model.ID+".SNDG="+AnalysisTable+".SNDG";
+	columnModel = columnModel +", CAST("+model.ID+".CATEGORICAL_SCORE as VARCHAR(50)) as RESULT_MODULE_0"+modelCount;
+	modelCount = modelCount+1;
+}
+
+############## RECUPERO GLI INDICATORI ###########################
+SQL = "SELECT "+AnalysisTable+".SNDG,"+AnalysisTable+".EXPOSURE,"+AnalysisTable+".SEGMENT";
+
+foreach (variables as v){
+ 	IF( v.ColumnName <> "TARGET" and v.ColumnName <> "EXPOSURE" and v.ColumnName <> "SNDG" and v.ColumnName <> "SEGMENT" ){
+		IF(v.Variable_DataType.Data_Type.ID == "STRING") {
+			SQL = SQL +",cast("+AnalysisTable+"."+v.ColumnName+" as VARCHAR(50) ) as "+v.ColumnName ;
+		}
+		IF(v.Variable_DataType.Data_Type.ID == "REAL") {
+			SQL = SQL +",cast("+AnalysisTable+"."+v.ColumnName+" as DECIMAL(18,8) ) as "+v.ColumnName ;
+		}
+        if(HAVE_ERROR_MESSAGE) {
+			ERROR_SQL = ERROR_SQL +",CAST("+AnalysisTable+".ERROR_MSG_"+v.ColumnName+" AS VARCHAR(50) ) as ERROR_MSG_" +v.ColumnName;
+        }
+	}
+}
+
+SQL = SQL + ERROR_SQL;
+SQL = SQL + ",cast(WS.CATEGORICAL_SCORE as VARCHAR(50) ) as  SEMAFORO_APP";
+SQL = SQL +" ,CAST(null as VARCHAR(50)) as SEMAFORO_SYSTEM";
+SQL = SQL + ",cast(FT.CATEGORICAL_SCORE as VARCHAR(50) ) as  FAST_TRACK";
+
+foreach(adjustments as adj) {
+	SQL = SQL +" ,CAST((CASE when ADJ.ADJID = '"+adj.ID+"' then 1  END )as VARCHAR(50)) as EXCEPTION_"+(adj.OrderPosition+1);
+}
+
+SQL = SQL +columnModel;
+while(modelCount<=maxModel){
+	SQL = SQL +" ,CAST(null as VARCHAR(50)) as RESULT_MODULE_0"+modelCount;
+	modelCount = modelCount + 1;
+}
+SQL = SQL +" ,CAST(MATRIX.CATEGORICAL_SCORE as VARCHAR(50)) as RESULT_FIRST_RISK_MATRIX";
+SQL = SQL +" ,CAST(null as VARCHAR(200)) as DETECTION_RATIONALE";
+
+SQL = SQL +" FROM "+AnalysisTable +" "+AnalysisTable;
+SQL = SQL +" JOIN (SELECT * FROM "+workspacePlan.ResultTableName +") ws ON WS.SNDG = "+AnalysisTable+".SNDG";
+SQL = SQL + sqlModelJoin;
+SQL = SQL +"JOIN ("+tableFT+" ) FT  ON FT.SNDG="+AnalysisTable+".SNDG";
+SQL = SQL +"JOIN ("+ tableMatrix +") MATRIX ON MATRIX.SNDG = "+AnalysisTable+".SNDG";
+
+IF(SIZE(adjustments) > 0 ) then {
+	SQL = SQL +"JOIN ("+ calculationQueryWithAdj +") ADJ ON ADJ.SNDG = "+AnalysisTable+".SNDG";
+}
+
+DEBUGMESSAGE(formulaName, "END");
+
+return SQL;

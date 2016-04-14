@@ -1,0 +1,13 @@
+VAR formulaName = "[LIB_EWS.UpdateWorkpalceStatusAll] ";
+DEBUGMESSAGE(formulaName, "START");
+
+
+VAR list = Workspace_Plan[Status="Production"];
+foreach(list as plan) {
+	LIB_AnalysisUnit.updateWorkspacePlanResultTable(plan);
+}
+
+
+
+
+DEBUGMESSAGE(formulaName, "END");

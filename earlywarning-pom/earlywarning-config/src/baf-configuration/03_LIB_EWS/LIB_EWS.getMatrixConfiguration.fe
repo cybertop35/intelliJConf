@@ -1,0 +1,60 @@
+VAR formulaName = "[LIB_EWS.getMatrixConfiguration] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR matrix 		= Param1;
+var fastTrack 	= Param2;
+VAR dataToUse 	= Param3;
+
+var configuration = [];
+var analysisUnitInstance = Utils.SingleSetToElement(matrix.Matrix_Workspace.Workspace.Workspace_AnalysisUnit.Analysis_Unit);
+VAR tableToUse = IIF(dataToUse=='actual', analysisUnitInstance.AnalyticalTable, analysisUnitInstance.BktestAnalyticalTable);
+configuration['sourceTable'] = "(SELECT * FROM " + tableToUse + " t WHERE " + LIB_AnalysisUnit.getWorkspaceFilterSql(matrix.Matrix_Workspace.Workspace.ID);
+if (fastTrack <> NULL) {
+    VAR fastTrackClause = LIB_AnalysisUnit.getFastTrackClause(fastTrack, tableToUse);
+    if (fastTrackClause <> NULL) {
+        configuration['sourceTable'] = configuration['sourceTable'] + " AND NOT EXISTS ( " + fastTrackClause + " ) ";
+    }
+}
+configuration['sourceTable'] = configuration['sourceTable'] + ")";
+configuration['keyColumn'] = Utils.SingleSetToElement(analysisUnitInstance.AnalysisUnit_Variable.Variable[IsKeyColumn=TRUE].ColumnName);
+
+var xModel = Utils.SingleSetToElement(matrix.Matrix_Model[IsXAxis=TRUE]);
+configuration['tableX'] = xModel.Model.ResultTableName;
+configuration['scoreColX'] = xModel.Model.ModelColumnName;
+var allXThresholdsTo = matrix.Matrix_Model[IsXAxis=TRUE].Matrix_Model_Threshold.To ORDER BY [To DESC];
+
+var yModel = Utils.SingleSetToElement(matrix.Matrix_Model[IsXAxis=FALSE]);
+configuration['tableY'] = yModel.Model.ResultTableName;
+configuration['scoreColY'] = yModel.Model.ModelColumnName;
+var allYThresholdsTo = matrix.Matrix_Model[IsXAxis=FALSE].Matrix_Model_Threshold.To ORDER BY [To DESC];
+
+var count = 0;
+var cells = {};
+var cell = [];
+var thId;
+var x;
+var y;
+
+foreach (matrix.Matrix_Bin as bin) {
+	cell = [];
+	thId = bin.X;
+    x = matrix.Matrix_Model.Matrix_Model_Threshold[ID=$thId];
+    thId = bin.Y;
+    y = matrix.Matrix_Model.Matrix_Model_Threshold[ID=$thId];
+    PUT(cell, 'fromX', x.From);
+    if (allXThresholdsTo[0] <> x.To) {
+    	PUT(cell, 'toX', x.To);
+    }
+    PUT(cell, 'fromY', y.From);
+    if (allYThresholdsTo[0] <> y.To) {
+    	PUT(cell, 'toY', y.To);
+    }
+    PUT(cell, 'categoricalScore', bin.CategoricalScoreId);
+    ADDELEMENT(cells, cell);
+}
+
+configuration['cells'] = cells;
+
+DEBUGMESSAGE(formulaName, "END");
+
+return configuration;
