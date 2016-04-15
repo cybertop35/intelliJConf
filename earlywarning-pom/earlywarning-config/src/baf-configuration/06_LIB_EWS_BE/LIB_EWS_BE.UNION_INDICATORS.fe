@@ -8,6 +8,7 @@ sql = "SELECT SNDG as SNDG,
 			null as TARGET, 
 			REGULAMENTARY_SEGMENT as SEGMENT
 			,SYSTEM_DATE
+			,COUNTRY
 	,"+ LIB_EWS_BE.INDICATOR_1() +"  
 	,"+ LIB_EWS_BE.INDICATOR_2() +"   
 	,"+ LIB_EWS_BE.INDICATOR_3() +"  
@@ -110,11 +111,6 @@ sql = "SELECT SNDG as SNDG,
 	,"+ LIB_EWS_BE.INDICATOR_217() +"  
 	,"+ LIB_EWS_BE.INDICATOR_218() +"
 	,"+ LIB_EWS_BE.INDICATOR_219() +"
-	
-	,"+ LIB_EWS_BE.Model_1_Corporate() +"
-	,"+ LIB_EWS_BE.Model_2_Corporate() +"
-	,"+ LIB_EWS_BE.Model_1_Retail() +"
-	,"+ LIB_EWS_BE.Model_2_Retail() +"
 	
 	from "+schema+".CUSTOMER_TABLE_ESTERE";
 

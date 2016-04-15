@@ -1,0 +1,33 @@
+VAR formulaName = "[LIB_EWS_BE.getDetectionRationaleValue] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR fastTrackInstance =Param1;
+VAR fastTrackColumnName = Param2;
+#VAR adjMap = Param3; #MAPPA NOME COLONNA - Adjustments
+VAR sql;
+VAR brList = {};
+# case when DATA_t1 is null then 'BILA000;' ELSE '' END ||
+
+if (fastTrackInstance <> NULL)  {
+	
+	sql = "CASE WHEN "+fastTrackColumnName+ " = 1 THEN ";
+	brList = fastTrackInstance.FastTrack_BusinessRule.Business_Rule;
+	foreach (brList as br ){
+		sql= sql + " case when "+ br. SqlQuery       +" then '"+br.NAME+"' ELSE '' END || ";
+		
+	}
+	sql =  sql + "''";
+	
+	
+	
+	
+	sql = sql +"END";
+}
+
+
+
+
+DEBUGMESSAGE(formulaName, "END");
+
+
+return sql;

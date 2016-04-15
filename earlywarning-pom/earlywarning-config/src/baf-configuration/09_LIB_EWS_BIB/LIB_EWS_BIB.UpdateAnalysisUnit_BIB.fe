@@ -10,12 +10,14 @@ VAR analysisUnitID = Param1;
 VAR RESULT;
 VAR CREATED;
 
-VAR CAU_TABLE_NAME = Analysis_Unit[ID=$analysisUnitID].AnalyticalTable;
+VAR analysisUnitInstance = Analysis_Unit[ID=$analysisUnitID];
+
+VAR CAU_TABLE_NAME = analysisUnitInstance.AnalyticalTable;
 VAR CAU_TMP_TABLE_NAME = CAU_TABLE_NAME+"_TMP";
 VAR CAU_BCK_TABLE_NAME = CAU_TABLE_NAME+"_BCK";
 
-VAR schema = Analysis_Unit[ID=$analysisUnitID].TeradataSchema;
-
+VAR schema = analysisUnitInstance.TeradataSchema;
+VAR variables = analysisUnitInstance.AnalysisUnit_Variable.Variable order by [ColumnName ASC];
 
 VAR DBCONNECTION = Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
 
@@ -25,10 +27,30 @@ IF(LIB_DB.isTableExisting(CAU_TMP_TABLE_NAME,DBCONNECTION)) THEN
 {
 	SQLEXECUTE("DROP TABLE "+ CAU_TMP_TABLE_NAME,DBCONNECTION,NULL,{});
 }
+VAR select = "SELECT SNDG,
+					EXPOSURE,
+					null as TARGET, 
+					SEGMENT
+					,SYSTEM_DATE
+					,"+ LIB_EWS_BE.Model_1_Corporate() +"
+					,"+ LIB_EWS_BE.Model_2_Corporate() +"
+					,"+ LIB_EWS_BE.Model_1_Retail() +"
+					,"+ LIB_EWS_BE.Model_2_Retail() +"
+				FROM +" "+analysisUnitInstance.sourceTable
+				+"WHERE COUNTRY='BIB'";
+			
+foreach (variables as v){
+ 	IF( v.ColumnName <> "TARGET" and v.ColumnName <> "EXPOSURE" and v.ColumnName <> "SNDG" and v.ColumnName <> "SEGMENT" ){
+		IF(v.Variable_DataType.Data_Type.ID == "STRING") {
+			select = select +","+v.ColumnName+" " ;
+		}
+	}
+}
 
 VAR QUERY ="CREATE TABLE "+ CAU_TMP_TABLE_NAME +" 
 			as ( 
-				"+LIB_EWS_BE.UNION_INDICATORS(schema) +" 
+				"+select+"
+				
 			) WITH DATA";
 
 SQLEXECUTE(QUERY,DBCONNECTION,NULL,{});

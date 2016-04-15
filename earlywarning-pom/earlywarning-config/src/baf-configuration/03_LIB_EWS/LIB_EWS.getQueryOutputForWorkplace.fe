@@ -110,19 +110,25 @@ foreach (variables as v){
 SQL = SQL + ERROR_SQL;
 SQL = SQL + ",cast(WS.CATEGORICAL_SCORE as VARCHAR(50) ) as  SEMAFORO_APP";
 SQL = SQL +" ,CAST(null as VARCHAR(50)) as SEMAFORO_SYSTEM";
-SQL = SQL + ",cast(FT.CATEGORICAL_SCORE as VARCHAR(50) ) as  FAST_TRACK";
+SQL = SQL + ",cast( NVL2(FT.CATEGORICAL_SCORE,1,0) as VARCHAR(1) ) as  FAST_TRACK";
 
+VAR adjMap;
 foreach(adjustments as adj) {
 	SQL = SQL +" ,CAST((CASE when ADJ.ADJID = '"+adj.ID+"' then 1  END )as VARCHAR(50)) as EXCEPTION_"+(adj.OrderPosition+1);
+	put(adjMap,"EXCEPTION_"+(adj.OrderPosition+1)",adj);
 }
 
 SQL = SQL +columnModel;
 while(modelCount<=maxModel){
 	SQL = SQL +" ,CAST(null as VARCHAR(50)) as RESULT_MODULE_0"+modelCount;
 	modelCount = modelCount + 1;
+	
 }
 SQL = SQL +" ,CAST(MATRIX.CATEGORICAL_SCORE as VARCHAR(50)) as RESULT_FIRST_RISK_MATRIX";
-SQL = SQL +" ,CAST(null as VARCHAR(200)) as DETECTION_RATIONALE";
+SQL = SQL +" ,CAST("+LIB.EWS_EB.getDetectionRationaleValue(fastTrackInstance,'FAST_TRACK',adjMap)+" as VARCHAR(200)) as DETECTION_RATIONALE";
+
+
+
 
 SQL = SQL +" FROM "+AnalysisTable +" "+AnalysisTable;
 SQL = SQL +" JOIN (SELECT * FROM "+workspacePlan.ResultTableName +") ws ON WS.SNDG = "+AnalysisTable+".SNDG";
