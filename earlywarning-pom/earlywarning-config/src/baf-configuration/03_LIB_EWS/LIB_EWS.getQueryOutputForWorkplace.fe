@@ -110,7 +110,9 @@ while(modelCount<=maxModel){
 
 #+LIB.EWS_EB.getDetectionRationaleValue(fastTrackInstance,'FAST_TRACK',adjMap)
 SQL = SQL +" ,CAST(MATRIX.CATEGORICAL_SCORE as VARCHAR(50)) as RESULT_FIRST_RISK_MATRIX";
-SQL = SQL +" ,CAST(NULL as VARCHAR(200)) as DETECTION_RATIONALE";
+VAR detectionRationale;
+detectionRationale = LIB_EWS.getDetectionRationaleValue(fastTrackInstance,'FAST_TRACK',adjMap);
+SQL = SQL +" ,CAST("+detectionRationale+" as VARCHAR(200)) as DETECTION_RATIONALE";
 
 SQL = SQL +" FROM "+AnalysisTable +" "+AnalysisTable;
 SQL = SQL +" JOIN (SELECT * FROM "+workspacePlan.ResultTableName +") ws ON WS.SNDG = "+AnalysisTable+".SNDG";

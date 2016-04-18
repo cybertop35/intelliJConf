@@ -3,7 +3,7 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "(EXP(5.183951 + (0.4554721 	* IND_212)  
+sql = "(EXP(-5.183951 + (0.4554721 	* IND_212)  
 					 + (0.18027 	* IND_213)
 					 + (0.0251268 	* IND_1)
 					 + (3.564812 	* IND_205)
