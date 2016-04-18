@@ -1,19 +1,18 @@
 # FENull returnNull LIB_EWS_BE.updateAnalyticaltable;
 # RETURN VALUE: FENull      -
 # EFFETCS:      -           updateAnalyticaltable
-# Param1:       FEInstance      analysisUnit instance id
+# Param1:       FEInstance      Customer_Unit instance 
 
 DEBUGMESSAGE("LIB_EWS_BE.updateAnalysisUnit.fe"); # stacktrace
+
+VAR customerUnit = Param1;
 
 VAR RESULT;
 VAR CREATED;
 
-VAR CAU_TABLE_NAME = "CUSTOMER_ANALYSIS_UNIT_BE" ;
+VAR CAU_TABLE_NAME = customerUnit.TableName;
 VAR CAU_TMP_TABLE_NAME = CAU_TABLE_NAME+"_TMP";
 VAR CAU_BCK_TABLE_NAME = CAU_TABLE_NAME+"_BCK";
-
-VAR schema = Analysis_Unit[ID=$analysisUnitID].TeradataSchema;
-
 
 VAR DBCONNECTION = Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
 
@@ -26,7 +25,7 @@ IF(LIB_DB.isTableExisting(CAU_TMP_TABLE_NAME,DBCONNECTION)) THEN
 
 VAR QUERY ="CREATE TABLE "+ CAU_TMP_TABLE_NAME +" 
 			as ( 
-				"+LIB_EWS_BE.UNION_INDICATORS(schema) +" 
+				"+LIB_EWS_BE.UNION_INDICATORS(customerUnit) +" 
 			) WITH DATA";
 
 SQLEXECUTE(QUERY,DBCONNECTION,NULL,{});

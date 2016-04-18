@@ -1,33 +1,38 @@
 VAR formulaName = "[LIB_EWS_BE.getDetectionRationaleValue] ";
 DEBUGMESSAGE(formulaName, "START");
 
-VAR fastTrackInstance =Param1;
+VAR fastTrackInstance 	= Param1;
 VAR fastTrackColumnName = Param2;
-#VAR adjMap = Param3; #MAPPA NOME COLONNA - Adjustments
+VAR adjMap 				= Param3; #MAPPA NOME COLONNA - Adjustments
 VAR sql;
 VAR brList = {};
-# case when DATA_t1 is null then 'BILA000;' ELSE '' END ||
+VAR adj;
 
 if (fastTrackInstance <> NULL)  {
 	
 	sql = "CASE WHEN "+fastTrackColumnName+ " = 1 THEN ";
 	brList = fastTrackInstance.FastTrack_BusinessRule.Business_Rule;
 	foreach (brList as br ){
-		sql= sql + " case when "+ br. SqlQuery       +" then '"+br.NAME+"' ELSE '' END || ";
-		
+		sql= sql + " case when "+ br. SqlQuery       +" then '"+br.NAME+";' ELSE '' END || ";
 	}
-	sql =  sql + "''";
+    
+	sql =  sql + "''  ";
 	
-	
-	
+	FOREACHKEY (adjMap AS key){
+    	sql = sql + " WHEN "+key+ " = 1 THEN ";
+    	adj = adjMap[key];
+    	foreach (adj.Adjustment_BR.Business_Rule as br ){
+			sql= sql + " case when "+ br. SqlQuery       +" then '"+br.NAME+";'; ELSE '' END || ";
+		
+		}
+    
+    	sql =  sql + "''  ";
+    }
+    
 	
 	sql = sql +"END";
 }
 
-
-
-
 DEBUGMESSAGE(formulaName, "END");
-
 
 return sql;
