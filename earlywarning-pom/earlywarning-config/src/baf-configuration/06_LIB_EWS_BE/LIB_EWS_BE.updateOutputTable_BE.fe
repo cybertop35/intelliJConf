@@ -1,28 +1,36 @@
 VAR formulaName = "[LIB_EWS_BE.updateOutputTable_BE] ";
 DEBUGMESSAGE(formulaName, "START");
 
-VAR T_OUT_TMP 		= "OUTPUT_WEB_BE_TMP";
-VAR T_OUT_BCK 		= "OUTPUT_WEB_BE_BCK";
-VAR T_OUT 			= "OUTPUT_WEB_BE";
+VAR customerUnit = Param1;
+
+VAR T_OUT 			= customerUnit.Output_tableName;
+VAR T_OUT_TMP 		= T_OUT+"_TMP";
+VAR T_OUT_BCK 		= T_OUT+"_BCK";
+
 VAR DBCONNECTION 	= Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
-
-
-VAR SQL = "select * from" ;
+VAR columns;
 VAR CREATED = FALSE;
+VAR SQL;
+VAR analysisUnitTable;
+VAR UNION;
+VAR analysisUnitList = customerUnit.CustomerUnit_AnalysisUnit.Analysis_Unit;
 
-VAR analysisUnitList = Analysis_Unit;
 
-SQL = SQL+ " ( "+LIB_EWS_BE.UNION_INDICATORS(schema)+") base";
 
-SQL = SQL+ " JOIN (";
+UNION = UNION+ " JOIN (";
 foreach(analysisUnitList as unit){
-	if(unit.ID <> "CUSTOMER"){
-		SQL = SQL + "select * from "+unit.ResultTableName;
-		SQL = SQL + " UNION ALL ";
-	}
+	analysisUnitTable = unit.ResultTableName;
+	UNION = UNION + "select * from "+unit.ResultTableName;
+	UNION = UNION + " UNION ALL ";
+
 }
-SQL = SUBSTRING(SQL, 0, LENGTH(SQL) - 10);
-SQL = SQL+ " ) SCORE ON base.SNDG = SCORE.SNDG";
+UNION = SUBSTRING(UNION, 0, LENGTH(UNION) - 10);
+UNION = UNION+ " ) SCORE ON base.SNDG = SCORE.SNDG";
+
+columns = "BASE.*,"+ ARRAY_TO_STRING( Utils.getColumnName(analysisUnitTable,"SNDG")   );
+SQL = "SELECT  "+columns+" FROM "+customerUnit.TableName+" base";
+
+SQL = SQL + UNION;
 
 IF(LIB_DB.isTableExisting(T_OUT_TMP,DBCONNECTION)) THEN{
     SQLEXECUTE("DROP TABLE "+ T_OUT_TMP,DBCONNECTION,NULL,{});

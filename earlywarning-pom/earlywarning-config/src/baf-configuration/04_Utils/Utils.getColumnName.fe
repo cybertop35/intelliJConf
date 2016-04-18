@@ -1,8 +1,10 @@
+DEBUGMESSAGE("Utils.getColumnName.fe"," START"); # stacktrace
+
 VAR tablename = Param1;
-VAR includeKeyColumn = Param2;
+VAR keyColumn = Param2;
 VAR DBCONNECTION 	= Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
 
-VAR condtition = IIF(LENGTH (includeKeyColumn) > 0,"and trim(columnname) not in ('"+includeKeyColumn+"')","" );
+VAR condtition = IIF(LENGTH (keyColumn) > 0,"and trim(columnname) not in ('"+keyColumn+"')","" );
 VAR result = {};
 var sql = "select trim(columnname)		
 			from dbc.columns 	
@@ -21,7 +23,7 @@ IF (LIB_DB.isTableExisting(tablename,DBCONNECTION)) {
      }
 }
 
-
+DEBUGMESSAGE("Utils.getColumnName.fe"," END"); # stacktrace
 return result;
       
       

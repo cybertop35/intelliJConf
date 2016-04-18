@@ -1,6 +1,7 @@
 VAR formulaName = "[LIB_EWS_BE.UNION_INDICATORS.fe] ";
 DEBUGMESSAGE(formulaName, "START");
-VAR schema = Param1;
+VAR customerUnit = Param1;
+VAR schema = customerUnit.TeradataSchema;
 VAR sql = "";
 
 sql = "SELECT SNDG as SNDG,
@@ -112,7 +113,7 @@ sql = "SELECT SNDG as SNDG,
 	,"+ LIB_EWS_BE.INDICATOR_218() +"
 	,"+ LIB_EWS_BE.INDICATOR_219() +"
 	
-	from TEWSA0D.CUSTOMER_TABLE_ESTERE";
+	from "+schema+"."+customerUnit.Source_tableName;
 
 
 DEBUGMESSAGE(formulaName, sql);

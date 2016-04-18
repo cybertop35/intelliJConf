@@ -6,15 +6,15 @@
 DEBUGMESSAGE("LIB_RISK_EW.updateAnalysisUnit.fe"); # stacktrace
 
 VAR analysisUnitID = Param1;
-
-VAR CAU_TABLE_NAME = Analysis_Unit[ID=$analysisUnitID].AnalyticalTable;
+VAR analysisUnitInstance = Analysis_Unit[ID=$analysisUnitID];
+VAR CAU_TABLE_NAME = analysisUnitInstance.AnalyticalTable;
 VAR CAU_TMP_TABLE_NAME = CAU_TABLE_NAME+"_TMP";
 VAR CAU_BCK_TABLE_NAME = CAU_TABLE_NAME+"_BCK";
 VAR schema = Analysis_Unit[ID=$analysisUnitID].TeradataSchema;
 VAR RESULT;
 VAR CREATED;
 VAR DBCONNECTION = Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
-
+VAR customerUnit = analysisUnitInstance.CustomerUnit_AnalysisUnit.Customer_Unit;
 CREATED = false;
 
 IF(LIB_DB.isTableExisting(CAU_TMP_TABLE_NAME,DBCONNECTION)) THEN
@@ -23,9 +23,8 @@ IF(LIB_DB.isTableExisting(CAU_TMP_TABLE_NAME,DBCONNECTION)) THEN
 }
 
 VAR QUERY ="
-CREATE TABLE "+CAU_TMP_TABLE_NAME +" 
-as ( 
-				"+LIB_EWS_IT.UNION_INDICATORS(schema) +" 
+CREATE TABLE "+CAU_TMP_TABLE_NAME +" as ( 
+				"+LIB_EWS_IT.UNION_INDICATORS(customerUnit) +" 
 			) WITH DATA";
 SQLEXECUTE(QUERY,DBCONNECTION,NULL,{});
 

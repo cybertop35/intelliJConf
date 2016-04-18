@@ -1,6 +1,10 @@
 VAR formulaName = "[LIB_EWS_IT.UNION_INDICATORS.fe] ";
 DEBUGMESSAGE(formulaName, "START");
-VAR schema = Param1;
+
+VAR customerUnit = Param1;
+VAR schema = customerUnit.TeradataSchema;
+
+
 VAR sql = "";
 
 sql = "select 
@@ -22,7 +26,7 @@ sql = "select
 	,"+ LIB_EWS_IT.INDICATOR_12() +" 
 	,"+ LIB_EWS_IT.INDICATOR_13() +" 
 	,"+ LIB_EWS_IT.INDICATOR_14() +"
-	from "+schema+".CUSTOMER_TABLE";
+	from "+schema+"."+customerUnit.Source_tableName;
 
 
 DEBUGMESSAGE(formulaName, sql);

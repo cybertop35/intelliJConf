@@ -3,7 +3,7 @@
 # EFFETCS:      -           updateAnalyticaltable
 # Param1:       FEInstance      analysisUnit instance id
 
-DEBUGMESSAGE("LIB_EWS_BE.updateAnalysisUnit.fe"); # stacktrace
+DEBUGMESSAGE("LIB_EWS_BIB.updateAnalysisUnit_BIB.fe"," START"); # stacktrace
 
 VAR analysisUnitID = Param1;
 
@@ -11,12 +11,12 @@ VAR RESULT;
 VAR CREATED;
 
 VAR analysisUnitInstance = Analysis_Unit[ID=$analysisUnitID];
+VAR customerUnit = analysisUnitInstance.CustomerUnit_AnalysisUnit.Customer_Unit;
 
 VAR CAU_TABLE_NAME = analysisUnitInstance.AnalyticalTable;
 VAR CAU_TMP_TABLE_NAME = CAU_TABLE_NAME+"_TMP";
 VAR CAU_BCK_TABLE_NAME = CAU_TABLE_NAME+"_BCK";
 
-VAR schema = analysisUnitInstance.TeradataSchema;
 VAR variables = analysisUnitInstance.AnalysisUnit_Variable.Variable order by [ColumnName ASC];
 
 VAR DBCONNECTION = Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
@@ -27,25 +27,25 @@ IF(LIB_DB.isTableExisting(CAU_TMP_TABLE_NAME,DBCONNECTION)) THEN
 {
 	SQLEXECUTE("DROP TABLE "+ CAU_TMP_TABLE_NAME,DBCONNECTION,NULL,{});
 }
-VAR select = "SELECT SNDG,
-					EXPOSURE,
-					null as TARGET, 
-					SEGMENT
-					,SYSTEM_DATE
-					,"+ LIB_EWS_BE.Model_1_Corporate() +"
-					,"+ LIB_EWS_BE.Model_2_Corporate() +"
-					,"+ LIB_EWS_BE.Model_1_Retail() +"
-					,"+ LIB_EWS_BE.Model_2_Retail() +"
-				FROM +" "+analysisUnitInstance.sourceTable
-				+"WHERE COUNTRY='BIB'";
-			
+VAR select = "SELECT ";
+VAR isFirst = true;			
 foreach (variables as v){
- 	IF( v.ColumnName <> "TARGET" and v.ColumnName <> "EXPOSURE" and v.ColumnName <> "SNDG" and v.ColumnName <> "SEGMENT" ){
-		IF(v.Variable_DataType.Data_Type.ID == "STRING") {
+		if(isFirst) {
+			isFirst = false;
+			select = select +v.ColumnName+" " ;
+		}
+		else{
 			select = select +","+v.ColumnName+" " ;
 		}
-	}
 }
+
+select = select +  ",SYSTEM_DATE
+					,"+ LIB_EWS_BIB.Model_1_Corporate() +"
+                    ,"+ LIB_EWS_BIB.Model_2_Corporate() +"
+                    ,"+ LIB_EWS_BIB.Model_1_Retail() +"
+                    ,"+ LIB_EWS_BIB.Model_2_Retail() +" 
+         FROM " +" "+customerUnit.TableName+" 
+         WHERE COUNTRY='BIB'";
 
 VAR QUERY ="CREATE TABLE "+ CAU_TMP_TABLE_NAME +" 
 			as ( 
@@ -65,6 +65,8 @@ IF(CREATED) THEN {
 		LIB_DB.renameTable(CAU_TABLE_NAME,CAU_BCK_TABLE_NAME,DBCONNECTION);
 	}
 	LIB_DB.renameTable(CAU_TMP_TABLE_NAME,CAU_TABLE_NAME,DBCONNECTION);
+
+	DEBUGMESSAGE("LIB_EWS_BIB.updateAnalysisUnit_BIB.fe"," END");
 	
 	return NOW();
 }

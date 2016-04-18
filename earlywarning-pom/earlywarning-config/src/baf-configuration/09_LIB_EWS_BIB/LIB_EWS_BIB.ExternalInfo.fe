@@ -22,7 +22,7 @@ var setup =["CRR_INDICATOR":"IND_2",
 			"fieldList" : {"CI_EXPOSURE", "CI_SCONFINO"},
 			"keyColumn" : "SNDG",
 			"updateOutput": "LIB_EWS_BIB.updateOutputTable_BIB(Param1);",
-			"updateAnalysisTable": "LIB_EWS_BE.UpdateAnalysisUnit_BE(Param1);"
+			"updateAnalysisTable": "LIB_EWS_BIB.UpdateAnalysisUnit_BIB(Param1);"
 		];
 DEBUGMESSAGE(formulaName, "END");
 return setup;

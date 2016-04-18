@@ -1,0 +1,14 @@
+VAR formulaName = "[LIB_EWS.UpdateCustomerUnitSource]";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR units = Customer_Unit;
+Var formula;
+foreach(units as unit){
+	if(LENGTH(formula) > 0 ){
+		formula = unit.UpdateSourceTable_Formula;
+		EVAL(formula,{unit});
+	}
+}
+
+
+DEBUGMESSAGE(formulaName, "END");
