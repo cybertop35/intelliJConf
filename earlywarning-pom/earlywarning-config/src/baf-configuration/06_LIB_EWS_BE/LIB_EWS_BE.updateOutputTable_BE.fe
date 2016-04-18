@@ -1,23 +1,28 @@
 VAR formulaName = "[LIB_EWS_BE.updateOutputTable_BE] ";
 DEBUGMESSAGE(formulaName, "START");
 
-VAR analysisUnitID = Param1;
-
-VAR analysisUnitInstance = Analysis_Unit[ID=$analysisUnitID];
-VAR wp_list = analysisUnitInstance.Workspace_AnalysisUnit.Workspace.Workspace_Plan[Status="Production"];
-
-VAR T_OUT_TMP 		= analysisUnitInstance.ResultTableName+"_TMP";
-VAR T_OUT_BCK 		= analysisUnitInstance.ResultTableName+"_BCK";
-VAR T_OUT 			= analysisUnitInstance.ResultTableName;
+VAR T_OUT_TMP 		= "OUTPUT_WEB_BE_TMP";
+VAR T_OUT_BCK 		= "OUTPUT_WEB_BE_BCK";
+VAR T_OUT 			= "OUTPUT_WEB_BE";
 VAR DBCONNECTION 	= Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
-VAR SQL;
+
+
+VAR SQL = "select * from" ;
 VAR CREATED = FALSE;
 
-foreach(wp_list as wp){
-		SQL = SQL + LIB_EWS_BE.getQueryOutputForWorkplace(wp);
+VAR analysisUnitList = Analysis_Unit;
+
+SQL = SQL+ " ( "+LIB_EWS_BE.UNION_INDICATORS(schema)+") base";
+
+SQL = SQL+ " JOIN (";
+foreach(analysisUnitList as unit){
+	if(unit.ID <> "CUSTOMER"){
+		SQL = SQL + "select * from "+unit.ResultTableName;
 		SQL = SQL + " UNION ALL ";
+	}
 }
 SQL = SUBSTRING(SQL, 0, LENGTH(SQL) - 10);
+SQL = SQL+ " ) SCORE ON base.SNDG = SCORE.SNDG";
 
 IF(LIB_DB.isTableExisting(T_OUT_TMP,DBCONNECTION)) THEN{
     SQLEXECUTE("DROP TABLE "+ T_OUT_TMP,DBCONNECTION,NULL,{});

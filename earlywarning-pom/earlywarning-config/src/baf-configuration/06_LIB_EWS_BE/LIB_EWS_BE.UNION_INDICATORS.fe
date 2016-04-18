@@ -112,7 +112,7 @@ sql = "SELECT SNDG as SNDG,
 	,"+ LIB_EWS_BE.INDICATOR_218() +"
 	,"+ LIB_EWS_BE.INDICATOR_219() +"
 	
-	from "+schema+".CUSTOMER_TABLE_ESTERE";
+	from TEWSA0D.CUSTOMER_TABLE_ESTERE";
 
 
 DEBUGMESSAGE(formulaName, sql);

@@ -1,0 +1,48 @@
+# FENull returnNull LIB_EWS_BE.updateAnalyticaltable;
+# RETURN VALUE: FENull      -
+# EFFETCS:      -           updateAnalyticaltable
+# Param1:       FEInstance      analysisUnit instance id
+
+DEBUGMESSAGE("LIB_EWS_BE.updateAnalysisUnit.fe"); # stacktrace
+
+VAR RESULT;
+VAR CREATED;
+
+VAR CAU_TABLE_NAME = "CUSTOMER_ANALYSIS_UNIT_BE" ;
+VAR CAU_TMP_TABLE_NAME = CAU_TABLE_NAME+"_TMP";
+VAR CAU_BCK_TABLE_NAME = CAU_TABLE_NAME+"_BCK";
+
+VAR schema = Analysis_Unit[ID=$analysisUnitID].TeradataSchema;
+
+
+VAR DBCONNECTION = Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
+
+CREATED = false;
+
+IF(LIB_DB.isTableExisting(CAU_TMP_TABLE_NAME,DBCONNECTION)) THEN
+{
+	SQLEXECUTE("DROP TABLE "+ CAU_TMP_TABLE_NAME,DBCONNECTION,NULL,{});
+}
+
+VAR QUERY ="CREATE TABLE "+ CAU_TMP_TABLE_NAME +" 
+			as ( 
+				"+LIB_EWS_BE.UNION_INDICATORS(schema) +" 
+			) WITH DATA";
+
+SQLEXECUTE(QUERY,DBCONNECTION,NULL,{});
+
+CREATED = LIB_DB.isTableExistingAndHavingData(CAU_TMP_TABLE_NAME, DBCONNECTION);
+
+IF(CREATED) THEN {
+	IF(LIB_DB.isTableExisting(CAU_BCK_TABLE_NAME,DBCONNECTION)) THEN    {
+    	SQLEXECUTE("DROP TABLE "+CAU_BCK_TABLE_NAME,DBCONNECTION,NULL,{});
+    }
+	IF(LIB_DB.isTableExisting(CAU_TABLE_NAME,DBCONNECTION)) THEN    {
+		LIB_DB.renameTable(CAU_TABLE_NAME,CAU_BCK_TABLE_NAME,DBCONNECTION);
+	}
+	LIB_DB.renameTable(CAU_TMP_TABLE_NAME,CAU_TABLE_NAME,DBCONNECTION);
+	
+	return NOW();
+}
+ELSE
+	return null;

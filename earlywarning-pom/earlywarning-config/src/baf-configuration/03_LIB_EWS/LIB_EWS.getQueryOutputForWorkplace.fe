@@ -90,32 +90,15 @@ foreach (models as model){
 	modelCount = modelCount+1;
 }
 
-############## RECUPERO GLI INDICATORI ###########################
-SQL = "SELECT "+AnalysisTable+".SNDG,"+AnalysisTable+".EXPOSURE,"+AnalysisTable+".SEGMENT";
-
-foreach (variables as v){
- 	IF( v.ColumnName <> "TARGET" and v.ColumnName <> "EXPOSURE" and v.ColumnName <> "SNDG" and v.ColumnName <> "SEGMENT" ){
-		IF(v.Variable_DataType.Data_Type.ID == "STRING") {
-			SQL = SQL +",cast("+AnalysisTable+"."+v.ColumnName+" as VARCHAR(50) ) as "+v.ColumnName ;
-		}
-		IF(v.Variable_DataType.Data_Type.ID == "REAL") {
-			SQL = SQL +",cast("+AnalysisTable+"."+v.ColumnName+" as DECIMAL(18,8) ) as "+v.ColumnName ;
-		}
-        if(HAVE_ERROR_MESSAGE) {
-			ERROR_SQL = ERROR_SQL +",CAST("+AnalysisTable+".ERROR_MSG_"+v.ColumnName+" AS VARCHAR(50) ) as ERROR_MSG_" +v.ColumnName;
-        }
-	}
-}
-
-SQL = SQL + ERROR_SQL;
+SQL = "SELECT "+AnalysisTable+".SNDG";
 SQL = SQL + ",cast(WS.CATEGORICAL_SCORE as VARCHAR(50) ) as  SEMAFORO_APP";
-SQL = SQL +" ,CAST(null as VARCHAR(50)) as SEMAFORO_SYSTEM";
+SQL = SQL + ",CAST(null as VARCHAR(50)) as SEMAFORO_SYSTEM";
 SQL = SQL + ",cast( NVL2(FT.CATEGORICAL_SCORE,1,0) as VARCHAR(1) ) as  FAST_TRACK";
 
-VAR adjMap;
+VAR adjMap=[];
 foreach(adjustments as adj) {
 	SQL = SQL +" ,CAST((CASE when ADJ.ADJID = '"+adj.ID+"' then 1  END )as VARCHAR(50)) as EXCEPTION_"+(adj.OrderPosition+1);
-	put(adjMap,"EXCEPTION_"+(adj.OrderPosition+1)",adj);
+	put(adjMap,"EXCEPTION_"+(adj.OrderPosition+1),adj);
 }
 
 SQL = SQL +columnModel;
@@ -124,20 +107,19 @@ while(modelCount<=maxModel){
 	modelCount = modelCount + 1;
 	
 }
+
+#+LIB.EWS_EB.getDetectionRationaleValue(fastTrackInstance,'FAST_TRACK',adjMap)
 SQL = SQL +" ,CAST(MATRIX.CATEGORICAL_SCORE as VARCHAR(50)) as RESULT_FIRST_RISK_MATRIX";
-SQL = SQL +" ,CAST("+LIB.EWS_EB.getDetectionRationaleValue(fastTrackInstance,'FAST_TRACK',adjMap)+" as VARCHAR(200)) as DETECTION_RATIONALE";
-
-
-
+SQL = SQL +" ,CAST(NULL as VARCHAR(200)) as DETECTION_RATIONALE";
 
 SQL = SQL +" FROM "+AnalysisTable +" "+AnalysisTable;
 SQL = SQL +" JOIN (SELECT * FROM "+workspacePlan.ResultTableName +") ws ON WS.SNDG = "+AnalysisTable+".SNDG";
 SQL = SQL + sqlModelJoin;
-SQL = SQL +"JOIN ("+tableFT+" ) FT  ON FT.SNDG="+AnalysisTable+".SNDG";
-SQL = SQL +"JOIN ("+ tableMatrix +") MATRIX ON MATRIX.SNDG = "+AnalysisTable+".SNDG";
+SQL = SQL +" JOIN ("+tableFT+" ) FT  ON FT.SNDG="+AnalysisTable+".SNDG";
+SQL = SQL +" JOIN ("+ tableMatrix +") MATRIX ON MATRIX.SNDG = "+AnalysisTable+".SNDG";
 
 IF(SIZE(adjustments) > 0 ) then {
-	SQL = SQL +"JOIN ("+ calculationQueryWithAdj +") ADJ ON ADJ.SNDG = "+AnalysisTable+".SNDG";
+	SQL = SQL +" JOIN ("+ calculationQueryWithAdj +") ADJ ON ADJ.SNDG = "+AnalysisTable+".SNDG";
 }
 
 DEBUGMESSAGE(formulaName, "END");
