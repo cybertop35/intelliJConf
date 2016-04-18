@@ -5,12 +5,10 @@
 
 DEBUGMESSAGE("LIB_EWS_BE.updateAnalysisUnit.fe"); # stacktrace
 
-VAR analysisUnitID = Param1;
-
 VAR RESULT;
 VAR CREATED;
 
-VAR CAU_TABLE_NAME = Analysis_Unit[ID=$analysisUnitID].AnalyticalTable;
+VAR CAU_TABLE_NAME = "CUSTOMER_ANALYSIS_UNIT_BE" ;
 VAR CAU_TMP_TABLE_NAME = CAU_TABLE_NAME+"_TMP";
 VAR CAU_BCK_TABLE_NAME = CAU_TABLE_NAME+"_BCK";
 
