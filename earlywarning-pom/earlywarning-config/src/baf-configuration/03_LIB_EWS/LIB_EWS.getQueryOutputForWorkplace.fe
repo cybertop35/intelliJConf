@@ -86,18 +86,18 @@ VAR columnModel;
 var modelCount = 1;
 foreach (models as model){
 	sqlModelJoin = sqlModelJoin +" JOIN ( "+ LIB_EWS.getQueryScoreModel(model,matrixInstance,configuration['keyColumn']) +")"+model.ID+" ON "+model.ID+".SNDG="+AnalysisTable+".SNDG";
-	columnModel = columnModel +", CAST("+model.ID+".CATEGORICAL_SCORE as VARCHAR(50)) as RESULT_MODULE_0"+modelCount;
+	columnModel = columnModel +", CAST(CASE WHEN FAST_TRACK = 0 THEN "+model.ID+".CATEGORICAL_SCORE END as VARCHAR(50)) as RESULT_MODULE_0"+modelCount;
 	modelCount = modelCount+1;
 }
 
 SQL = "SELECT "+AnalysisTable+".SNDG";
 SQL = SQL + ",cast(WS.CATEGORICAL_SCORE as VARCHAR(50) ) as  SEMAFORO_APP";
 SQL = SQL + ",CAST(null as VARCHAR(50)) as SEMAFORO_SYSTEM";
-SQL = SQL + ",cast( NVL2(FT.CATEGORICAL_SCORE,1,0) as VARCHAR(1) ) as  FAST_TRACK";
+SQL = SQL + ",cast( ( CASE WHEN FT.CATEGORICAL_SCORE = 'NONE' THEN 0 ELSE 1 END) as VARCHAR(1) ) as  FAST_TRACK";
 
 VAR adjMap=[];
 foreach(adjustments as adj) {
-	SQL = SQL +" ,CAST((CASE when ADJ.ADJID = '"+adj.ID+"' then 1  END )as VARCHAR(50)) as EXCEPTION_"+(adj.OrderPosition+1);
+	SQL = SQL +" ,CAST((CASE when ADJ.ADJID = '"+adj.ID+"' AND FAST_TRACK = 0 then 1  END )as VARCHAR(50)) as EXCEPTION_"+(adj.OrderPosition+1);
 	put(adjMap,"EXCEPTION_"+(adj.OrderPosition+1),adj);
 }
 
@@ -108,8 +108,8 @@ while(modelCount<=maxModel){
 	
 }
 
-#+LIB.EWS_EB.getDetectionRationaleValue(fastTrackInstance,'FAST_TRACK',adjMap)
-SQL = SQL +" ,CAST(MATRIX.CATEGORICAL_SCORE as VARCHAR(50)) as RESULT_FIRST_RISK_MATRIX";
+SQL = SQL +" ,CAST(CASE WHEN FAST_TRACK = 0 THEN MATRIX.CATEGORICAL_SCORE END as VARCHAR(50)) as RESULT_FIRST_RISK_MATRIX";
+
 VAR detectionRationale;
 detectionRationale = LIB_EWS.getDetectionRationaleValue(fastTrackInstance,'FAST_TRACK',adjMap);
 SQL = SQL +" ,CAST("+detectionRationale+" as VARCHAR(200)) as DETECTION_RATIONALE";

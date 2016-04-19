@@ -10,27 +10,27 @@ VAR adj;
 
 if (fastTrackInstance <> NULL)  {
 	
-	sql = "CASE WHEN "+fastTrackColumnName+ " = 1 THEN ";
+	sql= "(";
 	brList = fastTrackInstance.FastTrack_BusinessRule.Business_Rule;
 	foreach (brList as br ){
-		sql= sql + " case when "+ br. SqlQuery       +" then '"+br.NAME+";' ELSE '' END || ";
+		sql= sql + " case when "+fastTrackColumnName+ " = 1 AND "+ br. SqlQuery       +" then '"+br.NAME+";' ELSE '' END || ";
 	}
     
-	sql =  sql + "''  ";
+	# sql =  sql + "''  ";
 	
 	FOREACHKEY (adjMap AS key){
-    	sql = sql + " WHEN "+key+ " = 1 THEN ";
+    	
     	adj = adjMap[key];
     	foreach (adj.Adjustment_BR.Business_Rule as br ){
-			sql= sql + " case when "+ br. SqlQuery       +" then '"+br.NAME+";'; ELSE '' END || ";
+			sql= sql + " case when "+fastTrackColumnName+ " = 0 AND "+key+ " = 1 AND "+ br. SqlQuery       +" then '"+br.NAME+";' ELSE '' END || ";
 		
 		}
     
-    	sql =  sql + "''  ";
+    	
     }
     
 	
-	sql = sql +"END";
+	sql = sql +"'' )";
 }
 
 DEBUGMESSAGE(formulaName, "END");
