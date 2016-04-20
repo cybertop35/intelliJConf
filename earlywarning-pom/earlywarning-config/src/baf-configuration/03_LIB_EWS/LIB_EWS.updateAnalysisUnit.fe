@@ -1,9 +1,9 @@
-# FENull returnNull LIB_RISK.updateAnalyticaltable;
+# FENull returnNull LIB_EWS.updateAnalyticaltable;
 # RETURN VALUE: FENull      -
 # EFFETCS:      -           updateAnalyticaltable
 # Param1:       FEInstance      analysisUnit instance id
 
-DEBUGMESSAGE("LIB_RISK_EW.updateAnalysisUnit.fe"); # stacktrace
+DEBUGMESSAGE("LIB_EWS.updateAnalyticaltablefe","START"); # stacktrace
 
 VAR analysisUnitID 	= Param1;
 VAR logActionName	= "updateAnalysisUnit";
@@ -16,5 +16,7 @@ VAR externalInfoFormula  = analysisUnitInstance.CustomerInfoFormula;
 VAR SETUP = EVAL(externalInfoFormula, {analysisUnitInstance});
 
 VAR updateOutput = SETUP["updateAnalysisTable"];
+
+DEBUGMESSAGE("LIB_EWS.updateAnalyticaltablefe"," END"); # stacktrace
 
 return EVAL(updateOutput, {analysisUnitID});

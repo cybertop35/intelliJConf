@@ -4,9 +4,11 @@ DEBUGMESSAGE(formulaName, "START");
 VAR fastTrackInstance 	= Param1;
 VAR fastTrackColumnName = Param2;
 VAR adjMap 				= Param3; #MAPPA NOME COLONNA - Adjustments
+VAR models 				= Param4;
 VAR sql;
 VAR brList = {};
 VAR adj;
+VAR counter = 1;
 
 if (fastTrackInstance <> NULL)  {
 	
@@ -23,12 +25,15 @@ if (fastTrackInstance <> NULL)  {
     	adj = adjMap[key];
     	foreach (adj.Adjustment_BR.Business_Rule as br ){
 			sql= sql + " case when "+fastTrackColumnName+ " = 0 AND "+key+ " = 1 AND "+ br. SqlQuery       +" then '"+br.NAME+";' ELSE '' END || ";
-		
 		}
-    
-    	
     }
+	foreach(models as mod){
+		sql= sql + " case when "+fastTrackColumnName+ " = 0 AND "+mod+ " = 1  then 'DS0"+counter+";' ELSE '' END || ";
+		counter = counter + 1;
+	}
+	
     
+	
 	
 	sql = sql +"'' )";
 }

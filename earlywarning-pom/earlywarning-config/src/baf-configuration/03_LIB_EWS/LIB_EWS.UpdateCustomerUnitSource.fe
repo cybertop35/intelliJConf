@@ -4,8 +4,8 @@ DEBUGMESSAGE(formulaName, "START");
 VAR units = Customer_Unit;
 Var formula;
 foreach(units as unit){
+	formula = unit.UpdateSourceTable_Formula;
 	if(LENGTH(formula) > 0 ){
-		formula = unit.UpdateSourceTable_Formula;
 		EVAL(formula,{unit});
 	}
 }
