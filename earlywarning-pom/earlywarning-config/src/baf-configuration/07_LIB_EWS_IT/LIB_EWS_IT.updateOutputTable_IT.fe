@@ -81,10 +81,11 @@ FOREACH ( WORKSPACE_PLAN_LIST as WORKSPACE ){
 	}
 	noneScore = conditionForSingleCategoricalScore[SIZE(conditionForSingleCategoricalScore)-1][0];
 	array = {};
-	
+	var BR_DETAIL = "CASE ";
 	foreach (conditionForSingleCategoricalScore as cs){
 		if (fatsTrack <> NULL) {
 			# obtaining SQL query
+           	BR_DETAIL = BR_DETAIL +" when "+BM_TABLE+".CATEGORICAL_SCORE = '"+cs[0]+"' THEN '"+TEXTFILETOSTRING(cs[1])+"' ";
 			expressionSQLQuery = LIB_BRJson.getSQLquery(TEXTFILETOSTRING(cs[1]));
 			ADDELEMENT(array, {cs[0], expressionSQLQuery});
 		}
@@ -92,6 +93,7 @@ FOREACH ( WORKSPACE_PLAN_LIST as WORKSPACE ){
 			ADDELEMENT(array, {cs[0], NULL});
 			}
 		}
+    BR_DETAIL = BR_DETAIL+" END ";
 	tableFT = "(" + LIB_AnalysisUnit.getDecisionListCalculationQuery(array, analysisUnitInstance, typeOfDataToUse, WORKSPACE.Workspace.ID) + ")";
 	
 	
@@ -104,6 +106,7 @@ FOREACH ( WORKSPACE_PLAN_LIST as WORKSPACE ){
     SQL_UNION_BM = SQL_UNION_BM + " UNION ALL";
 	
 }
+
 
 SQL_UNION_MATRIX = SUBSTRING(SQL_UNION_MATRIX, 0, LENGTH(SQL_UNION_MATRIX) - 10);
 SQL_UNION_BM = SUBSTRING(SQL_UNION_BM, 0, LENGTH(SQL_UNION_BM) - 10);
@@ -143,7 +146,7 @@ foreach (BR_LIST as b){
 }
 
 SQL = SQL +" ,"+BM_TABLE+".CATEGORICAL_SCORE as WARNING_APP ";
-SQL = SQL +" ,"+BM_TABLE+".CATEGORICAL_SCORE  as BR_DETAILS  ";
+SQL = SQL +" ,"+BR_DETAIL+"  as BR_DETAILS  ";
 SQL = SQL +" ,CAST("+MATRIX_TABLE+".CATEGORICAL_SCORE as VARCHAR(50)) as COLOR_APP ";
 # SQL = SQL +",CAST(null as VARCHAR(50)) as WARNING_SYSTEM";
 SQL = SQL +" ,CAST(null as VARCHAR(50)) as COLOR_SYSTEM";

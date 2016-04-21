@@ -84,7 +84,7 @@ var calculationQueryWithAdj = LIB_AnalysisUnit.getAdjustmentCalculationQuery(adj
 VAR sqlModelJoin;
 VAR columnModel;
 var modelCount = 1;
-VAR modelColumns ;
+VAR modelColumns= {} ;
 foreach (models as model){
 	sqlModelJoin = sqlModelJoin +" JOIN ( "+ LIB_EWS.getQueryScoreModel(model,matrixInstance,configuration['keyColumn']) +")"+model.ID+" ON "+model.ID+".SNDG="+AnalysisTable+".SNDG";
 	columnModel = columnModel +", CAST(CASE WHEN FAST_TRACK = 0 THEN "+model.ID+".CATEGORICAL_SCORE END as VARCHAR(50)) as RESULT_MODULE_0"+modelCount;
