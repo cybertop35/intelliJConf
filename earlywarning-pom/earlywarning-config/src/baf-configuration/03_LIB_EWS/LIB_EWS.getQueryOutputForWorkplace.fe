@@ -85,16 +85,20 @@ VAR sqlModelJoin;
 VAR columnModel;
 var modelCount = 1;
 VAR modelColumns= {} ;
+VAR tmp;
 foreach (models as model){
 	sqlModelJoin = sqlModelJoin +" JOIN ( "+ LIB_EWS.getQueryScoreModel(model,matrixInstance,configuration['keyColumn']) +")"+model.ID+" ON "+model.ID+".SNDG="+AnalysisTable+".SNDG";
-	columnModel = columnModel +", CAST(CASE WHEN FAST_TRACK = 0 THEN "+model.ID+".CATEGORICAL_SCORE END as VARCHAR(50)) as RESULT_MODULE_0"+modelCount;
-	addelement(modelColumns,"RESULT_MODULE_0"+modelCount);
+	tmp = model.ID+".CATEGORICAL_SCORE";
+    columnModel = columnModel +", CAST(CASE WHEN FAST_TRACK = 0 THEN "+LIB_EWS.getSqlDecodeColors(tmp)+" END as VARCHAR(50)) as RESULT_MODULE_0"+modelCount;
+	
+    addelement(modelColumns,"RESULT_MODULE_0"+modelCount);
 	modelCount = modelCount+1;
 	
 }
 
 SQL = "SELECT "+AnalysisTable+".SNDG";
-SQL = SQL + ",cast(WS.CATEGORICAL_SCORE as VARCHAR(50) ) as  SEMAFORO_APP";
+tmp = "WS.CATEGORICAL_SCORE";
+SQL = SQL + ",cast("+LIB_EWS.getSqlDecodeColors(tmp) +" as VARCHAR(50) ) as  SEMAFORO_APP";
 SQL = SQL + ",CAST(null as VARCHAR(50)) as SEMAFORO_SYSTEM";
 SQL = SQL + ",cast( ( CASE WHEN FT.CATEGORICAL_SCORE = 'NONE' THEN 0 ELSE 1 END) as VARCHAR(1) ) as  FAST_TRACK";
 
@@ -110,8 +114,8 @@ while(modelCount<=maxModel){
 	modelCount = modelCount + 1;
 	
 }
-
-SQL = SQL +" ,CAST(CASE WHEN FAST_TRACK = 0 THEN MATRIX.CATEGORICAL_SCORE END as VARCHAR(50)) as RESULT_FIRST_RISK_MATRIX";
+tmp = "MATRIX.CATEGORICAL_SCORE";
+SQL = SQL +" ,CAST(CASE WHEN FAST_TRACK = 0 THEN "+LIB_EWS.getSqlDecodeColors(tmp) +" END as VARCHAR(50)) as RESULT_FIRST_RISK_MATRIX";
 
 VAR detectionRationale;
 detectionRationale = LIB_EWS.getDetectionRationaleValue(fastTrackInstance,'FAST_TRACK',adjMap,modelColumns);

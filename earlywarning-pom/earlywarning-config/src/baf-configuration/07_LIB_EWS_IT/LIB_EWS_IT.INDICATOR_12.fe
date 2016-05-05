@@ -8,7 +8,7 @@ sql = "
 	, GREATEST(CREDIT_FACILITY_TOT,CREDIT_USED_TOT)		AS DEN_IND_12
 	,(
 	  case 
-		when DEN_IND_12 = 0 and NUM_IND_12 = 0 THEN 0
+		when DEN_IND_12 = 0  THEN 0
 		when DEN_IND_12 < 0 then 9999999
 		when NUM_IND_12 = 0 and DEN_IND_12 > 0 THEN 0
 		WHEN NUM_IND_12 < 0 and DEN_IND_12 > 0 THEN 100

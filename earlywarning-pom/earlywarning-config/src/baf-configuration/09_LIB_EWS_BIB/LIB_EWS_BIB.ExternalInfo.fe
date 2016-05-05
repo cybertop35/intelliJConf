@@ -16,7 +16,7 @@ DEBUGMESSAGE(formulaName, "START");
 VAR analysisUnitInstance = Param1;
 
 
-var setup =["CRR_INDICATOR":"IND_2",
+var setup =["CRR_INDICATOR":"IND_17",
 			"HAVE_ERROR_MESSAGE":true,
 			"executableQuery" : "SELECT SNDG, EXPOSURE AS CI_EXPOSURE, SCONFINO AS CI_SCONFINO FROM " + analysisUnitInstance.AnalyticalTable,
 			"fieldList" : {"CI_EXPOSURE", "CI_SCONFINO"},
