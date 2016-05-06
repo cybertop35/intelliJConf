@@ -3,12 +3,23 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "(EXP(-5.789676 + (4.154286  * IND_3)  
+sql = "(
+		CASE
+			WHEN (-5.789676 + (4.154286  * IND_3)  
+					 + (0.0000177 * IND_44)
+					 + (0.2859991 * IND_213)
+					 + (0.0315015 * IND_1)
+					 + (0.3394497 * IND_58)
+					 ) <= -200
+				THEN EXP (-200)
+			ELSE
+				EXP(-5.789676 + (4.154286  * IND_3)  
 					 + (0.0000177 * IND_44)
 					 + (0.2859991 * IND_213)
 					 + (0.0315015 * IND_1)
 					 + (0.3394497 * IND_58)
 					 ) 
+		END
 		) as MOD_CORPORATE_1";
 
 DEBUGMESSAGE(formulaName, sql);
