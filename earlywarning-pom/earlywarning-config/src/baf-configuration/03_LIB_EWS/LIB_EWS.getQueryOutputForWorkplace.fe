@@ -104,7 +104,7 @@ SQL = SQL + ",cast( ( CASE WHEN FT.CATEGORICAL_SCORE = 'NONE' THEN 0 ELSE 1 END)
 
 VAR adjMap=[];
 foreach(adjustments as adj) {
-	SQL = SQL +" ,CAST((CASE when ADJ.ADJID = '"+adj.ID+"' AND FAST_TRACK = 0 then 1  END )as VARCHAR(50)) as EXCEPTION_"+(adj.OrderPosition+1);
+	SQL = SQL +" ,CAST((CASE when ADJ.ADJID = '"+adj.ID+"' AND FAST_TRACK = 0 then 1 when ADJ.ADJID <> '"+adj.ID+"' AND FAST_TRACK = 0 then 0 END )as VARCHAR(50)) as EXCEPTION_"+(adj.OrderPosition+1);
 	put(adjMap,"EXCEPTION_"+(adj.OrderPosition+1),adj);
 }
 

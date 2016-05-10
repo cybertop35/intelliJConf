@@ -2,11 +2,11 @@
 VAR color = Param1;
 
 VAR sql = "case when "+color+" = 'GREEN' then 'S01'	
-				when "+color+" = 'LIGHT_GREEN' then 'S02'	
-                when "+color+" = 'ORANGE' then 'S03'
-				when "+color+" = 'RED' 		then 'S04'
-				when "+color+" = 'LIGHT_BLUE' 	then 'S05'
-				when "+color+" = 'DARK_BLUE' 	then 'S06'				
+				when "+color+" = 'LIGHT_GREEN' then 'S10'	
+                when "+color+" = 'ORANGE' then 'S20'
+				when "+color+" = 'RED' 		then 'S30'
+				when "+color+" = 'LIGHT_BLUE' 	then 'S40'
+				when "+color+" = 'DARK_BLUE' 	then 'S50'				
 			end";
 
 
