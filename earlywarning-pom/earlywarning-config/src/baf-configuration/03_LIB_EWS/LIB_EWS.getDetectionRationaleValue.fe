@@ -9,7 +9,7 @@ VAR sql;
 VAR brList = {};
 VAR adj;
 VAR counter = 1;
-
+VAR modelIndex;
 if (fastTrackInstance <> NULL)  {
 	
 	sql= "(";
@@ -28,8 +28,15 @@ if (fastTrackInstance <> NULL)  {
 		}
     }
 	foreach(models as mod){
-		sql= sql + " case when "+fastTrackColumnName+ " = 0 AND "+mod+ " <> 'S01'  then 'DS0"+counter+";' ELSE '' END || ";
-		counter = counter + 1;
+		#modelIndex = substring(mod,15,1);
+		
+		sql= sql + " case when "+fastTrackColumnName+ " = 0 AND "+mod+ " = 'S30'  then 'DS0"+counter+";' ELSE '' END || ";
+		counter = counter +1;		
+		sql= sql + " case when "+fastTrackColumnName+ " = 0 AND "+mod+ " = 'S20'  then 'DS0"+counter+";' ELSE '' END || ";
+		counter = counter +1;
+		sql= sql + " case when "+fastTrackColumnName+ " = 0 AND "+mod+ " = 'S10'  then 'DS0"+counter+";' ELSE '' END || ";
+		counter = counter +1;
+		
 	}
 	
     

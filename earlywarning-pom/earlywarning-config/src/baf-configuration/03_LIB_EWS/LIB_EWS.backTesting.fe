@@ -25,6 +25,7 @@ VAR JDBC_NAME 				= Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].Predictive
 
 VAR SETUP = EVAL(externalInfoFormula, {analysisUnit});
 VAR  CRR_COLUMN_NAME = SETUP["CRR_INDICATOR"];
+VAR  backtestingMonth = SETUP["backtestingMonth"];
 
 
 ########################
@@ -61,7 +62,7 @@ SQL ="Create view "+backTestingHistoryView+" as
 			left join (
 					select sndg 
 					from "+backTestingCRRTable+" 
-					where LOAD_DATE between TRUNC(ADD_MONTHS(CURRENT_DATE,-6),'mon') and TRUNC(ADD_MONTHS(CURRENT_DATE,-1),'mon')
+					where LOAD_DATE between TRUNC(ADD_MONTHS(CURRENT_DATE,-"+backtestingMonth+"),'mon') and TRUNC(ADD_MONTHS(CURRENT_DATE,-1),'mon')
 			group by sndg 
 			) CRR ON h.sndg =crr.sndg
 		where EXTRACT (YEAR FROM H.HISTORY_DATE) = EXTRACT (YEAR  FROM ADD_MONTHS( CURRENT_DATE,-7)) 
