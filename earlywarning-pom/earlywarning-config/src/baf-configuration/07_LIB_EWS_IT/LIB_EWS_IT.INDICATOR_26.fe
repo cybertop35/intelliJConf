@@ -10,7 +10,8 @@ sql = "
 			WHEN JD_DECANAL_PTF IS NULL THEN 0
             ELSE JD_DECANAL_PTF
 		END AS CHAR(1)
-		) AS IND_26
+		) AS IND_26,
+		NULL AS ERROR_MSG_IND_26
 		";
 
 

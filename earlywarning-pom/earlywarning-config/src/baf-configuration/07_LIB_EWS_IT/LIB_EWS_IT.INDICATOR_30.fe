@@ -10,7 +10,8 @@ sql = "
 			WHEN JD_INADE_QDEBT IS NULL THEN 0
             ELSE JD_INADE_QDEBT
 		END AS CHAR(1)
-		) AS IND_30
+		) AS IND_30,
+		NULL AS ERROR_MSG_IND_30
 		";
 
 

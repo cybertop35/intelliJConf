@@ -10,7 +10,8 @@ sql = "
 			WHEN JD_DEBT_PUBBLI IS NULL THEN 0
             ELSE JD_DEBT_PUBBLI
 		END AS CHAR(1)
-		) AS IND_31
+		) AS IND_31,
+	NULL AS ERROR_MSG_IND_31
 		";
 
 

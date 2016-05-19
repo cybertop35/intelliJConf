@@ -10,7 +10,8 @@ sql = "
 			WHEN JD_PROTEST_INT IS NULL THEN 0
             ELSE JD_PROTEST_INT
 		END AS CHAR(1)
-		) AS IND_25
+		) AS IND_25,
+		NULL AS ERROR_MSG_IND_25
 		";
 
 

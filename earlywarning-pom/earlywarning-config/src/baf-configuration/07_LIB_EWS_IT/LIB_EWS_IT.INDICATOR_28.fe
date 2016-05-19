@@ -10,7 +10,8 @@ sql = "
 			WHEN JD_CONCOR_RICH IS NULL THEN 0
             ELSE JD_CONCOR_RICH
 		END AS CHAR(1)
-		) AS IND_28
+		) AS IND_28,
+		NULL AS ERROR_MSG_IND_28
 		";
 
 

@@ -10,7 +10,8 @@ sql = "
 			WHEN JD_ACC_RISTRUT IS NULL THEN 0
             ELSE JD_ACC_RISTRUT
 		END AS CHAR(1)
-		) AS IND_29
+		) AS IND_29,
+		NULL AS ERROR_MSG_IND_29
 		";
 
 

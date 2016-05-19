@@ -10,7 +10,8 @@ sql = "
 			WHEN JD_REATI_GRAVI IS NULL THEN 0
             ELSE JD_REATI_GRAVI
 		END AS CHAR(1)
-		) AS IND_27
+		) AS IND_27,
+		NULL AS ERROR_MSG_IND_27
 		";
 
 

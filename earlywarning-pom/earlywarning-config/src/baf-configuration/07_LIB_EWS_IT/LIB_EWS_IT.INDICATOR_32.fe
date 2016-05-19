@@ -10,7 +10,8 @@ sql = "
 			WHEN JD_CONCOR_AVVI IS NULL THEN 0
             ELSE JD_CONCOR_AVVI
 		END AS CHAR(1)
-		) AS IND_32
+		) AS IND_32,
+		NULL AS ERROR_MSG_IND_32
 		";
 
 
