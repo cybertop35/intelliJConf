@@ -1,0 +1,20 @@
+VAR formulaName = "[LIB_EWS_IT.INDICATOR_25.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+ 
+	CAST(
+		CASE
+			WHEN JD_PROTEST_INT IS NULL THEN 0
+            ELSE JD_PROTEST_INT
+		END AS CHAR(1)
+		) AS IND_25
+		";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

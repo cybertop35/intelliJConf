@@ -26,6 +26,15 @@ sql = "select
 	,"+ LIB_EWS_IT.INDICATOR_12() +" 
 	,"+ LIB_EWS_IT.INDICATOR_13() +" 
 	,"+ LIB_EWS_IT.INDICATOR_14() +"
+	,"+ LIB_EWS_IT.INDICATOR_24() +"
+	,"+ LIB_EWS_IT.INDICATOR_25() +"
+	,"+ LIB_EWS_IT.INDICATOR_26() +"
+	,"+ LIB_EWS_IT.INDICATOR_27() +"
+	,"+ LIB_EWS_IT.INDICATOR_28() +"
+	,"+ LIB_EWS_IT.INDICATOR_29() +"
+	,"+ LIB_EWS_IT.INDICATOR_30() +"
+	,"+ LIB_EWS_IT.INDICATOR_31() +"
+	,"+ LIB_EWS_IT.INDICATOR_32() +"
 	from "+schema+"."+customerUnit.Source_tableName;
 
 

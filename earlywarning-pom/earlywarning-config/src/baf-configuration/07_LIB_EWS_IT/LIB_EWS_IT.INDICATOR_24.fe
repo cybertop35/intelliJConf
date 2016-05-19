@@ -1,0 +1,19 @@
+VAR formulaName = "[LIB_EWS_IT.INDICATOR_24.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+	CAST(
+		CASE
+			WHEN JD_NEG_EV_PERS IS NULL THEN 0
+            ELSE JD_NEG_EV_PERS
+		END AS CHAR(1)
+		) AS IND_24
+		";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

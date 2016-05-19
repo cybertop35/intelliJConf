@@ -1,0 +1,20 @@
+VAR formulaName = "[LIB_EWS_IT.INDICATOR_30.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+ 
+	CAST(
+		CASE
+			WHEN JD_INADE_QDEBT IS NULL THEN 0
+            ELSE JD_INADE_QDEBT
+		END AS CHAR(1)
+		) AS IND_30
+		";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

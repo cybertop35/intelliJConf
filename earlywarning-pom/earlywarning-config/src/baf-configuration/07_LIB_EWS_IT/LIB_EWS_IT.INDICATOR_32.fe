@@ -1,0 +1,20 @@
+VAR formulaName = "[LIB_EWS_IT.INDICATOR_32.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+ 
+	CAST(
+		CASE
+			WHEN JD_CONCOR_AVVI IS NULL THEN 0
+            ELSE JD_CONCOR_AVVI
+		END AS CHAR(1)
+		) AS IND_32
+		";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;
