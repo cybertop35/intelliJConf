@@ -4,12 +4,7 @@ DEBUGMESSAGE(formulaName, "START");
 VAR sql = "";
 
 sql = "
- 
-	CAST(
-		CASE
-			WHEN JD_DEBT_PUBBLI IS NULL THEN 0
-            ELSE JD_DEBT_PUBBLI
-		END AS CHAR(1)
+	NVL( CAST(JD_DEBT_PUBBLI AS CHAR(1)) , '0')
 		) AS IND_31,
 	NULL AS ERROR_MSG_IND_31
 		";

@@ -4,12 +4,7 @@ DEBUGMESSAGE(formulaName, "START");
 VAR sql = "";
 
 sql = "
- 
-	CAST(
-		CASE
-			WHEN JD_INADE_QDEBT IS NULL THEN 0
-            ELSE JD_INADE_QDEBT
-		END AS CHAR(1)
+	NVL( CAST(JD_INADE_QDEBT AS CHAR(1)) , '0')
 		) AS IND_30,
 		NULL AS ERROR_MSG_IND_30
 		";

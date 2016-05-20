@@ -4,12 +4,7 @@ DEBUGMESSAGE(formulaName, "START");
 VAR sql = "";
 
 sql = "
- 
-	CAST(
-		CASE
-			WHEN JD_PROTEST_INT IS NULL THEN 0
-            ELSE JD_PROTEST_INT
-		END AS CHAR(1)
+	NVL( CAST(JD_PROTEST_INT AS CHAR(1)) , '0')
 		) AS IND_25,
 		NULL AS ERROR_MSG_IND_25
 		";

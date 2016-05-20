@@ -4,12 +4,7 @@ DEBUGMESSAGE(formulaName, "START");
 VAR sql = "";
 
 sql = "
- 
-	CAST(
-		CASE
-			WHEN JD_DECANAL_PTF IS NULL THEN 0
-            ELSE JD_DECANAL_PTF
-		END AS CHAR(1)
+	NVL( CAST(JD_DECANAL_PTF AS CHAR(1)) , '0')
 		) AS IND_26,
 		NULL AS ERROR_MSG_IND_26
 		";

@@ -4,12 +4,8 @@ DEBUGMESSAGE(formulaName, "START");
 VAR sql = "";
 
 sql = "
-	CAST(
-		CASE
-			WHEN JD_NEG_EV_PERS IS NULL THEN 0
-            ELSE JD_NEG_EV_PERS
-		END AS CHAR(1)
-		) AS IND_24,
+	NVL( CAST(JD_NEG_EV_PERS AS CHAR(1)) , '0')
+		AS IND_24,
 		NULL AS ERROR_MSG_IND_24
 		";
 

@@ -4,13 +4,8 @@ DEBUGMESSAGE(formulaName, "START");
 VAR sql = "";
 
 sql = "
- 
-	CAST(
-		CASE
-			WHEN JD_CONCOR_AVVI IS NULL THEN 0
-            ELSE JD_CONCOR_AVVI
-		END AS CHAR(1)
-		) AS IND_32,
+	NVL( CAST(JD_CONCOR_AVVI AS CHAR(1)) , '0')
+		AS IND_32,
 		NULL AS ERROR_MSG_IND_32
 		";
 
