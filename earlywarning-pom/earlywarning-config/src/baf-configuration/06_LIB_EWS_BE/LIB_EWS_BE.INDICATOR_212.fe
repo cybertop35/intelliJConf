@@ -5,19 +5,16 @@ VAR sql = "";
 
 sql = "
 
-0 AS MISSING_VALUE_IND_212,
-
-7 AS RETAIL_VAL_MAX_IND_212,
 
 CAST(
 CASE 
-			WHEN BLOCKADE_ENTRIES_TWELVE IS NULL THEN 0 
+			WHEN BLOCKADE_ENTRIES_TWELVE IS NULL THEN MISSING_VAL_IND_212 
 			ELSE BLOCKADE_ENTRIES_TWELVE 
 END AS DECIMAL(10,0)) AS IND_212_TMP,
 
 CAST(                
                 CASE
-                               WHEN (REGULAMENTARY_SEGMENT = 'Retail' AND IND_212_TMP > RETAIL_VAL_MAX_IND_212) THEN RETAIL_VAL_MAX_IND_212 
+                               WHEN (VAL_MAX_IND_212 IS NOT NULL AND IND_212_TMP > VAL_MAX_IND_212) THEN VAL_MAX_IND_212 
                                ELSE IND_212_TMP
                 END AS  DECIMAL(10,0)) AS IND_212,
 
@@ -26,7 +23,7 @@ CASE
 		ELSE '' 
 END || 
                 CASE
-                               WHEN (REGULAMENTARY_SEGMENT = 'Retail' AND IND_212_TMP > RETAIL_VAL_MAX_IND_212) THEN 'E0002'
+                               WHEN (VAL_MAX_IND_212 IS NOT NULL AND IND_212_TMP > VAL_MAX_IND_212) THEN 'E0002'
                                ELSE ''
                 END ERROR_MSG_IND_212
 ";

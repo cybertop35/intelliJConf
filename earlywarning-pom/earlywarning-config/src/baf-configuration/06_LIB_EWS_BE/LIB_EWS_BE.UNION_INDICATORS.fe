@@ -10,6 +10,7 @@ sql = "SELECT SNDG as SNDG,
 			REGULAMENTARY_SEGMENT as SEGMENT
 			,SYSTEM_DATE
 			,COUNTRY
+		,"+LIB_EWS_BE.static_filter_indicators_BE() +"
 		,"+ LIB_EWS_BE.INDICATOR_1() +"
 		,"+ LIB_EWS_BE.INDICATOR_2() +"
 		,"+ LIB_EWS_BE.INDICATOR_3() +"
