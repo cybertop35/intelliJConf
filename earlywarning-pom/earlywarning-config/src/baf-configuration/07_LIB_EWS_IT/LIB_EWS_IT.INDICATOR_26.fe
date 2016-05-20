@@ -5,7 +5,7 @@ VAR sql = "";
 
 sql = "
 	NVL( CAST(JD_DECANAL_PTF AS CHAR(1)) , '0')
-		) AS IND_26,
+		AS IND_26,
 		NULL AS ERROR_MSG_IND_26
 		";
 

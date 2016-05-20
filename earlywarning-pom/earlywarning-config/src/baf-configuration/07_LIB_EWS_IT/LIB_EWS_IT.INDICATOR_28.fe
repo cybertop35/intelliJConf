@@ -5,7 +5,7 @@ VAR sql = "";
 
 sql = "
 	NVL( CAST(JD_CONCOR_RICH AS CHAR(1)) , '0')
-		) AS IND_28,
+		AS IND_28,
 		NULL AS ERROR_MSG_IND_28
 		";
 
