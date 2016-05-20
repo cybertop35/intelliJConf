@@ -3,11 +3,7 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "
-	NVL( CAST(JD_CONCOR_AVVI AS CHAR(1)) , '0')
-		AS IND_32,
-		NULL AS ERROR_MSG_IND_32
-		";
+sql = "NVL( CAST(JD_CONCOR_AVVI AS CHAR(1)) , '0') AS IND_32,NULL AS ERROR_MSG_IND_32";
 
 
 DEBUGMESSAGE(formulaName, sql);
