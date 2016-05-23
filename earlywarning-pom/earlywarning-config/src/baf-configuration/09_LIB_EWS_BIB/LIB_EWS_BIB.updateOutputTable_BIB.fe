@@ -6,6 +6,12 @@ VAR analysisUnitID = Param1;
 VAR analysisUnitInstance = Analysis_Unit[ID=$analysisUnitID];
 VAR wp_list = analysisUnitInstance.Workspace_AnalysisUnit.Workspace.Workspace_Plan[Status="Production"];
 
+IF( SIZE(wp_list) == 0){
+	DEBUGMESSAGE(formulaName, " No production objects");
+	return null;
+}
+
+
 VAR T_OUT_TMP 		= analysisUnitInstance.ResultTableName+"_TMP";
 VAR T_OUT_BCK 		= analysisUnitInstance.ResultTableName+"_BCK";
 VAR T_OUT 			= analysisUnitInstance.ResultTableName;

@@ -133,16 +133,21 @@ foreach (VARIABLES as v){
 SQL = SQL + ERROR_SQL;
 
 COUNTER = 1;
+VAR brName;
 foreach (BR_LIST as b){
-	if (COUNTER <= 9){
-		NOME_COLONNA = "BR00000"+COUNTER;
-	}
-	else{
-		NOME_COLONNA = "BR0000"+COUNTER;
-	}
-    SQL = SQL +" ,(CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END ) as "+  NOME_COLONNA ;
+	brName = SUBSTRING(b.NAME,2,2);
+	NOME_COLONNA = "BR00000"+brName;
+	
+	#if (COUNTER <= 9){
+	#	NOME_COLONNA = "BR00000"+COUNTER;
+	#}
+	#else{
+	#	NOME_COLONNA = "BR0000"+COUNTER;
+	#}
+    
+	SQL = SQL +" ,(CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END ) as "+  NOME_COLONNA ;
 		
-	COUNTER = COUNTER + 1 ;
+	#COUNTER = COUNTER + 1 ;
 }
 
 SQL = SQL +" ,CAST(null as VARCHAR(50)) as WARNING_APP ";
