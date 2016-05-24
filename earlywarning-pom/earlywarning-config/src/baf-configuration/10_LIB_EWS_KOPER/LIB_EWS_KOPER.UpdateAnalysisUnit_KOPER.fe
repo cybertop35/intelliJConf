@@ -1,0 +1,74 @@
+# FENull returnNull LIB_EWS_BE.updateAnalyticaltable;
+# RETURN VALUE: FENull      -
+# EFFETCS:      -           updateAnalyticaltable
+# Param1:       FEInstance      analysisUnit instance id
+
+DEBUGMESSAGE("LIB_EWS_BIB.updateAnalysisUnit_BIB.fe"," START"); # stacktrace
+
+VAR analysisUnitID = Param1;
+
+VAR RESULT;
+VAR CREATED;
+
+VAR analysisUnitInstance = Analysis_Unit[ID=$analysisUnitID];
+VAR customerUnit = analysisUnitInstance.CustomerUnit_AnalysisUnit.Customer_Unit;
+
+VAR CAU_TABLE_NAME = analysisUnitInstance.AnalyticalTable;
+VAR CAU_TMP_TABLE_NAME = CAU_TABLE_NAME+"_TMP";
+VAR CAU_BCK_TABLE_NAME = CAU_TABLE_NAME+"_BCK";
+
+VAR variables = analysisUnitInstance.AnalysisUnit_Variable.Variable order by [ColumnName ASC];
+
+VAR DBCONNECTION = Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
+
+CREATED = false;
+
+IF(LIB_DB.isTableExisting(CAU_TMP_TABLE_NAME,DBCONNECTION)) THEN
+{
+	SQLEXECUTE("DROP TABLE "+ CAU_TMP_TABLE_NAME,DBCONNECTION,NULL,{});
+}
+VAR select = "SELECT ";
+VAR isFirst = true;			
+foreach (variables as v){
+		if(isFirst) {
+			isFirst = false;
+			select = select +v.ColumnName+" " ;
+		}
+		else{
+			select = select +","+v.ColumnName+" " ;
+		}
+}
+
+select = select +  ",SYSTEM_DATE
+					,"+ LIB_EWS_KOPER.Model_1_Corporate() +"
+                    ,"+ LIB_EWS_KOPER.Model_2_Corporate() +"
+                    ,"+ LIB_EWS_KOPER.Model_1_Retail() +"
+                    ,"+ LIB_EWS_KOPER.Model_2_Retail() +" 
+         FROM " +" "+customerUnit.TableName+" 
+         WHERE COUNTRY='KOPER'";
+
+VAR QUERY ="CREATE TABLE "+ CAU_TMP_TABLE_NAME +" 
+			as ( 
+				"+select+"
+				
+			) WITH DATA";
+
+SQLEXECUTE(QUERY,DBCONNECTION,NULL,{});
+
+CREATED = LIB_DB.isTableExistingAndHavingData(CAU_TMP_TABLE_NAME, DBCONNECTION);
+
+IF(CREATED) THEN {
+	IF(LIB_DB.isTableExisting(CAU_BCK_TABLE_NAME,DBCONNECTION)) THEN    {
+    	SQLEXECUTE("DROP TABLE "+CAU_BCK_TABLE_NAME,DBCONNECTION,NULL,{});
+    }
+	IF(LIB_DB.isTableExisting(CAU_TABLE_NAME,DBCONNECTION)) THEN    {
+		LIB_DB.renameTable(CAU_TABLE_NAME,CAU_BCK_TABLE_NAME,DBCONNECTION);
+	}
+	LIB_DB.renameTable(CAU_TMP_TABLE_NAME,CAU_TABLE_NAME,DBCONNECTION);
+
+	DEBUGMESSAGE("LIB_EWS_BIB.updateAnalysisUnit_BIB.fe"," END");
+	
+	return NOW();
+}
+ELSE
+	return null;

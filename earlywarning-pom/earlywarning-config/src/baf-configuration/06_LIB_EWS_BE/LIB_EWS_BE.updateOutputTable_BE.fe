@@ -16,18 +16,21 @@ VAR UNION;
 VAR analysisUnitList = customerUnit.CustomerUnit_AnalysisUnit.Analysis_Unit;
 
 
-
 UNION = UNION+ " JOIN (";
 foreach(analysisUnitList as unit){
 	analysisUnitTable = unit.ResultTableName;
-	UNION = UNION + "select * from "+unit.ResultTableName;
-	UNION = UNION + " UNION ALL ";
+	
+	if(LIB_DB.isTableExisting(analysisUnitTable,DBCONNECTION)) THEN {	
+		UNION = UNION + "select * from "+unit.ResultTableName;
+        columns = "BASE.*,"+ ARRAY_TO_STRING( Utils.getColumnName(analysisUnitTable,"SNDG")   );
+		UNION = UNION + " UNION ALL ";	
+	}
 
 }
 UNION = SUBSTRING(UNION, 0, LENGTH(UNION) - 10);
 UNION = UNION+ " ) SCORE ON base.SNDG = SCORE.SNDG";
 
-columns = "BASE.*,"+ ARRAY_TO_STRING( Utils.getColumnName(analysisUnitTable,"SNDG")   );
+
 SQL = "SELECT  "+columns+" FROM "+customerUnit.TableName+" base";
 
 SQL = SQL + UNION;
