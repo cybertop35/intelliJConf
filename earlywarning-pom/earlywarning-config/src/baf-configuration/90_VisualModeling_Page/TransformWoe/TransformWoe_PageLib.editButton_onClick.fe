@@ -1,0 +1,73 @@
+var formulaName = "[TransformWoe_PageLib.editButton_onClick] ";
+DEBUGMESSAGE(formulaName, "START");
+
+var user = Param1;
+var routerMap = Param2;
+var symbolTable = Param3;
+var selectRow = Param4;
+
+VAR variableId= selectRow[2];
+variableId= variableId["value"];
+
+var minYModelValue = 0;
+var maxYModelValue = 0;
+VAR thresholds = {};
+
+ ADDELEMENT(thresholds, ['label' : UPCASE('CAMBIAMI'), 'from' : 0 , 'to' :0, 'index': 0, 'labelColor': 'grey-m3']);
+ ADDELEMENT(thresholds, ['label' : UPCASE('CAMBIAMI 2'), 'from' : 0, 'to' :0, 'index': 1, 'labelColor': 'grey-m3']);
+
+VAR widgets = {
+	
+	[
+        'widgetId'  :   'popupConfigureTitle',
+        'name'		:   'output',
+        'value'	    :   [ 'label' : 'Configure Threshold', 'class': 'un-body2-bold ux-text-grey-p2' ],
+        'position'	:   '#configureTitlePH'
+    ],
+	[
+		'widgetId':'buttonCancel',
+		'name':'actionButton',
+		'value':[ 'label' : 'Cancel', 'skin' : [ 'color' : 'blue', 'size' : 'standard' ] ],
+		'position':'#cancelButtonPH'
+	],
+	[
+		'widgetId':'buttonSave',
+		'name':'actionButton',
+		'value':[ 'label' : 'Save', 'skin' : [ 'color' : 'green', 'size' : 'standard' ] ],
+		'position':'#saveButtonPH'
+	]
+	
+};
+
+VAR cont = [	"widgetId"  : "widgetsGridPH",
+			"name"      : "thresholdsGridWoa",
+			"value"     : [
+				'thresholds'   : thresholds,
+				'maxHeight': 240,
+				'maxThresholdsNumber': 10,
+				'defaultThresholdName': UPCASE('NEW_NAME') + '...',
+				'minValue' : minYModelValue,
+				'maxValue': maxYModelValue,
+				'minValueMessage': 'Min Value: ' + minYModelValue,
+				'maxValueMessage': 'Max Value: ' + maxYModelValue
+			],
+			"position"  : "#widgetsGridPH"
+		];
+	
+	
+addelement(widgets,cont);
+
+VAR popup = {[
+    "widgetId" : "popupConfigureWoe",
+    "name"     : "template",
+    "value"    : [
+        'show'     : true,
+        'popup'    : true,
+        'layout'   : 'pages/layouts/popupConfigureWoe/',
+        'widgets'  : widgets
+    ],
+    "position" : "#popupConfigureWoe"
+]};
+
+DEBUGMESSAGE(formulaName, "END");
+RETURN ['widgets': popup, 'widgetsToRemove': {}];

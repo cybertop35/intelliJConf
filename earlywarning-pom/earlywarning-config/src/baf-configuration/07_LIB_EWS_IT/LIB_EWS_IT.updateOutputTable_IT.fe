@@ -136,9 +136,9 @@ COUNTER = 1;
 VAR brName;
 foreach (BR_LIST as b){
 	brName = SUBSTRING(b.NAME,2,2);
-	NOME_COLONNA = "BR00000"+brName;
+	NOME_COLONNA = "BR0000"+brName;
 	
-	#if (COUNTER <= 9){
+	#if (NUM(brName) <= 9){
 	#	NOME_COLONNA = "BR00000"+COUNTER;
 	#}
 	#else{

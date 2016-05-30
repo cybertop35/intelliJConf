@@ -1,0 +1,27 @@
+<div class="container-fluid">
+    <div style="overflow-y: auto; max-height:<%-value.maxHeight%>px;">
+        <% _.each(value.thresholds, function(threshold, index) {  %>
+        <div id="<%- threshold.index %>_<%-widgetId%>" class="row align-center thRow" data-index="<%-threshold.index%>">
+            <div class="col-lg-4 col-md-4 col-sm-4 l-right-space m-bottom-space">
+                <div class="thresholdBox text-center ux-text-grey-p1 ux-text-oneline s-right-space s-left-space ux-background-<%- threshold.labelColor %>" ><%- threshold.label %></div>
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 s-right-space m-bottom-space">
+                <input value="<%- threshold.from%>" maxlength="<%- value.maxLength %>" class="fromValue inputVal" <% if(threshold.index != value.thresholds.length-1 || value.disabled) {  %> disabled <% } %> />
+            </div>
+            <div class="col-lg-3 col-md-3 col-sm-3 s-right-space m-bottom-space">
+                <input value="<%- threshold.to%>" maxlength="<%- value.maxLength %>" class="toValue inputVal" <% if(value.disabled) {  %> disabled <% } %> />
+            </div>
+            <% if(index != 0 || value.thresholds.length == 1 && value.thresholds.length < value.maxThresholdsNumber) {  %>
+            <div class="col-lg-1 col-md-1 col-sm-1 s-left-space s-right-space m-bottom-space">
+                <span class="add glyphicon glyphicon-plus-sign ux-text-grey ux-cursor-click" aria-hidden="true"></span>
+            </div>
+            <% } %>
+            <% if(threshold.index != value.thresholds.length-1) {  %>
+            <div class="col-lg-1 col-md-1 col-sm-1 s-left-space m-bottom-space">
+                <span class="remove glyphicon glyphicon-minus-sign ux-text-grey ux-cursor-click" aria-hidden="true"></span>
+            </div>
+            <% } %>
+        </div>
+        <% }); %>
+    </div>
+</div>

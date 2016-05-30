@@ -1,4 +1,4 @@
-VAR formulaName = "[LIB_EWS_IT.UNION_INDICATORS.fe] ";
+﻿VAR formulaName = "[LIB_EWS_IT.UNION_INDICATORS.fe] ";
 DEBUGMESSAGE(formulaName, "START");
 
 VAR customerUnit = Param1;
