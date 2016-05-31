@@ -68,7 +68,7 @@ define(["jquery", "underscore", "backbone", "app", "tooltips", "events"], functi
 		},
 
 		onDoubleClick: function(e){
-			if ($(e.currentTarget).find('.thresholdInputBox').length == 0){
+		if ($(e.currentTarget).find('.thresholdInputBox').length == 0){
 				e.stopPropagation();
 				var currentEle = $(e.currentTarget);
 				var value = $(e.currentTarget).html();
@@ -77,20 +77,22 @@ define(["jquery", "underscore", "backbone", "app", "tooltips", "events"], functi
 		},
 
 		updateVal : function(currentEle, value) {
-			$(currentEle).html('<input class="toValue inputVal" value="' + value + '" />');
+			$(currentEle).html('<input class="inputVal thresholdInputBox" value="' + value.trim() + '" />');
 			$(".thresholdInputBox").focus();
 			var index = parseInt($(currentEle).parent().parent().attr('data-index'));
 			var thresholds = this.model.value.thresholds;
 			$(".thresholdInputBox").keyup(function (event) {
 				if (event.keyCode == 13) {
-					thresholds[index].label = $(".thresholdInputBox").val().trim();
+					thresholds[index].score = $(".thresholdInputBox").val().trim();
 					$(currentEle).html($(".thresholdInputBox").val().trim());
 				}
 			});
-
+			var self = this;
 			$(".thresholdInputBox").focusout(function () {
-				thresholds[index].label = $(".thresholdInputBox").val().trim();
-				$(currentEle).html($(".thresholdInputBox").val().trim());
+				if(self.errorMessage == undefined){
+					thresholds[index].score = $(".thresholdInputBox").val().trim();
+					$(currentEle).html($(".thresholdInputBox").val().trim());
+				 }
 			});
 		},
 
@@ -261,7 +263,7 @@ define(["jquery", "underscore", "backbone", "app", "tooltips", "events"], functi
 				} else if(this.model.value.thresholds.length == 1){
 					row.before('<div id="'+ (index) + '_' + this.model.widgetId + '" class="row align-center thRow" data-index="' + (index) + '"><div class="col-lg-4 col-md-4 col-sm-4 l-right-space m-bottom-space"><div class="thresholdBox text-center ux-text-grey-p1 ux-text-oneline s-right-space s-left-space ux-background-grey-m3" >'+this.model.value.defaultThresholdName+'</div></div><div class="col-lg-3 col-md-3 col-sm-3 s-right-space m-bottom-space"><input value="' + fromVal + '" maxlength class="fromValue inputVal" disabled /></div><div class="col-lg-3 col-md-3 col-sm-3 s-right-space m-bottom-space"><input value="" maxlength class="toValue inputVal ux-input-error-style" /></div><div class="col-lg-1 col-md-1 col-sm-1 s-left-space m-bottom-space"><span class="remove glyphicon glyphicon-minus-sign ux-text-grey ux-cursor-click" aria-hidden="true"></span></div></div>');
 				}
-				this.model.value.thresholds.splice(index, 0, {label : this.model.value.defaultThresholdName, from : fromVal, to: null, index: index, labelColor: 'grey-m3'});
+				this.model.value.thresholds.splice(index, 0, {score : this.model.value.defaultThresholdName, from : fromVal, to: null, index: index, labelColor: 'grey-m3'});
 				this.model.value.errors++;
 
 				var firstVal = index + 1;

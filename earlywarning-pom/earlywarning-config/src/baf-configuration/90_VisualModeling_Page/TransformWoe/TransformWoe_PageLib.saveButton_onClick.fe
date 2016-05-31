@@ -25,20 +25,7 @@ var widgetsAndNotifications = [
     'notifications' : notifications
 ];
 
-if(symbolTable['isSelectedRemediationOk']['status']) {
-    widgetsAndNotifications = LIB_VMCommons.saveButton_onClick(user, routerMap, symbolTable);
-} else {
-    var messageInfo;
-    foreach(keyset(symbolTable['isSelectedRemediationOk']['causes']) as keyI) {
-        messageInfo = TransformBin.getValidationMessage(symbolTable['isSelectedRemediationOk']['causes'][keyI]);
-        addelement(widgetsAndNotifications['notifications'], [
-            'autoHide'      : true,
-            'message'       : messageInfo['message'],
-            'title'         : messageInfo['title'],
-            'type'          : 'error'
-        ]);
-    }
-}
+widgetsAndNotifications = LIB_VMCommons.saveButton_onClick(user, routerMap, symbolTable);
 
 DEBUGMESSAGE(formulaName, "END");
 return widgetsAndNotifications;

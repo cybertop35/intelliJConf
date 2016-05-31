@@ -15,8 +15,8 @@ VAR user = Param1;
 VAR routerMap = Param2;
 VAR symbolTable = Param3;
 
-LIB_VMCommons.setNodeInfo(symbolTable, "TRFBN", NULL);
-PUT(symbolTable['nodeValue'], 'remediations', TransformBin.getTransformations(symbolTable['variablesDatasource']));
+LIB_VMCommons.setNodeInfo(symbolTable, "TRFWOE", NULL);
+PUT(symbolTable['nodeValue'], 'thresholds',symbolTable['thresholds']);
 
 DEBUGMESSAGE(formulaName, "END");
 RETURN null;

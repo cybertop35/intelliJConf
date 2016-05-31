@@ -3,7 +3,7 @@
         <% _.each(value.thresholds, function(threshold, index) {  %>
         <div id="<%- threshold.index %>_<%-widgetId%>" class="row align-center thRow" data-index="<%-threshold.index%>">
             <div class="col-lg-4 col-md-4 col-sm-4 l-right-space m-bottom-space">
-                <div class="thresholdBox text-center ux-text-grey-p1 ux-text-oneline s-right-space s-left-space ux-background-<%- threshold.labelColor %>" ><%- threshold.label %></div>
+                <div class="thresholdBox text-center ux-text-grey-p1 ux-text-oneline s-right-space s-left-space ux-background-<%- threshold.labelColor %>" ><%- threshold.score %></div>
             </div>
             <div class="col-lg-3 col-md-3 col-sm-3 s-right-space m-bottom-space">
                 <input value="<%- threshold.from%>" maxlength="<%- value.maxLength %>" class="fromValue inputVal" <% if(threshold.index != value.thresholds.length-1 || value.disabled) {  %> disabled <% } %> />

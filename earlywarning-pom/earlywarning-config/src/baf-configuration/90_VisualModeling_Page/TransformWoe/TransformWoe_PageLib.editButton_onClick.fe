@@ -1,21 +1,27 @@
 var formulaName = "[TransformWoe_PageLib.editButton_onClick] ";
 DEBUGMESSAGE(formulaName, "START");
 
-var user = Param1;
-var routerMap = Param2;
-var symbolTable = Param3;
-var selectRow = Param4;
+var user 		= Param1;
+var routerMap 	= Param2;
+var symbolTable 	= Param3;
 
-VAR variableId= selectRow[2];
-variableId= variableId["value"];
+VAR thresholdsMap 	= symbolTable["thresholds"];
+VAR variableId 		= symbolTable["selectedRow"][2];
+VAR variableType 		= symbolTable["selectedRow"][1];
+var minYModelValue 	= 0;
+var maxYModelValue 	= 0;
+VAR thresholds 		= {};
+VAR widget 			= NULL;
 
-var minYModelValue = 0;
-var maxYModelValue = 0;
-VAR thresholds = {};
 
- ADDELEMENT(thresholds, ['label' : UPCASE('CAMBIAMI'), 'from' : 0 , 'to' :0, 'index': 0, 'labelColor': 'grey-m3']);
- ADDELEMENT(thresholds, ['label' : UPCASE('CAMBIAMI 2'), 'from' : 0, 'to' :0, 'index': 1, 'labelColor': 'grey-m3']);
+variableId	= variableId["value"];
+variableType 	= variableType["label"];
 
+IF(thresholdsMap == NULL){
+	thresholdsMap = [];
+}
+
+ 
 VAR widgets = {
 	
 	[
@@ -39,23 +45,71 @@ VAR widgets = {
 	
 };
 
-VAR cont = [	"widgetId"  : "widgetsGridPH",
-			"name"      : "thresholdsGridWoa",
-			"value"     : [
-				'thresholds'   : thresholds,
-				'maxHeight': 240,
-				'maxThresholdsNumber': 10,
-				'defaultThresholdName': UPCASE('NEW_NAME') + '...',
-				'minValue' : minYModelValue,
-				'maxValue': maxYModelValue,
-				'minValueMessage': 'Min Value: ' + minYModelValue,
-				'maxValueMessage': 'Max Value: ' + maxYModelValue
-			],
-			"position"  : "#widgetsGridPH"
-		];
+IF(variableType == "CONTINUOUS" ) {
+	thresholds = {};
+	if (thresholdsMap[variableId] == NULL){
+		ADDELEMENT(thresholds, ['score' : UPCASE('NEW VALUE...'), 'from' : 0 , 'to' :0, 'index': 0, 'labelColor': 'grey-m3']);
+		ADDELEMENT(thresholds, ['score' : UPCASE('NEW VALUE...'), 'from' : 0, 'to' :0, 'index': 1, 'labelColor': 'grey-m3']);
+		ADDELEMENT(thresholds, ['score' : UPCASE('NEW VALUE...'), 'from' : 0, 'to' :0, 'index': 2, 'labelColor': 'grey-m3']);
+		ADDELEMENT(thresholds, ['score' : UPCASE('NEW VALUE...'), 'from' : 0, 'to' :0, 'index': 3, 'labelColor': 'grey-m3']);
+	#	put(thresholdsMap,variableId,thresholds);
+   #	put(symbolTable,"thresholds",thresholdsMap);
+	}
+	else{
+		thresholds = thresholdsMap[variableId];
+	}
+
+	widget = [	"widgetId"  : "widgetsGridPH",
+				"name"      : "thresholdsGridWoa",
+				"value"     : [
+					'thresholds'   : thresholds,
+					'maxHeight': 240,
+					'maxThresholdsNumber': 10,
+					'defaultThresholdName': UPCASE('NEW VALUE') + '...',
+					'minValue' : minYModelValue,
+					'maxValue': maxYModelValue,
+					'minValueMessage': 'Min Value: ' + minYModelValue,
+					'maxValueMessage': 'Max Value: ' + maxYModelValue
+				],
+				"position"  : "#widgetsGridPH"
+			];
+		
+		
+	addelement(widgets,widget);
+}
+var distincValues = Variable[ID=$variableId].Variable_Distinct_Value.ItemValueString;
+DEBUGMESSAGE(formulaName,distincValues);
+
+IF(variableType == "CATEGORICAL" AND SIZE(distincValues) > 0) {
+	thresholds = {};
+	if (thresholdsMap[variableId] == NULL){
+		foreach(distincValues as val){
+			ADDELEMENT(thresholds, {['label': val],  ['value': 10]});
+		}
+		# put(thresholdsMap,variableId,thresholds);
+		# put(symbolTable,"thresholds",thresholdsMap);
+	}
+	else{
+		thresholds = thresholdsMap[variableId];
+	}
 	
-	
-addelement(widgets,cont);
+	DEBUGMESSAGE(formulaName,thresholds);
+	widget = [	'widgetId':'widgetsGridPH',
+				'name':'dataTable',
+				'value':[
+					'height':240,
+					'columns': {
+						['headerLabel': "Category", 	'headerStyle':"ux-body2-bold ux-text-oneline", 	'widgetName':"output", 		'widgetParameters': ["class":"ux-body2 ux-text-grey"]],
+						['headerLabel': "Score",		'headerStyle':"ux-body2-bold ux-text-oneline", 	'widgetName':"sliderInput",	'widgetParameters': [ 'value': 55.7, 'min':0, 'max':100] ]
+					},
+					'values': thresholds
+					
+				],
+				'position':'#widgetsGridPH'
+			];
+		
+	addelement(widgets,widget);
+}
 
 VAR popup = {[
     "widgetId" : "popupConfigureWoe",

@@ -15,7 +15,7 @@ var sessionId = visualModelingContext['sessionId'];
 
 var nodeInfo;
 if (nodeValue == null) {
-	var result = LIB_VMCommons.runEmptyNode("TRFBN", inputs);
+	var result = LIB_VMCommons.runEmptyNode("TRFWOE", inputs);
 	DEBUGMESSAGE(formulaName, "NODE VALUE NULL");
 	DEBUGMESSAGE(formulaName, "END");
     return result;
@@ -36,134 +36,81 @@ if (updated == false){
     var predictiveDatasourceName = Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
     LIB_DB.DropTableIfExists(nodeTableName, predictiveDatasourceName);
 
-    # get remediations
     variables = CLONE(prevVariables);
-    var remediations = nodeValue['remediations'];
-    var variablesInfo = LIB_VMCommons.getVariablesInfo(prevNodeTableName, variables);
-    var selectSql;
-    var whereSql;
-    var statement;
-    var rem;
-    var dataVar;
-    var varInfo;
-    var categoricalValues;
-    var continuousValues;
-    var newVariables = {};
-    var cat;
-    var positiveCategoricalValues;
-    var negativeCategoricalValues;
-    for(var i=0; i<size(variables); i=i+1){
-        statement = NULL;
-        rem = [];
-        varInfo = [];
-        categoricalValues = {};
-        continuousValues = [];
-        foreach (remediations as remediation) {
-            if (variables[i]['id'] == remediation['id']) {
-                varInfo = variablesInfo[variables[i]['id']];
-                PUT(rem, 'id', variables[i]['id']);
-                PUT(rem, 'columnName', variables[i]['columnName']);
-                PUT(rem, 'remediation', remediation['remediation']);
-                PUT(rem, 'numberInput', remediation['numberInput']);
-                PUT(rem, 'newField', remediation['newField']);
-                PUT(rem, 'min', varInfo['MIN']);
-                PUT(rem, 'max', varInfo['MAX']);
-                PUT(rem, 'mean', varInfo['AVG']);
-                PUT(rem, 'stdDev', varInfo['STD_DEV']);
 
-                if (remediation['remediation']=="BINNING_QUANTILES") {
-                    statement = TransformBin.getBinningQuantiles(rem);
-                    for (cat=1;cat<=remediation['numberInput'];cat=cat+1) {
-                        ADDELEMENT(categoricalValues, cat);
-                    }
-                }
+	var thresholds = nodeValue['thresholds'];
+		DEBUGMESSAGE(formulaName + 'thresholds=', thresholds);
+	var dataVar;
+	var newVariables = {};
+	var continuousValuesTMP = {};
+	var continuousValues = [];
+	var thresholdConf;
+	var statement;
+	VAR min;
+	VAR max;
+	for(var i=0; i<size(variables); i=i+1){ 
+		statement = statement +  variables[i]['columnName'];
+		statement = statement + ",";
 
-                if (remediation['remediation']=="BINNING_FIXEDWIDTH") {
-                    statement = TransformBin.getBinningFixedWidth(rem);
-                    for (cat=1;cat<=remediation['numberInput'];cat=cat+1) {
-                        ADDELEMENT(categoricalValues, cat);
-                    }
-                }
+		IF(thresholds <> null) {
+			FOREACHKEY(thresholds as key){
+				if (variables[i]['id'] == key) {
+					dataVar = [];				
+					PUT(dataVar, 'id', 			variables[i]['id'] + "_TWOE");
+					PUT(dataVar, 'columnName', 	variables[i]['columnName'] + "_TWOE");
+					PUT(dataVar, 'columnLabel',	variables[i]['columnLabel'] + " New (Woe)");
+					PUT(dataVar, 'variableType', 	'CONTINUOUS');
+					PUT(dataVar, 'dataType', 		'REAL');
+					PUT(dataVar, 'isHiddenColumn',	false);
+					PUT(dataVar, 'isKeyColumn', 	false);
+					PUT(dataVar, 'isTargetColumn', false);
+					PUT(dataVar, 'isSegment', 		false);
+					
+					thresholdConf = thresholds[key];
+					continuousValuesTMP = {};
+					continuousValues = [];
+					
+					IF(variables[i]['variableType'] ==  'CONTINUOUS'){
+						
+						statement = statement + " CASE ";					
+						foreach( thresholdConf as conf ){
+							statement = statement + " WHEN " + variables[i]['columnName'] + " > " +conf["from"] +" and "+ variables[i]['columnName'] + " <= " +conf["to"]+ " THEN "+conf["score"];
+							addelement(continuousValuesTMP,NUM(conf["score"]));
+						}			
+						statement = statement + " END AS " + variables[i]['columnName'] + "_TWOE";					
+					}
+					ELSE IF(variables[i]['variableType'] == 'CATEGORICAL'){
+						statement = statement + " CASE ";
+						foreach( thresholdConf as conf ){
+							statement = statement + " WHEN " + variables[i]['columnName'] + " = '" +conf[0]["label"] +"' THEN "+conf[1]["value"];
+							addelement(continuousValuesTMP,(conf[1]["value"]));
+						}			
+						statement = statement + " END AS " + variables[i]['columnName'] + "_TWOE";					
+					}
+					statement = statement + ",";
+						
 
-                if (remediation['remediation']=="BINNING_STDDEVS") {
-                    statement = TransformBin.getBinningStandardDevs(rem);
-                    positiveCategoricalValues = {};
-                    negativeCategoricalValues = {};
-                    for (cat=1; cat<remediation['numberInput']+2; cat=cat+1) {
-                        ADDELEMENT(positiveCategoricalValues, cat);
-                        ADDELEMENT(negativeCategoricalValues, -1*cat);
-                    }
-                    categoricalValues = CONCAT(REVERSE(negativeCategoricalValues), positiveCategoricalValues);
-                }
+					min = MIN(continuousValuesTMP);
+					max = MAX(continuousValuesTMP);
 
-                if (remediation['remediation']=="TRANSFORMATION_EXP") {
-                    statement = TransformBin.getTransformationExp(rem);
-                    continuousValues = ['min': EXP(variables[i]['continuousValues']['min']), 'max': EXP(variables[i]['continuousValues']['max'])];
-                }
-
-                if (remediation['remediation']=="TRANSFORMATION_LOG") {
-                    statement = TransformBin.getTransformationLog(rem);
-                    continuousValues = ['min': 0, 'max': LOG(1 + variables[i]['continuousValues']['max'] - variables[i]['continuousValues']['min'])/LOG(remediation['numberInput'])];
-                }
-
-                if (remediation['remediation']=="TRANSFORMATION_POWER") {
-                    statement = TransformBin.getTransformationPower(rem);
-                    continuousValues = ['min': variables[i]['continuousValues']['min']^remediation['numberInput'], 'max': variables[i]['continuousValues']['max']^remediation['numberInput']];
-                }
-                break;
-            }
-        }
-        if (selectSql <> NULL) {
-            selectSql = selectSql + ", ";
-        }
-        if (statement <> NULL) {
-            if (rem['newField']) {
-                selectSql = selectSql + variables[i]['columnName'] + ",";
-                selectSql = selectSql + statement['select'] + " as " + variables[i]['columnName'] + "_TB";
-
-                dataVar = [];
-                PUT(dataVar, 'id', variables[i]['id'] + "_TB");
-                PUT(dataVar, 'columnName', variables[i]['columnName'] + "_TB");
-                PUT(dataVar, 'columnLabel', variables[i]['columnLabel'] + " New (TB)");
-                if (ISLIKE(rem['remediation'], "BINNING%")) {
-                    PUT(dataVar, 'variableType', 'ORDINAL');
-                    PUT(dataVar, 'dataType', 'INTEGER');
-                } else {
-                    PUT(dataVar, 'variableType', 'CONTINUOUS');
-                    PUT(dataVar, 'dataType', 'REAL');
-                }
-                PUT(dataVar, 'isHiddenColumn', false);
-                PUT(dataVar, 'isKeyColumn', false);
-                PUT(dataVar, 'isTargetColumn', false);
-                PUT(dataVar, 'isSegment', false);
-                PUT(dataVar, 'isPartitioningColumn', false);
-                PUT(dataVar, 'isEmptyContinuousVariable', false);
-                PUT(dataVar, 'categoricalValues', categoricalValues);
-                PUT(dataVar, 'continuousValues', continuousValues);
-                ADDELEMENT(newVariables, dataVar);
-            } else {
-                selectSql = selectSql + statement['select'] + " as " + variables[i]['columnName'] + "_TB";
-                PUT(variables[i], 'columnName', variables[i]['columnName'] + "_TB");
-                PUT(variables[i], 'columnLabel', variables[i]['columnLabel'] + "*");
-                if (ISLIKE(rem['remediation'], "BINNING%")) {
-                    PUT(variables[i], 'variableType', 'ORDINAL');
-                    PUT(variables[i], 'dataType', 'INTEGER');
-                }
-                PUT(variables[i], 'categoricalValues', categoricalValues);
-                PUT(variables[i], 'continuousValues', continuousValues);
-            }
-        } else {
-            selectSql = selectSql + variables[i]['columnName'];
-        }
-    }
-    variables = CONCAT(variables, newVariables);
-
+					DEBUGMESSAGE(key+" = MIN: "+min+" MAX: "+max);		
+					
+					continuousValues = ['min':min,'max':max];
+					PUT(dataVar, 'continuousValues', continuousValues);
+					
+					ADDELEMENT(newVariables, dataVar);
+				}	
+			}		
+		}
+	}
+	
+	variables = CONCAT(variables, newVariables);
+	statement = SUBSTRING(statement,0,LENGTH(statement) - 1);
+	
+	
     # create result table
-    var query = "CREATE TABLE " + nodeTableName + " AS SELECT " + selectSql + " FROM " + prevNodeTableName;
-    if (whereSql <> null) {
-        query = query + " WHERE " + whereSql;
-    }
-    SQLEXECUTE(query, predictiveDatasourceName, null, {});
+    var query = "CREATE TABLE " + nodeTableName + " AS SELECT " + statement + "  FROM " + prevNodeTableName;
+	SQLEXECUTE(query, predictiveDatasourceName, null, {});
 
     DEBUGMESSAGE(formulaName + 'query=', query);
 

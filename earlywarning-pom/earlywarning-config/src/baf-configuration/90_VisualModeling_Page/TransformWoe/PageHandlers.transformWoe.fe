@@ -1,21 +1,18 @@
 var formulaName = "[PageHandlers.transformWoe] ";
 DEBUGMESSAGE(formulaName, "START");
 
-var user = Param1;
-var routerMap = Param2;
-var symbolTable = Param3;
+var user 		= Param1;
+var routerMap 	= Param2;
+var symbolTable 	= Param3;
 
-var eventContext = routerMap["eventContext"];
-var widgetId = routerMap["widgetId"];
+var eventContext 	= routerMap["eventContext"];
+var widgetId 	= routerMap["widgetId"];
 
-
-
-var dataTableRows = null;
-var row = null;
-var widgets = {};
-var isEventHandled = FALSE;
+var dataTableRows 	= null;
+var row 				= null;
+var widgets 			= {};
+var isEventHandled 	= FALSE;
 var indexRow;
-
 
 if (ISLIKE(widgetId,"transformWoeTable_%") and not isEventHandled) {
 	
@@ -23,12 +20,15 @@ if (ISLIKE(widgetId,"transformWoeTable_%") and not isEventHandled) {
 	indexRow = SPLIT(widgetId,"_");
 	indexRow = indexRow[1];
 	row = dataTableRows[NUM(indexRow)];
-    widgets = TransformWoe_PageLib.editButton_onClick(user, routerMap, symbolTable,row);
+	
+	put(symbolTable,"selectedRow",row);
+	
+    widgets = TransformWoe_PageLib.editButton_onClick(user, routerMap, symbolTable);
     isEventHandled = TRUE;
 }
 
 if (widgetId == 'visualModelingSaveClick' and not isEventHandled) {
-    widgets = TransformBin_PageLib.saveButton_onClick(user, routerMap, symbolTable);
+    widgets = TransformWoe_PageLib.saveButton_onClick(user, routerMap, symbolTable);
     isEventHandled = TRUE;
 }
 IF(widgetId == "buttonCancel" AND NOT isEventHandled) THEN {
@@ -36,7 +36,8 @@ IF(widgetId == "buttonCancel" AND NOT isEventHandled) THEN {
     isEventHandled = TRUE;
 }
 IF(widgetId == "buttonSave" AND NOT isEventHandled) THEN {
-    widgets = LIB_Popup.cancelButton_onClick(user, routerMap, symbolTable);
+    widgets = TransformWoe_PageLib.saveButtonConfigure_onClick(user, routerMap, symbolTable);
+	widgets = LIB_Popup.cancelButton_onClick(user, routerMap, symbolTable);
     isEventHandled = TRUE;
 }
 
