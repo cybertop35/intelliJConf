@@ -3,7 +3,7 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "(
+sql = "CAST(
 		CASE
 			WHEN (-5.183951 + (0.4554721 	* IND_212)  
 					 + (0.18027 	* IND_213)
@@ -28,7 +28,7 @@ sql = "(
 					) 
 					 
 		END
-		) as MOD_RETAIL_1";
+		as DECIMAL(18,6)) as MOD_RETAIL_1";
 
 DEBUGMESSAGE(formulaName, sql);
 DEBUGMESSAGE(formulaName, "END");
