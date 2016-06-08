@@ -10,8 +10,8 @@ sql = "CAST(
 					 + (0.0251268 	* IND_1)
 					 + (3.564812 	* IND_205)
 					 + (0.5329995 	* IND_56)
-					 ) <= -200
-				THEN EXP(-200)
+					 ) <= -20
+				THEN EXP(-20)
 			WHEN (-5.183951 + (0.4554721 	* IND_212)  
 					 + (0.18027 	* IND_213)
 					 + (0.0251268 	* IND_1)
@@ -28,7 +28,7 @@ sql = "CAST(
 					) 
 					 
 		END
-		as DECIMAL(18,6)) as MOD_RETAIL_1";
+		as DECIMAL(18,12)) as MOD_RETAIL_1";
 
 DEBUGMESSAGE(formulaName, sql);
 DEBUGMESSAGE(formulaName, "END");
