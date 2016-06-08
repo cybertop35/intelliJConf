@@ -3,12 +3,7 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "
-	NVL( CAST(JD_NEG_EV_PERS AS CHAR(1)) , '0')
-		AS IND_15,
-		NULL AS ERROR_MSG_IND_15
-		";
-
+sql = "NVL( CAST(JD_NEG_EV_PERS AS CHAR(1)) , '0') AS IND_15, NULL AS ERROR_MSG_IND_15";
 
 DEBUGMESSAGE(formulaName, sql);
 DEBUGMESSAGE(formulaName, "END");
