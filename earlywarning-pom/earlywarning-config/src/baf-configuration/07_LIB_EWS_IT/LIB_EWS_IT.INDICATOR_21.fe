@@ -1,0 +1,9 @@
+﻿VAR formulaName = "[LIB_EWS_IT.INDICATOR_21.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+sql = "NVL( CAST(JD_INADE_QDEBT AS CHAR(1)) , '0') AS IND_21,NULL AS ERROR_MSG_IND_21";
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+return sql;

@@ -1,0 +1,12 @@
+VAR formulaName = "[LIB_EWS_IT.INDICATOR_22.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "NVL( CAST(JD_DEBT_PUBBLI AS CHAR(1)) , '0')AS IND_22,NULL AS ERROR_MSG_IND_22";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;
