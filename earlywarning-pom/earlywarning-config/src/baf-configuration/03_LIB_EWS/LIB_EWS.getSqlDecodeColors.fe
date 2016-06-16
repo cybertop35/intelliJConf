@@ -1,7 +1,8 @@
 
 VAR color = Param1;
 
-VAR sql = "case   when "+color+" = 'GREEN' 									then 'S01'	
+VAR sql = "case   when "+color+" = 'NONE' 									then 'S00'	
+				when "+color+" = 'GREEN' 									then 'S01'	
 				when "+color+" = 'LIGHT_GREEN' OR  "+color+" = 'LIGHT GREEN' 	then 'S10'	
                   when "+color+" = 'ORANGE' 									then 'S20'
 				when "+color+" = 'RED' 									then 'S30'

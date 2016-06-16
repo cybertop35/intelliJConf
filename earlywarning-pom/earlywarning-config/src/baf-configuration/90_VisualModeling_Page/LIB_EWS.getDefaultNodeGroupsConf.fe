@@ -1,8 +1,15 @@
 VAR nodes = LIB_VMCommons.getDefaultNodeGroupsConf();
-var dataPreparation = nodes[2];
-dataPreparation = get(dataPreparation,"nodes");
-VAR node =  [ "name" : "Transform Woe",       "ports" : "I/O", "actions" : { ["name" : "Edit", "targetPage" : "transformWoe", "enableApply" : true], ["name" : "Show Data", "targetPage" : "showData"]} ];
+var dataPreparation 	= nodes[2];
+VAR modeling 		= nodes[3];
+dataPreparation 	= get(dataPreparation,"nodes");
+modeling 		= get(modeling,"nodes");
+VAR node;
+
+node =  [ "name" : "Transform Woe", "ports" : "I/O", "actions" : { ["name" : "Edit", "targetPage" : "transformWoe", "enableApply" : true], ["name" : "Show Data", "targetPage" : "showData"]} ];
 addelement(dataPreparation,node);
-#debugmessage(MAPTOJSONSTRING(dataPreparation));
+
+node =  [ "name" : "Weighted Model Woe", "ports" : "I/O", "actions" : { ["name" : "Edit", "targetPage" : "weightedModelWoe", "enableApply" : true], ["name" : "Show Data", "targetPage" : "showData"]} ];
+addelement(modeling,node);
+
 
 return nodes;

@@ -1,0 +1,41 @@
+VAR formulaName = "[WeightedModelWoe.getVariablesDatasource] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR nodeValue = Param1;
+VAR inputs = Param2;
+VAR continuousVariablesInfo = Param3;
+
+#{
+#	{['label': "First A"], ['label': "Richard "], ''},
+#	{['label': "First B"], ['label': "Smith"], ''},
+#	{['label': "First C"], ['label': "Richard Smith"], ''}
+#};
+
+var variablesDatasource = {};
+var varInfo = [];
+
+VAR predictiveDatasourceName = Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
+
+foreach(inputs[0]['variables'] as variable){
+	if (
+        (variable['isKeyColumn']==FALSE OR variable['isKeyColumn']==NULL) AND
+        (variable['isHiddenColumn']==FALSE OR variable['isHiddenColumn']==NULL) AND
+        (variable['isSegment']==FALSE OR variable['isSegment']==NULL) AND
+        (variable['isTargetColumn']==FALSE OR variable['isTargetColumn']==NULL) AND
+        (variable['isPossibleTarget']==FALSE OR variable['isPossibleTarget']==NULL) AND
+        (variable['isPartitioningColumn']==FALSE OR variable['isPartitioningColumn']==NULL)
+		){
+		
+			varInfo = [];	
+			PUT(varInfo, 'value', variable['id']);
+			PUT(varInfo, 'label', variable['columnLabel']);	
+
+			ADDELEMENT(variablesDatasource, varInfo);
+		}
+    
+
+}
+
+
+DEBUGMESSAGE(formulaName, "END");
+return variablesDatasource;
