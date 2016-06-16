@@ -1,0 +1,31 @@
+VAR formulaName = "[LIB_EWS_IT.INDICATOR_33.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+	(NON_PERFORMING_LOANS_SYSTEM - NON_PERFORMING_LOANS_GROUP)  AS NUM_IND_33
+	, GREATEST(CREDIT_FACILITY_TOT_GRP,CREDIT_USED_TOT_GRP)	AS DEN_IND_33,
+	CAST(
+	  case 
+		when DEN_IND_33 = 0  THEN 0
+		when DEN_IND_33 < 0 then 9999999
+		when NUM_IND_33 = 0 and DEN_IND_33 > 0 THEN 0
+		WHEN NUM_IND_33 < 0 and DEN_IND_33 > 0 THEN 100
+		WHEN (DEN_IND_33 is null)  AND (NUM_IND_33 > 0 OR NUM_IND_33 < 0 OR NUM_IND_33 =0 ) then 9999999
+		else  (cast (NUM_IND_33 as NUMBER (18,3) )/ cast (DEN_IND_33 as NUMBER (18,3)))
+	  END AS DECIMAL(18,6) ) AS IND_33
+,(
+		case
+			WHEN DEN_IND_33 = 0 AND NUM_IND_33 = 0 THEN ''
+			when DEN_IND_33 < 0 or NUM_IND_33 < 0 or( NUM_IND_33 >=0 and DEN_IND_33 is NULL) THEN ''
+		end		
+	 ) AS ERROR_MSG_IND_33
+
+";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

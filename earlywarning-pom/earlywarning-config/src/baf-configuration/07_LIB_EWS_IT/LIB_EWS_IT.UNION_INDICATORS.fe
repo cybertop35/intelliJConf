@@ -1,4 +1,4 @@
-﻿VAR formulaName = "[LIB_EWS_IT.UNION_INDICATORS.fe] ";
+VAR formulaName = "[LIB_EWS_IT.UNION_INDICATORS.fe] ";
 DEBUGMESSAGE(formulaName, "START");
 
 VAR customerUnit = Param1;
@@ -35,6 +35,17 @@ sql = "select
 	,"+ LIB_EWS_IT.INDICATOR_21() +"
 	,"+ LIB_EWS_IT.INDICATOR_22() +"
 	,"+ LIB_EWS_IT.INDICATOR_23() +"
+	,"+ LIB_EWS_IT.IND_08_FL_OVERRIDE() +"
+	,"+ LIB_EWS_IT.IND_08_FL_DATE() +"
+	,"+ LIB_EWS_IT.IND_01_FL_OVERRIDE() +"
+	,"+ LIB_EWS_IT.IND_12_FL_OVERRIDE() +"
+	,"+ LIB_EWS_IT.IND_03_FL_OVERRIDE() +"
+	,"+ LIB_EWS_IT.IND_04_FL_OVERRIDE() +"
+	,"+ LIB_EWS_IT.IND_05_FL_OVERRIDE() +"
+	,"+ LIB_EWS_IT.IND_09_FL_OVERRIDE() +"
+	,"+ LIB_EWS_IT.IND_FL_PEGG_BILANCI() +"
+	,"+ LIB_EWS_IT.IND_FL_DATE6M() +"
+	,"+ LIB_EWS_IT.INDICATOR_33() +"
 	from "+schema+"."+customerUnit.Source_tableName;
 
 
