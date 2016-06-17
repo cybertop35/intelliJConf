@@ -46,6 +46,7 @@ sql = "select
 	,"+ LIB_EWS_IT.IND_FL_PEGG_BILANCI() +"
 	,"+ LIB_EWS_IT.IND_FL_DATE6M() +"
 	,"+ LIB_EWS_IT.INDICATOR_33() +"
+	,"+ LIB_EWS_IT.INDICATOR_12_OVER() +" 
 	from "+schema+"."+customerUnit.Source_tableName;
 
 
