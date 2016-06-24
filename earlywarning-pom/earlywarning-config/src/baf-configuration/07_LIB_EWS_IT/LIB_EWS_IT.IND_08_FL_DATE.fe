@@ -4,17 +4,27 @@ DEBUGMESSAGE(formulaName, "START");
 VAR sql = "";
 
 sql = "
-CAST(
-		CASE 
+cast(
+CASE 
 			WHEN 
-				BANKRUP_APPL_GRP_NO1_OPEN_DATE > VAL_BR_08_OVERRIDE_1 OR
-				BANKRUP_APPL_GRP_NO2_OPEN_DATE > VAL_BR_08_OVERRIDE_2 OR
-				BANKRUP_APPL_GRP_NO3_OPEN_DATE > VAL_BR_08_OVERRIDE_3 OR
-				BANKRUP_APPL_GRP_NO4_OPEN_DATE > VAL_BR_08_OVERRIDE_4 OR
-				BANKRUP_APPL_GRP_NO5_OPEN_DATE > VAL_BR_08_OVERRIDE_5 
+				case when BANKRUP_APPL_GRP_NO1_OPEN_DATE is null then cast('1900-01-01' as date format'yyyy-mm-dd') 
+					else cast(BANKRUP_APPL_GRP_NO1_OPEN_DATE as date format'yyyy-mm-dd')end  >
+				case when VAL_BR_08_OVERRIDE_1 is null then cast('1900-01-01' as date format'yyyy-mm-dd') else VAL_BR_08_OVERRIDE_1 end  OR
+				case when BANKRUP_APPL_GRP_NO2_OPEN_DATE is null then cast('1900-01-01' as date format'yyyy-mm-dd') 
+					else cast(BANKRUP_APPL_GRP_NO2_OPEN_DATE as date format'yyyy-mm-dd')end  >
+				case when VAL_BR_08_OVERRIDE_2 is null then cast('1900-01-01' as date format'yyyy-mm-dd') else VAL_BR_08_OVERRIDE_2 end  OR
+				case when BANKRUP_APPL_GRP_NO3_OPEN_DATE is null then cast('1900-01-01' as date format'yyyy-mm-dd') 
+					else cast(BANKRUP_APPL_GRP_NO3_OPEN_DATE as date format'yyyy-mm-dd')end  >
+				case when VAL_BR_08_OVERRIDE_3 is null then cast('1900-01-01' as date format'yyyy-mm-dd') else VAL_BR_08_OVERRIDE_3 end  OR
+				case when BANKRUP_APPL_GRP_NO4_OPEN_DATE is null then cast('1900-01-01' as date format'yyyy-mm-dd') 
+					else cast(BANKRUP_APPL_GRP_NO4_OPEN_DATE as date format'yyyy-mm-dd')end  >
+				case when VAL_BR_08_OVERRIDE_4 is null then cast('1900-01-01' as date format'yyyy-mm-dd') else VAL_BR_08_OVERRIDE_4 end  OR
+				case when BANKRUP_APPL_GRP_NO5_OPEN_DATE is null then cast('1900-01-01' as date format'yyyy-mm-dd') 
+					else cast(BANKRUP_APPL_GRP_NO5_OPEN_DATE as date format'yyyy-mm-dd')end  >
+				case when VAL_BR_08_OVERRIDE_5 is null then cast('1900-01-01' as date format'yyyy-mm-dd') else VAL_BR_08_OVERRIDE_5 end 
 				THEN 1
 				ELSE 0				
-		END AS CHAR(1)) AS IND_08_FL_DATE,
+		END AS CHAR(1)) AS IND_08_FL_DATE, 
 		
 		(CASE
 			WHEN BANKRUP_APPL_GRP_NO1_OPEN_DATE > VAL_BR_08_OVERRIDE_1 OR

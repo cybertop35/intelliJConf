@@ -3,53 +3,12 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "
-		(EQUITY_T1 - EQUITY_T2) as NUM_IND_3_TMP,
-		
-		(GREATEST(REVENUE_T1,VALUE_OF_PRODUCTION_T1) - GREATEST(REVENUE_T2,VALUE_OF_PRODUCTION_T2)) as NUM_IND_4_TMP ,
-	    GREATEST(REVENUE_T2,VALUE_OF_PRODUCTION_T2) as DEN_IND_4_TMP,
-		
-		(PROFIT_LOSS_T1+AMORTIZATION_T1+FINANCE_COSTS_T1+PROVISIONS_T1) AS NUM_IND_5_TMP , 
-		(ST_FINANCIAL_BORROWINGS_T1 + (LT_FINANCIAL_BORROWINGS_T1/3.5) - LIQUIDITY_T1 + FINANCE_COSTS_T1 ) as DEN_IND_5_TMP ,
-	   
-	   cast(
-				CASE
-					when (EQUITY_T2 = 0 and NUM_IND_3_TMP > 0 ) then 1000000
-					when (EQUITY_T2 = 0 and NUM_IND_3_TMP = 0 ) then 0
-					when (EQUITY_T2 = 0 and NUM_IND_3_TMP < 0) then -1000000
-					
-					when (EQUITY_T2 <  0 and NUM_IND_3_TMP > 0) then (NUM_IND_3_TMP/abs(EQUITY_T2))
-					when (EQUITY_T2 <  0 and NUM_IND_3_TMP = 0 ) then (NUM_IND_3_TMP/abs(EQUITY_T2))
-					when (EQUITY_T2 <  0 and NUM_IND_3_TMP < 0) then (NUM_IND_3_TMP/abs(EQUITY_T2))
-					
-					when  EQUITY_T2 is null OR EQUITY_T1 is null then null
-					when (EQUITY_T2 > 0) then (cast (NUM_IND_3_TMP as number(18,3) )/ cast (EQUITY_T2 as number (18,3)))
-					ELSE NULL
-				END as decimal(18,6)) as IND_03_TMP,
-			
-		cast (
-				CASE 
-					when (DEN_IND_4_TMP = 0 and NUM_IND_4_TMP > 0) then 1000000
-					when (DEN_IND_4_TMP = 0 and NUM_IND_4_TMP = 0) then 0
-					when (DEN_IND_4_TMP = 0 and NUM_IND_4_TMP < 0) then 9999999
-					when  DEN_IND_4_TMP < 0  THEN 9999999
-					else (cast (NUM_IND_4_TMP as number (18,3) )/ cast (DEN_IND_4_TMP as number (18,3)))
-				END  as decimal (18,6)) as IND_04_TMP,
-
-		cast(
-				CASE
-					when DEN_IND_5_TMP  = 0 and NUM_IND_5_TMP > 0 then 1000000
-					when DEN_IND_5_TMP  = 0 and NUM_IND_5_TMP <= 0 then 0.16393						
-					when DEN_IND_5_TMP  < 0 and NUM_IND_5_TMP > 0 then 1000000
-					when DEN_IND_5_TMP  < 0 and NUM_IND_5_TMP <= 0 then 0.16393	
-					else  (cast (NUM_IND_5_TMP as number (18,3) )/ cast (DEN_IND_5_TMP as number (18,3)))
-				END as decimal(18,6)) AS IND_05_TMP,
-				
+sql = "		
 			cast(
 				CASE 
-					WHEN (IND_03_TMP < VAL_BR_03_OVERRIDE) OR
-						 (IND_04_TMP < VAL_BR_04_OVERRIDE) OR 
-						 (IND_05_TMP < VAL_BR_05_OVERRIDE) THEN 1 
+					WHEN (cast(IND_03 as decimal(18,6)) < VAL_BR_03_OVERRIDE) OR
+						 (cast(IND_04 as decimal(18,6)) < VAL_BR_04_OVERRIDE) OR 
+						 (cast(IND_05 as decimal(18,6)) < VAL_BR_05_OVERRIDE) THEN 1 
 						 ELSE 0
 				END as char(1)) AS IND_FL_PEGG_BILANCI ,
 	
@@ -59,21 +18,21 @@ sql = "
 			END AS ERROR_MSG_IND_FL_PEGG_BILANCI_03 ,
 			
 			CASE 
-				WHEN (DEN_IND_4_TMP = 0 and NUM_IND_4_TMP < 0) then ''  
+				WHEN (DEN_IND_4 = 0 and NUM_IND_4 < 0) then ''  
 				ELSE ''
 			END AS ERROR_MSG_IND_FL_PEGG_BILANCI_04 ,
 			
 			CASE 
-				WHEN DEN_IND_5_TMP <= 0 THEN ''
+				WHEN DEN_IND_5 <= 0 THEN ''
 				ELSE '' 
 			END AS ERROR_MSG_IND_FL_PEGG_BILANCI_05 ,
 			
 			CASE 
-				WHEN (IND_03_TMP < VAL_BR_03_OVERRIDE) OR
-					 (IND_04_TMP < VAL_BR_04_OVERRIDE) OR 
-					 (IND_05_TMP < VAL_BR_05_OVERRIDE) THEN '' 
-				ELSE ''
-			END AS ERROR_MSG_IND_FL_PEGG_BILANCI
+					WHEN (cast(IND_03 as decimal(18,6)) < VAL_BR_03_OVERRIDE) OR
+						 (cast(IND_04 as decimal(18,6)) < VAL_BR_04_OVERRIDE) OR 
+						 (cast(IND_05 as decimal(18,6)) < VAL_BR_05_OVERRIDE) THEN '' 
+						 ELSE ''
+				END AS ERROR_MSG_IND_FL_PEGG_BILANCI
 			
 		";
 
