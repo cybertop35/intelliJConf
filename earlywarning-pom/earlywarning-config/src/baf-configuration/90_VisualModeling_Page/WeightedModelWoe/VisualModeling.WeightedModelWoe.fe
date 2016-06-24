@@ -83,8 +83,8 @@ if (updated == false){
 
 	EXPRESSION = SUBSTRING(EXPRESSION,0,LENGTH(EXPRESSION) - 1 );
 	
-	PUT(dataVar, 'id', 			columName + "_TWM");
-	PUT(dataVar, 'columnName', 	columName + "_TWM");
+	PUT(dataVar, 'id', 			columName + "_WM");
+	PUT(dataVar, 'columnName', 	columName + "_WM");
 	PUT(dataVar, 'columnLabel',	columName + " New (WM Woe)");
 	
 	statement = statement + " "+function+"( "+constantValue + " + (" +EXPRESSION +" ) ) as " +dataVar['columnName'] ;
