@@ -63,7 +63,7 @@ IF(variableType == "CONTINUOUS" ) {
 				"name"      : "thresholdsGridWoa",
 				"value"     : [
 					'thresholds'   : thresholds,
-					'maxHeight': 240,
+					'maxHeight': 257,
 					'maxThresholdsNumber': 10,
 					'defaultThresholdName': UPCASE('NEW VALUE') + '...',
 					'minValue' : minYModelValue,
@@ -84,7 +84,7 @@ IF(variableType == "CATEGORICAL" AND SIZE(distincValues) > 0) {
 	thresholds = {};
 	if (thresholdsMap[variableId] == NULL){
 		foreach(distincValues as val){
-			ADDELEMENT(thresholds, {['label': val],  ['value': 10]});
+			ADDELEMENT(thresholds, {['label': val],  ['inputValue': 0]});
 		}
 		# put(thresholdsMap,variableId,thresholds);
 		# put(symbolTable,"thresholds",thresholdsMap);
@@ -97,10 +97,10 @@ IF(variableType == "CATEGORICAL" AND SIZE(distincValues) > 0) {
 	widget = [	'widgetId':'widgetsGridPH',
 				'name':'dataTable',
 				'value':[
-					'height':240,
+					'height':250,
 					'columns': {
-						['headerLabel': "Category", 	'headerStyle':"ux-body2-bold ux-text-oneline", 	'widgetName':"output", 		'widgetParameters': ["class":"ux-body2 ux-text-grey"]],
-						['headerLabel': "Score",		'headerStyle':"ux-body2-bold ux-text-oneline", 	'widgetName':"sliderInput",	'widgetParameters': [ 'value': 55.7, 'min':0, 'max':100] ]
+						['headerLabel': "Category", 	'headerStyle':"text-center", 	'widgetName':"output", 		'widgetParameters': ["class":"ux-body2 ux-text-grey"]],
+						['headerLabel': "Score",		'headerStyle':"text-center", 	'widgetName':"numberInput" ]
 					},
 					'values': thresholds
 					

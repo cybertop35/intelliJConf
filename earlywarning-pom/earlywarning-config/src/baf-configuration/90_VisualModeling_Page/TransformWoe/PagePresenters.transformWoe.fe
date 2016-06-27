@@ -36,7 +36,7 @@ var dataTable =
             'columns' : {
                  ['headerLabel': "Variable Name",  'headerStyle':"ux-body2-bold ux-text-oneline", 'widgetName':"output", 'widgetParameters': ["class":"ux-body2 ux-text-grey"]],
 				 ['headerLabel': "Variable Type",  'headerStyle':"ux-body2-bold ux-text-oneline", 'widgetName':"output", 'widgetParameters': ["class":"ux-body2 ux-text-grey"]],
-				 ['headerLabel': "", 'widgetName':"actionButton", 'widgetParameters': ['label' : 'Edit', 'skin' : [ 'color' : 'green', 'size' : 'standard' ]]]
+				 ['headerLabel': "", 'widgetName':"actionButton", 'widgetParameters': ['label' : 'Crea', 'skin' : [ 'color' : 'green', 'size' : 'standard' ]]]
 
             },
             'values': dataTableRows

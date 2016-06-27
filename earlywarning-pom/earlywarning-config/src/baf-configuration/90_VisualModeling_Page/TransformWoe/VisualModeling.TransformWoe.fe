@@ -82,8 +82,8 @@ if (updated == false){
 					ELSE IF(variables[i]['variableType'] == 'CATEGORICAL'){
 						statement = statement + " CASE ";
 						foreach( thresholdConf as conf ){
-							statement = statement + " WHEN " + variables[i]['columnName'] + " = '" +conf[0]["label"] +"' THEN "+conf[1]["value"];
-							addelement(continuousValuesTMP,(conf[1]["value"]));
+							statement = statement + " WHEN " + variables[i]['columnName'] + " = '" +conf[0]["label"] +"' THEN "+conf[1]["inputValue"];
+							addelement(continuousValuesTMP,(conf[1]["inputValue"]));
 						}			
 						statement = statement + " END AS " + variables[i]['columnName'] + "_WOE";					
 					}

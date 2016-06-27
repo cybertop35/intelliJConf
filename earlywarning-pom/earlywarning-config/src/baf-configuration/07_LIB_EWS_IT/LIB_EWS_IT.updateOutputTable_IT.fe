@@ -134,18 +134,19 @@ SQL = SQL + ERROR_SQL;
 
 COUNTER = 1;
 VAR brName;
+VAR INDEX ;
 foreach (BR_LIST as b){
-	brName = SUBSTRING(b.NAME,2,2);
+	INDEX = INDEXOF(b.NAME,'_');
+	brName = SUBSTRING(b.NAME,2,INDEX-2);
 	NOME_COLONNA = "BR0000"+brName;
-	
-	#if (NUM(brName) <= 9){
-	#	NOME_COLONNA = "BR00000"+COUNTER;
-	#}
-	#else{
-	#	NOME_COLONNA = "BR0000"+COUNTER;
-	#}
-    
-	SQL = SQL +" ,(CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END ) as "+  NOME_COLONNA ;
+	IF(brName == '01' OR brName == '03' OR brName == '04' OR  brName == '05' OR brName == '09' OR brName == '12' ) THEN {
+		SQL = SQL +" ,GREATEST( CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END,"+NOME_COLONNA+"BIS,"+NOME_COLONNA+"TER ) as "+  NOME_COLONNA ;
+	}
+	ELSE IF(brName == '08') THEN {
+		SQL = SQL +" ,GREATEST(CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END,"+NOME_COLONNA+"BIS) as "+  NOME_COLONNA ;
+	}
+	else
+		SQL = SQL +" ,(CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END ) as "+  NOME_COLONNA ;
 		
 	#COUNTER = COUNTER + 1 ;
 }
@@ -153,7 +154,7 @@ VAR TMP;
 TMP = BM_TABLE+".CATEGORICAL_SCORE";
 
 SQL = SQL +" ,CAST(null as VARCHAR(50)) as WARNING_APP ";
-SQL = SQL +" ,"+BR_DETAIL+"  as BR_DETAILS  ";
+SQL = SQL +" ,CAST("+BR_DETAIL+" AS VARCHAR(3000) ) as BR_DETAILS  ";
 SQL = SQL +" ,CAST( "+LIB_EWS.getSqlDecodeColors(TMP)+" as VARCHAR(50)) as COLOR_APP ";
 #SQL = SQL +",CAST(null as VARCHAR(50)) as WARNING_SYSTEM";
 
