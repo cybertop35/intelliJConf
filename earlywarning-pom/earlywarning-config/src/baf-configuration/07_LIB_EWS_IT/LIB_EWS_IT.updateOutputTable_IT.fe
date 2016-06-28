@@ -139,11 +139,15 @@ foreach (BR_LIST as b){
 	INDEX = INDEXOF(b.NAME,'_');
 	brName = SUBSTRING(b.NAME,2,INDEX-2);
 	NOME_COLONNA = "BR0000"+brName;
-	IF(brName == '01' OR brName == '03' OR brName == '04' OR  brName == '05' OR brName == '09' OR brName == '12' ) THEN {
+	IF(brName == '01' OR brName == '03' OR brName == '04' OR  brName == '05' OR brName == '09') THEN {
 		SQL = SQL +" ,GREATEST( CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END,"+NOME_COLONNA+"BIS,"+NOME_COLONNA+"TER ) as "+  NOME_COLONNA ;
 	}
 	ELSE IF(brName == '08') THEN {
 		SQL = SQL +" ,GREATEST(CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END,"+NOME_COLONNA+"BIS) as "+  NOME_COLONNA ;
+		
+	}
+	ELSE IF(brName == '12') THEN {
+	SQL = SQL +" ,GREATEST(CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END,"+NOME_COLONNA+"TER) as "+  NOME_COLONNA ;
 	}
 	else
 		SQL = SQL +" ,(CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END ) as "+  NOME_COLONNA ;

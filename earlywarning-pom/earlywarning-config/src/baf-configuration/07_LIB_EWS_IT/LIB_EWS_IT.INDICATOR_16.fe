@@ -3,7 +3,8 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "NVL( CAST(JD_PROTEST_INT AS CHAR(1)) , '0')AS IND_16,NULL AS ERROR_MSG_IND_16";
+sql = "NULL AS IND_16,
+	   NULL AS ERROR_MSG_IND_16";
 
 
 DEBUGMESSAGE(formulaName, sql);

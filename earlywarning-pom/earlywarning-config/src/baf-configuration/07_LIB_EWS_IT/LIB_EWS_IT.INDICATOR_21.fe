@@ -1,4 +1,4 @@
-﻿VAR formulaName = "[LIB_EWS_IT.INDICATOR_21.fe] ";
+VAR formulaName = "[LIB_EWS_IT.INDICATOR_21.fe] ";
 DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";

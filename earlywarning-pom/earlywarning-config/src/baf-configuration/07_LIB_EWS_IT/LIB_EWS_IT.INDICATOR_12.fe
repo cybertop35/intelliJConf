@@ -6,7 +6,8 @@ VAR sql = "";
 sql = "
 (NON_PERFORMING_LOANS_SYSTEM - NON_PERFORMING_LOANS_GROUP)  AS NUM_IND_12
 	, GREATEST(CREDIT_FACILITY_TOT,CREDIT_USED_TOT)		AS DEN_IND_12
-	,(
+	,
+	cast(
 	  case 
 		when DEN_IND_12 = 0  THEN 0
 		when DEN_IND_12 < 0 then 9999999
@@ -15,7 +16,7 @@ sql = "
 		WHEN (DEN_IND_12 is null)  AND (NUM_IND_12 > 0 OR NUM_IND_12 < 0 OR NUM_IND_12 =0 ) then 9999999
 		else  (cast (num_ind_12 as NUMBER (18,3) )/ cast (den_ind_12 as NUMBER (18,3)) )
 	  END
-	 )  AS IND_12
+	 as decimal(18,6))  AS IND_12
 ,(
 		case
 			WHEN DEN_IND_12 =0 AND NUM_IND_12 = 0 THEN 'SOFF001'
