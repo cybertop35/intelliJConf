@@ -65,14 +65,22 @@ module.exports = function(grunt) {
                 var mainFile=abspath.replace("src/main/pages/layouts", "target-grunt/layouts").replace("less/styles.less", "main.less");
                 var includeTemplate = '@import (reference) "../../../target/less/main";\n';
                 grunt.file.recurse(rootdir+"/"+subdir, function(innerabspath, innerrootdir, innersubdir, innerfilename) {
-                   if(innerfilename!="main.less"){
+                    if(innerfilename!="main.less"){
                         includeTemplate+='@import "' + innerabspath + '";\n';
-                   }
+                    }
                 });
+                if(grunt.file.exists("src/main/pages/assets")) {
+                    grunt.file.recurse("src/main/pages/assets", function (innerabspath, innerrootdir, innersubdir, innerfilename) {
+                        if (innerfilename.endsWith(".less")) {
+                            includeTemplate += '@import (reference) "' + innerabspath + '";\n';
+                        }
+                    });
+                }
                 grunt.file.write(mainFile, includeTemplate);
             }
         });
     });
 
+    grunt.registerTask('test', []);
     grunt.registerTask('default', ['copy:copySrc', 'addImportsToLess', 'less', 'copy:copyDest']);
 };
