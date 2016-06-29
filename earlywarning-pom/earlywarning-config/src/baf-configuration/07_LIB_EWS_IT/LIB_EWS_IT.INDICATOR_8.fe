@@ -5,7 +5,8 @@ VAR sql = "";
 
 sql = "
 
-BANKRUP_APPL_GRP	as IND_08
+cast ( case when 
+		BANKRUP_APPL_GRP = 1 or  BANKRUP_APPL_NO5  = 1 then 1 else 0 end   as char(1))  as IND_08  
 ,( 
 	CASE 
 		WHEN( BANKRUP_APPL_GRP = 0 AND ( BANKRUP_APPL_GRP_NO1_CLOS_DATE IS NOT NULL
