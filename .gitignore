@@ -7,3 +7,8 @@ target-grunt
 bower_components
 target
 /Comp_Intesa.bat
+/earlywarning-pom/earlywarning-config/node/*.exe
+/earlywarning-pom/earlywarning-config/node/npm
+*.cmd
+*.exe
+npm

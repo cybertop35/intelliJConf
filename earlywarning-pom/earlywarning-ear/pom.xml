@@ -16,7 +16,7 @@
    
    <properties>
         <aaap.version>${project.parent.version}</aaap.version>
-        <aaap.catalog.version>8.0.0.0-SNAPSHOT</aaap.catalog.version>
+        <aaap.catalog.version>8.0-EWF3</aaap.catalog.version>
         <aaap.deployPagesTo>${project.build.directory}/deploy</aaap.deployPagesTo>
         <aaap.deployWidgetsTo>${project.build.directory}/deploy</aaap.deployWidgetsTo>
     </properties>

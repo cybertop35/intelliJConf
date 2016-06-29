@@ -2,19 +2,23 @@ module.exports = function(grunt) {
     require('time-grunt')(grunt);
 
     grunt.initConfig({
+        env: {
+            prod: {
+                bower_directory: "bower_components/prod"
+            },
+            test: {
+                bower_directory: "bower_components/test"
+            }
+        },
         bower: { //js dependency copy
-            install: {
+            prod: {
                 options: {
-                    targetDir: './target-grunt/assets/src',
+                    targetDir: './target-grunt/assets',
                     layout: 'byComponent',
                     cleanTargetDir: true,
                     cleanBowerDir: false,
                     verbose: false,
-                    bowerOptions: {
-                        offline: true,
-                        forceLatest: true, // Force latest version on conflict
-                        production: true
-                    }
+                    install: false
                 }
             },
             test: {
@@ -24,25 +28,22 @@ module.exports = function(grunt) {
                     cleanTargetDir: true,
                     cleanBowerDir: false,
                     verbose: false,
-                    bowerOptions: {
-                        offline: true,
-                        forceLatest: true, // Force latest version on conflict
-                        production: false
-                    }
+                    install: false
                 }
             }
         },
         uglify: { //js minification
             minify: {
                 options: {
+                    drop_console: false,
                     mangle: false,  // Use if you want the names of your functions and variables unchanged
-                    compress: true,
+                    compress: false,
                     sourceMap: true,
                     sourceMapIncludeSources: true
                 },
                 files: [
-                    //ext: '.min.js' //rename dest file, cuts the source file name after the first .
-                    {expand: true, cwd:'target-grunt/assets/src', src: ['**/*.js'], dest: 'target-grunt/assets', filter: 'isFile'}
+                    {expand: true, cwd:'target-grunt/assets', src: ['**/*.js'], dest: 'target/assets', filter: 'isFile'}
+                    //{expand: true, cwd:'src/main/webapp/widgets', src: ['**/view.js'], dest: 'target/widgets', filter: 'isFile'}
                 ]
             }
         },
@@ -68,61 +69,36 @@ module.exports = function(grunt) {
         copy: { //copy sources for minification and produced artifacts
             copySrc: {
                 files: [
-                    {expand: true, cwd:'src/main/webapp/', src: ['widgets/**', '!**/*.less'], dest: 'target-grunt/', filter: 'isFile'},
-                    {expand: true, cwd:'src/main/webapp/', src: ['assets/**', '!**/*.less'], dest: 'target-grunt/', filter: 'isFile'},
-                    {expand: true, cwd:'target-grunt/assets/src/', src: ['**/*.src.js'], dest: 'target-grunt/assets/src/', filter: 'isFile', rename: function(dest, src) {return dest + src.replace('.src.js','.js');}},//rename files downloaded from Bower
-                    {expand: true, cwd:'target-grunt/assets/src/', src: ['**/*-*.js'], dest: 'target-grunt/assets/src/', filter: 'isFile', rename: function(dest, src) {return dest + src.replace(/-\d+(\.\d+)+.js/g,'.js');}}//rename files downloaded from Bower
+                    {expand: true, cwd:'src/main/webapp/widgets', src: ['**', '!**/*.less'], dest: 'target-grunt/widgets', filter: 'isFile'}, //, '!**/view.js'
+                    {expand: true, cwd:'src/main/webapp/assets', src: ['**', '!**/*.less'], dest: 'target/assets', filter: 'isFile'},
+                    {expand: true, cwd:'target-grunt/assets/', src: ['**/*.src.js'], dest: 'target-grunt/assets/', filter: 'isFile', rename: function(dest, src) {return dest + src.replace('.src.js','.js');}},//rename files downloaded from Bower
+                    {expand: true, cwd:'target-grunt/assets/', src: ['**/*-*.js'], dest: 'target-grunt/assets/', filter: 'isFile', rename: function(dest, src) {return dest + src.replace(/-\d+(\.\d+)+.js/g,'.js');}}//rename files downloaded from Bower
                 ],
                 encoding: "UTF-8"
             },
             copyDest: {
                 files: [
-                    {expand: true, cwd:'target-grunt/assets/src', src: ['**', '!**/*.js', '!**/*-[0-9.]*.js'], dest: 'target/assets/', filter: 'isFile'},
-                    {expand: true, cwd:'target-grunt/', src: ['assets/**', '!src/**', '!test/**', '!**/*.src.js', '!**/*.src.js.map', '!**/*-[0-9.]*.js', '!**/*-[0-9.]*.js.map'], dest: 'target/'}, //assets
+                    {expand: true, cwd:'target-grunt/', src: ['assets/**', '!src/**', '!test/**', '!**/*.js'], dest: 'target/'}, //assets
                     {expand: true, cwd:'target-grunt/', src: ['widgets/**', '!**/*.less'], dest: 'target/'} //widgets
                 ],
                 encoding: "UTF-8"
             }
         },
-        jasmine: { //js test execution
-            test: {
-                options: {
-                    keepRunner: true,
-                    specs: 'src/test/javascript/**/*.js',
-                    template: require('grunt-template-jasmine-requirejs'),
-                    templateOptions: {
-                        requireConfig: {
-                            paths: {
-                                'jquery': 'target-grunt/assets/test/jquery/jquery',
-                                'underscore': 'target-grunt/assets/test/underscore/underscore',
-                                'backbone': 'target-grunt/assets/test/backbone/backbone',
-                                'bootstrap': 'target-grunt/assets/test/bootstrap/bootstrap',
-                                'blockUI' : 'target-grunt/assets/test/blockui/jquery.blockUI',
-                                'mCustomScroller': 'target-grunt/assets/test/malihu-custom-scrollbar-plugin/jquery.mCustomScrollbar.concat.min',
-                                'jquery-text-fill': 'target-grunt/assets/test/jquery-textfill/jquery.textfill',
-                                'text': 'target-grunt/assets/test/text/text',
-                                'moment': 'target-grunt/assets/test/moment/moment',
-                                'qtip' : 'target-grunt/assets/test/qtip2/jquery.qtip',
-                                'squire': 'target-grunt/assets/test/squire/Squire'
-                            },
-                            shim: {
-                                'underscore': {
-                                    exports: '_'
-                                },
-                                'backbone': {
-                                    deps: ["underscore", "jquery"],
-                                    exports: 'Backbone'
-                                },
-                                "mCustomScroller" : {
-                                    deps : ["jquery"]
-                                },
-                                "bootstrap": {
-                                    deps: ["jquery"]
-                                }
-                            }
-                        }
-                    }
-                }
+        karma: {
+            unit: {
+                configFile: 'karma.conf.js',
+                singleRun: true,
+                reporters: ['progress', 'verbose']
+            },
+            coverage: {
+                configFile: 'karma.conf.js',
+                singleRun: true,
+                reporters: ['coverage']
+            },
+            debug: {
+                configFile: 'karma.conf.js',
+                singleRun: false,
+                reporters: ['progress', 'verbose']
             }
         },
         watch: {
@@ -147,20 +123,24 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks('grunt-contrib-less');
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-contrib-jasmine');
     grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-bower-task');
     grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-env');
+    grunt.loadNpmTasks('grunt-bower-task');
+    grunt.loadNpmTasks('grunt-karma');
 
-    grunt.registerTask('checkIfExecuteTests', 'Check from Maven if tests must be executed.', function() {
-        var specs = grunt.file.expand(grunt.config.get('jasmine.test.options.specs'));
+    grunt.registerTask('test', 'Check if there are tests and execute them.', function() {
+        var specs = grunt.file.expand(['src/test/javascript/**/*.js']);
         grunt.log.writeln('SPECS: '+specs.length);
         if(specs.length > 0) {
-            grunt.task.run('jasmine:test');
+            require('jit-grunt')(grunt, {
+                jasmine: 'grunt-contrib-jasmine'
+            });
+            return grunt.task.run(['env:test', 'bower:test', 'karma:unit', 'karma:coverage']);
         }
     });
 
-    grunt.registerTask('addImportsToLess', '', function() {
+    grunt.registerTask('addImportsToLess', function() {
         grunt.file.recurse('src/main/webapp/widgets', function(abspath, rootdir, subdir, filename) {
             if(filename.indexOf("styles.less")>-1){
                 var mainFile=abspath.replace("src/main/webapp/widgets","target-grunt/widgets").replace("less/styles.less", "main.less");
@@ -170,10 +150,31 @@ module.exports = function(grunt) {
                         includeTemplate+='@import "' + innerabspath + '";\n';
                     }
                 });
+                if(grunt.file.exists("src/main/webapp/assets")) {
+                    grunt.file.recurse("src/main/webapp/assets", function (innerabspath, innerrootdir, innersubdir, innerfilename) {
+                        if (innerfilename.endsWith(".less")) {
+                            includeTemplate += '@import (reference) "' + innerabspath + '";\n';
+                        }
+                    });
+                }
                 grunt.file.write(mainFile, includeTemplate);
             }
         });
     });
 
-    grunt.registerTask('default', ['bower:install', 'copy:copySrc', 'uglify', 'addImportsToLess', 'less', 'bower:test', 'checkIfExecuteTests', 'copy:copyDest']);
+    grunt.registerTask('removeWrongPathFromSourceMap', function() {
+        grunt.file.recurse('target/', function(abspath, rootdir, subdir, filename) {
+            if(filename.indexOf(".js.map") >- 1){
+                var jsFile = filename.replace(".map", "");
+                var fileContent = grunt.file.read(abspath);
+                fileContent=fileContent.replace(/\"sources\"\:\[\".*\"\],\"names\"/g, '"sources":["'+jsFile+'"],"names"');
+                grunt.file.write(abspath, fileContent);
+            }
+        });
+    });
+
+    grunt.registerTask('installAssets', function() {
+        return grunt.task.run(['env:prod', 'bower:prod']);
+    });
+    grunt.registerTask('default', ['installAssets', 'copy:copySrc', 'uglify', 'removeWrongPathFromSourceMap', 'addImportsToLess', 'less', 'copy:copyDest']);
 };
