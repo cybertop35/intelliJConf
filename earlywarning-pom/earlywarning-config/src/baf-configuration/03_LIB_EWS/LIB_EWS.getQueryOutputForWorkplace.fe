@@ -3,8 +3,8 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR workspacePlan =  Param1;
 
-VAR workspacePlanId = workspacePlan.ID;
-VAR fastTrackId 	= workspacePlan.WorkspacePlan_FastTrack.Fast_Track.ID;
+VAR workspacePlanId 	= workspacePlan.ID;
+VAR fastTrackId 		= workspacePlan.WorkspacePlan_FastTrack.Fast_Track.ID;
 VAR matrixId 		= workspacePlan.WorkspacePlan_Matrix.Matrix.ID;
 
 
@@ -12,19 +12,17 @@ VAR matrixInstance 		= Matrix[ID=$matrixId];
 VAR fastTrackInstance 	= Fast_Track[ID=$fastTrackId];
 var workspaceInstance 	= workspacePlan.Workspace;
 VAR models 				= matrixInstance.Matrix_Model.Model order by[NAME asc];
-var workspaceId 		= workspaceInstance.ID;
+var workspaceId 			= workspaceInstance.ID;
 
 VAR analysisUnitInstance 	= Utils.SingleSetToElement(workspaceInstance.Workspace_AnalysisUnit.Analysis_Unit);
 VAR externalInfoFormula 	= analysisUnitInstance.CustomerInfoFormula;	
-VAR JDBC_NAME 				= Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
-VAR SETUP 					= EVAL(externalInfoFormula, {analysisUnitInstance});
-VAR HAVE_ERROR_MESSAGE 		= SETUP["HAVE_ERROR_MESSAGE"];
+VAR JDBC_NAME 			= Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
+VAR SETUP 				= EVAL(externalInfoFormula, {analysisUnitInstance});
+VAR HAVE_ERROR_MESSAGE 	= SETUP["HAVE_ERROR_MESSAGE"];
 VAR typeOfDataToUse 		= "actual";
-VAR AnalysisTable 			= analysisUnitInstance.AnalyticalTable;
-VAR variables 				= analysisUnitInstance.AnalysisUnit_Variable.Variable order by [ColumnName ASC];
+VAR AnalysisTable 		= analysisUnitInstance.AnalyticalTable;
+VAR variables 			= analysisUnitInstance.AnalysisUnit_Variable.Variable order by [ColumnName ASC];
 VAR adjustments  			= matrixInstance.Adjustment ORDER BY [OrderPosition];
-
-
 
 VAR noneScore;
 VAR tableMatrix;
@@ -32,62 +30,45 @@ VAR SQL;
 VAR ERROR_SQL;
 VAR maxModel=5;
 VAR configuration;
-
-
-##### RECUPERO FAST TRACK #####################
-VAR conditionForSingleCategoricalScore = Categorical_Score[IsFastTrackCategory=TRUE].[ID]  ORDER BY [OrderPosition];
-noneScore = conditionForSingleCategoricalScore[SIZE(conditionForSingleCategoricalScore)-1][0];
 var tableFT;
-if (fastTrackInstance <> NULL) {
-    conditionForSingleCategoricalScore = fastTrackInstance.FastTrack_Score.[Categorical_Score.ID,ExpressionQuery] ORDER BY [Categorical_Score.OrderPosition];
-}
-noneScore = conditionForSingleCategoricalScore[SIZE(conditionForSingleCategoricalScore)-1][0];
 VAR array = {};
 VAR expressionSQLQuery;
-foreach (conditionForSingleCategoricalScore as cs){
-    if (fastTrackInstance <> NULL) {
-        # obtaining SQL query
-        expressionSQLQuery = LIB_BRJson.getSQLquery(TEXTFILETOSTRING(cs[1]));
-        ADDELEMENT(array, {cs[0], expressionSQLQuery});
-    }
-    else {
-        ADDELEMENT(array, {cs[0], NULL});
-        }
-    }
+
+##### RECUPERO FAST TRACK #####################
+array = FastTrack.getCategoricalScoreInfo(fastTrackId);
 tableFT = "(" + LIB_AnalysisUnit.getDecisionListCalculationQuery(array, analysisUnitInstance, typeOfDataToUse, workspaceId) + ")";
 
 ##### RECUPERO LA MATRICE #####################
 ##NON CONSIDERO IL FAST_TRACK NEL CALCOLO #####
-configuration	= LIB_EWS.getMatrixConfiguration(matrixInstance,null,typeOfDataToUse);
-tableMatrix 	= LIB_AnalysisUnit.getMatrixCalculationQuery(configuration);
-
+tableMatrix = LIB_AnalysisUnit.calculateMatrix(matrixInstance,null,typeOfDataToUse);
 
 ##### RECUPERO ADJUSTAMENT ####################
-var adjConfiguration = {};
-var categoricalScores = {};
-expressionSQLQuery = {};
-foreach(adjustments as adj){
-    categoricalScores = {};
-    foreach (adj.Adjustment_Swap.Category_Swap.[Category_Swap_Old.Categorical_Score.ID, Category_Swap_New.Categorical_Score.ID] ORDER BY [OrderPosition] as cs){
-        ADDELEMENT(categoricalScores, [
-            'from'  : cs[0],
-            'to'    : cs[1]
-        ]);
-    }
-    expressionSQLQuery = LIB_BRJson.getSQLquery(TEXTFILETOSTRING(adj.ExpressionQuery));
-    ADDELEMENT(adjConfiguration, ['adjID': adj.ID, 'query': expressionSQLQuery, 'categoricalScores': categoricalScores]);
-}
-var calculationQueryWithAdj = LIB_AnalysisUnit.getAdjustmentCalculationQuery(adjConfiguration, tableMatrix, configuration['sourceTable'], configuration['keyColumn']);
+# var adjConfiguration = {};
+# var categoricalScores = {};
+# expressionSQLQuery = {};
+# foreach(adjustments as adj){
+#     categoricalScores = {};
+#     foreach (adj.Adjustment_Swap.Category_Swap.[Category_Swap_Old.Categorical_Score.ID, Category_Swap_New.Categorical_Score.ID] ORDER BY [OrderPosition] as cs){
+#         ADDELEMENT(categoricalScores, [
+#             'from'  : cs[0],
+#             'to'    : cs[1]
+#         ]);
+#     }
+#     expressionSQLQuery = LIB_BRJson.getSQLquery(TEXTFILETOSTRING(adj.ExpressionQuery));
+#     ADDELEMENT(adjConfiguration, ['adjID': adj.ID, 'query': expressionSQLQuery, 'categoricalScores': categoricalScores]);
+# }
+# var calculationQueryWithAdj = LIB_AnalysisUnit.getMatrixAndAdjCalcQuery(adjConfiguration, configuration, matrixInstance.AdjustmentMode);
 
 
 ##### RECUPERO I MODELLI #####################
 VAR sqlModelJoin;
 VAR columnModel;
 var modelCount = 1;
+VAR exceptionCount = 1;
 VAR modelColumns= {} ;
 VAR tmp;
 foreach (models as model){
-	sqlModelJoin = sqlModelJoin +" JOIN ( "+ LIB_EWS.getQueryScoreModel(model,matrixInstance,configuration['keyColumn']) +")"+model.ID+" ON "+model.ID+".SNDG="+AnalysisTable+".SNDG";
+	sqlModelJoin = sqlModelJoin +" JOIN ( "+ LIB_EWS.getQueryScoreModel(model,matrixInstance) +")"+model.ID+" ON "+model.ID+".SNDG="+AnalysisTable+".SNDG";
 	tmp = model.ID+".CATEGORICAL_SCORE";
     columnModel = columnModel +", CAST(CASE WHEN FAST_TRACK = 0 THEN "+LIB_EWS.getSqlDecodeColors(tmp)+" END as VARCHAR(50)) as RESULT_MODULE_0"+modelCount;
 	
@@ -100,12 +81,18 @@ SQL = "SELECT "+AnalysisTable+".SNDG";
 tmp = "WS.CATEGORICAL_SCORE";
 SQL = SQL + ",cast("+LIB_EWS.getSqlDecodeColors(tmp) +" as VARCHAR(50) ) as  SEMAFORO_APP";
 SQL = SQL + ",CAST(null as VARCHAR(50)) as SEMAFORO_SYSTEM";
-SQL = SQL + ",cast( ( CASE WHEN FT.CATEGORICAL_SCORE = 'NONE' THEN 0 ELSE 1 END) as VARCHAR(1) ) as  FAST_TRACK";
+SQL = SQL + ",cast( ( CASE WHEN FT.CATEGORICAL_SCORE = 'NONE' OR FT.CATEGORICAL_SCORE IS NULL THEN 0 ELSE 1 END) as VARCHAR(1) ) as  FAST_TRACK";
 
 VAR adjMap=[];
 foreach(adjustments as adj) {
-	SQL = SQL +" ,CAST((CASE when ADJ.ADJID = '"+adj.ID+"' AND FAST_TRACK = 0 then 1 when ADJ.ADJID <> '"+adj.ID+"' AND FAST_TRACK = 0 then 0 END )as VARCHAR(50)) as EXCEPTION_"+(adj.OrderPosition+1);
+	SQL = SQL +" ,CAST((CASE when MATRIX.ADJID = '"+adj.ID+"' AND FAST_TRACK = 0 then 1 when MATRIX.ADJID <> '"+adj.ID+"' AND FAST_TRACK = 0 then 0 END )as VARCHAR(50)) as EXCEPTION_"+(adj.OrderPosition+1);
 	put(adjMap,"EXCEPTION_"+(adj.OrderPosition+1),adj);
+	exceptionCount = exceptionCount + 1 ;
+}
+
+while(exceptionCount<=maxModel){
+	SQL = SQL +" ,CAST(null as VARCHAR(50)) as EXCEPTION_"+exceptionCount;
+	exceptionCount = exceptionCount + 1 ;
 }
 
 SQL = SQL +columnModel;
@@ -127,9 +114,9 @@ SQL = SQL + sqlModelJoin;
 SQL = SQL +" JOIN ("+tableFT+" ) FT  ON FT.SNDG="+AnalysisTable+".SNDG";
 SQL = SQL +" JOIN ("+ tableMatrix +") MATRIX ON MATRIX.SNDG = "+AnalysisTable+".SNDG";
 
-IF(SIZE(adjustments) > 0 ) then {
-	SQL = SQL +" JOIN ("+ calculationQueryWithAdj +") ADJ ON ADJ.SNDG = "+AnalysisTable+".SNDG";
-}
+# IF(SIZE(adjustments) > 0 ) then {
+# 	SQL = SQL +" JOIN ("+ calculationQueryWithAdj +") ADJ ON ADJ.SNDG = "+AnalysisTable+".SNDG";
+# }
 
 DEBUGMESSAGE(formulaName, "END");
 

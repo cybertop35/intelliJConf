@@ -23,8 +23,10 @@ if (nodeValue == null) {
 
 var nodeName = nodeValue['nodeName'];
 var nodeTableName = nodeValue['nodeTableName'];
-var updated = LIB_VMCommons.getUpdatedStatus(nodeName, sessionId, modelId);
-DEBUGMESSAGE(formulaName + 'updated=', updated);
+var nodeStatus = LIB_VMCommons.getNodeStatus(nodeName, sessionId, modelId);
+var updated = nodeStatus['updated'];
+var variables = nodeStatus['variables'];
+DEBUGMESSAGE(formulaName + ' updated : ', updated);
 
 var variables = nodeValue['variables'];
 
@@ -115,7 +117,7 @@ if (updated == false){
 	
 	ADDELEMENT(variables, dataVar);
 
-    LIB_VMCommons.setUpdatedStatus(nodeName, true, sessionId, modelId);
+    LIB_VMCommons.setNodeStatus(nodeName, ['updated': true, 'variables': variables], sessionId, modelId);
 }
 
 # creating output result

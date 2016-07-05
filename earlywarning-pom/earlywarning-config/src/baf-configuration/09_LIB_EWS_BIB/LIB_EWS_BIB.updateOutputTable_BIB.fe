@@ -40,10 +40,10 @@ IF(CREATED) THEN {
         SQLEXECUTE("DROP TABLE "+T_OUT_BCK,DBCONNECTION,NULL,{});
     }
     IF(LIB_DB.isTableExisting(T_OUT,DBCONNECTION)) THEN    {
-        LIB_DB.renameTable(T_OUT,T_OUT_BCK,DBCONNECTION);
+        LIB_DB.renameTable(T_OUT,T_OUT_BCK,DBCONNECTION,NULL);
     }
        
-    LIB_DB.renameTable(T_OUT_TMP,T_OUT,DBCONNECTION);
+    LIB_DB.renameTable(T_OUT_TMP,T_OUT,DBCONNECTION,NULL);
  			
 	return NOW();
     

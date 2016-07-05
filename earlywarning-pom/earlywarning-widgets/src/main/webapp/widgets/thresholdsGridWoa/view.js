@@ -190,7 +190,7 @@ define(["jquery", "underscore", "backbone", "app", "tooltips", "events"], functi
 			}
 
 			$(e.currentTarget).removeClass('ux-input-error-style');
-			tooltips.destroyInfoTooltip($(e.currentTarget));
+			tooltips.destroyTooltip($(e.currentTarget));
 
 			if(this.model.value.errors > 0){
 				this.model.value.errors--;
@@ -250,7 +250,7 @@ define(["jquery", "underscore", "backbone", "app", "tooltips", "events"], functi
 
 		hideWarning: function(e){
 			$(e.currentTarget).removeClass('input-warning-style');
-			tooltips.destroyInfoTooltip($(e.currentTarget));
+			tooltips.destroyTooltip($(e.currentTarget));
 		},
 
 		addThreshold: function(e){
@@ -286,6 +286,14 @@ define(["jquery", "underscore", "backbone", "app", "tooltips", "events"], functi
 			// Cannot delete last row
 			if (this.model.value.thresholds.length == 1) {
 				return;
+			}
+			
+			if($(e.target).parent().parent().parent().find('.add').length == 0){
+				if($(e.target).parent().parent().parent().find('.remove').length < this.model.value.maxThresholdsNumber){
+					$(e.target).parent().parent().parent().find('.remove').parent().before('<div class="col-lg-1 col-md-1 col-sm-1 s-left-space s-right-space m-bottom-space"><span class="add glyphicon glyphicon-plus-sign ux-text-grey ux-cursor-click" aria-hidden="true"></span></div>');
+					$(e.target).parent().parent().parent().find('.remove').last().parent().parent().next().append('<div class="col-lg-1 col-md-1 col-sm-1 s-left-space s-right-space m-bottom-space"><span class="add glyphicon glyphicon-plus-sign ux-text-grey ux-cursor-click" aria-hidden="true"></span></div>');
+					$(e.target).parent().parent().parent().find('.remove').first().parent().parent().find('.add').parent().remove();
+				}
 			}
 
 			var index = parseInt($(e.currentTarget).parent().parent().attr('data-index'));
@@ -350,7 +358,7 @@ define(["jquery", "underscore", "backbone", "app", "tooltips", "events"], functi
 		},
 
 		dispose: function() {
-			tooltips.destroyInfoTooltip(this.$el);
+			tooltips.destroyTooltip(this.$el);
 		}
 	});
 

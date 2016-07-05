@@ -5,13 +5,13 @@
     <parent>
         <groupId>com.i4c.framework.web</groupId>
         <artifactId>fwk-packaged-app-root</artifactId>
-        <version>8.0-SNAPSHOT</version>
+        <version>8.0</version>
 		<relativePath/>
     </parent>
 
     <groupId>com.accenture.ews</groupId>
     <artifactId>earlywarning-config</artifactId>
-    <version>8.0-SNAPSHOT</version>
+    <version>8.0</version>
     <packaging>ejb</packaging>
 	
 	<name>${project.artifactId} (${project.version})</name>

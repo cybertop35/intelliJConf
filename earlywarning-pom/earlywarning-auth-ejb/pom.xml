@@ -6,13 +6,13 @@
     <parent>
         <groupId>com.i4c.framework.ejb</groupId>
         <artifactId>fwk-ejb-root</artifactId>
-        <version>8.0-SNAPSHOT</version>
+        <version>8.0</version>
         <relativePath/>
     </parent>
 
     <groupId>com.accenture.ews</groupId>
     <artifactId>earlywarning-auth-ejb</artifactId>
-    <version>8.0-SNAPSHOT</version>
+    <version>8.0</version>
     <packaging>ejb</packaging>
     <name>${project.artifactId} (${project.version})</name>
 
