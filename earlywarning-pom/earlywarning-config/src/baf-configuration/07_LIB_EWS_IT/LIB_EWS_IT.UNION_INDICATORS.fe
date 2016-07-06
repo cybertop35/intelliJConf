@@ -46,7 +46,18 @@ sql = "select
 	,"+ LIB_EWS_IT.IND_FL_PEGG_BILANCI() +"
 	,"+ LIB_EWS_IT.IND_FL_DATE6M() +"
 	,"+ LIB_EWS_IT.INDICATOR_33() +"
-	,"+ LIB_EWS_IT.INDICATOR_12_OVER() +" 
+	,"+ LIB_EWS_IT.INDICATOR_12_OVER() +"
+	,"+ LIB_EWS_IT.INDICATOR_50() +"
+	,"+ LIB_EWS_IT.INDICATOR_51() +"
+	,"+ LIB_EWS_IT.INDICATOR_52() +"
+	,"+ LIB_EWS_IT.INDICATOR_53() +"
+	,"+ LIB_EWS_IT.INDICATOR_54() +"
+	,"+ LIB_EWS_IT.INDICATOR_200() +"
+	,"+ LIB_EWS_IT.INDICATOR_201() +"
+	,"+ LIB_EWS_IT.INDICATOR_202() +"
+	,"+ LIB_EWS_IT.INDICATOR_203() +"
+	,"+ LIB_EWS_IT.INDICATOR_204() +"
+	,"+ LIB_EWS_IT.INDICATOR_205() +"
 	from "+schema+"."+customerUnit.Source_tableName;
 
 
