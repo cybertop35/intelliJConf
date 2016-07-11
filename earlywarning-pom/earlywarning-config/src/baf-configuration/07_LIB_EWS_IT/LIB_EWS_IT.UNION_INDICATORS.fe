@@ -58,6 +58,12 @@ sql = "select
 	,"+ LIB_EWS_IT.INDICATOR_203() +"
 	,"+ LIB_EWS_IT.INDICATOR_204() +"
 	,"+ LIB_EWS_IT.INDICATOR_205() +"
+	,"+ LIB_EWS_IT.INDICATOR_55() +"
+	,"+ LIB_EWS_IT.INDICATOR_56() +"
+	,"+ LIB_EWS_IT.INDICATOR_57() +"
+	,"+ LIB_EWS_IT.INDICATOR_58() +"
+	,"+ LIB_EWS_IT.INDICATOR_60() +"
+	,"+ LIB_EWS_IT.INDICATOR_61() +"
 	from "+schema+"."+customerUnit.Source_tableName;
 
 
