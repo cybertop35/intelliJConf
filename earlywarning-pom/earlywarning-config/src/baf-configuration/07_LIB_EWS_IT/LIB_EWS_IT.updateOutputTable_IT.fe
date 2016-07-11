@@ -80,39 +80,28 @@ FOREACH ( WORKSPACE_PLAN_LIST as WORKSPACE ){
 		conditionForSingleCategoricalScore = fatsTrack.FastTrack_Score.[Categorical_Score.ID,ExpressionQuery] ORDER BY [Categorical_Score.OrderPosition];
 	}
 	noneScore = conditionForSingleCategoricalScore[SIZE(conditionForSingleCategoricalScore)-1][0];
-	array = {};
+	
+	array =  FastTrack.getCategoricalScoreInfo(fatsTrack.ID);
 	var BR_DETAIL = "CASE ";
 	foreach (conditionForSingleCategoricalScore as cs){
 		if (fatsTrack <> NULL) {
 			# obtaining SQL query
            	BR_DETAIL = BR_DETAIL +" when "+BM_TABLE+".CATEGORICAL_SCORE = '"+cs[0]+"' THEN '"+TEXTFILETOSTRING(cs[1])+"' ";
-			expressionSQLQuery = LIB_BRJson.getSQLquery(TEXTFILETOSTRING(cs[1]));
-			ADDELEMENT(array, {cs[0], expressionSQLQuery});
-		}
-		else {
-			ADDELEMENT(array, {cs[0], NULL});
 			}
 		}
+
     BR_DETAIL = BR_DETAIL+" END ";
 	tableFT = "(" + LIB_AnalysisUnit.getDecisionListCalculationQuery(array, analysisUnitInstance, typeOfDataToUse, WORKSPACE.Workspace.ID) + ")";
 	
 	
 	SQL_UNION_BM  = SQL_UNION_BM +" "+ tableFT;
-	
-	
-	
-	
-	
-    SQL_UNION_BM = SQL_UNION_BM + " UNION ALL";
+	SQL_UNION_BM = SQL_UNION_BM + " UNION ALL";
 	
 }
 
 
 SQL_UNION_MATRIX = SUBSTRING(SQL_UNION_MATRIX, 0, LENGTH(SQL_UNION_MATRIX) - 10);
 SQL_UNION_BM = SUBSTRING(SQL_UNION_BM, 0, LENGTH(SQL_UNION_BM) - 10);
-#BR_LIST = SORT (BR_LIST,'NAME',"ASC");
-
-
 
 SQL = "SELECT "+UNIT_TABLE+".SNDG";
 
@@ -177,7 +166,7 @@ IF(LIB_DB.isTableExisting(T_OUT_TMP,DBCONNECTION)) THEN{
     SQLEXECUTE("DROP TABLE "+ T_OUT_TMP,DBCONNECTION,NULL,{});
 }
     
-SQL = "CREATE TABLE "+T_OUT_TMP+" AS ( "+ SQL+" ) WITH DATA";
+SQL = "CREATE TABLE "+T_OUT_TMP+" AS ( "+ SQL+" ) WITH DATA PRIMARY INDEX(SNDG)";
 SQLEXECUTE(SQL,DBCONNECTION,NULL,{});
     
 CREATED = LIB_DB.isTableExistingAndHavingData(T_OUT_TMP, DBCONNECTION);

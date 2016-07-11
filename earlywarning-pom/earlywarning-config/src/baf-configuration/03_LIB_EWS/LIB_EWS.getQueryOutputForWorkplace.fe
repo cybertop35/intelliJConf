@@ -42,24 +42,6 @@ tableFT = "(" + LIB_AnalysisUnit.getDecisionListCalculationQuery(array, analysis
 ##NON CONSIDERO IL FAST_TRACK NEL CALCOLO #####
 tableMatrix = LIB_AnalysisUnit.calculateMatrix(matrixInstance,null,typeOfDataToUse);
 
-##### RECUPERO ADJUSTAMENT ####################
-# var adjConfiguration = {};
-# var categoricalScores = {};
-# expressionSQLQuery = {};
-# foreach(adjustments as adj){
-#     categoricalScores = {};
-#     foreach (adj.Adjustment_Swap.Category_Swap.[Category_Swap_Old.Categorical_Score.ID, Category_Swap_New.Categorical_Score.ID] ORDER BY [OrderPosition] as cs){
-#         ADDELEMENT(categoricalScores, [
-#             'from'  : cs[0],
-#             'to'    : cs[1]
-#         ]);
-#     }
-#     expressionSQLQuery = LIB_BRJson.getSQLquery(TEXTFILETOSTRING(adj.ExpressionQuery));
-#     ADDELEMENT(adjConfiguration, ['adjID': adj.ID, 'query': expressionSQLQuery, 'categoricalScores': categoricalScores]);
-# }
-# var calculationQueryWithAdj = LIB_AnalysisUnit.getMatrixAndAdjCalcQuery(adjConfiguration, configuration, matrixInstance.AdjustmentMode);
-
-
 ##### RECUPERO I MODELLI #####################
 VAR sqlModelJoin;
 VAR columnModel;

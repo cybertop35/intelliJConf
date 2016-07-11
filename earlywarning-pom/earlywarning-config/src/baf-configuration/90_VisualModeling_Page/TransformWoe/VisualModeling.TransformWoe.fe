@@ -49,6 +49,7 @@ if (updated == false){
 	VAR min;
 	VAR max;
 	for(var i=0; i<size(variables); i=i+1){ 
+		
 		statement = statement +  variables[i]['columnName'];
 		statement = statement + ",";
 
@@ -76,7 +77,8 @@ if (updated == false){
 						foreach( thresholdConf as conf ){
 							statement = statement + " WHEN " + variables[i]['columnName'] + " > " +conf["from"] +" and "+ variables[i]['columnName'] + " <= " +conf["to"]+ " THEN "+conf["score"];
 							addelement(continuousValuesTMP,NUM(conf["score"]));
-						}			
+						}	
+						statement = statement +" ELSE 0";
 						statement = statement + " END AS " + variables[i]['columnName'] + "_WOE";					
 					}
 					ELSE IF(variables[i]['variableType'] == 'CATEGORICAL'){
@@ -107,14 +109,14 @@ if (updated == false){
 	variables = CONCAT(variables, newVariables);
 	statement = SUBSTRING(statement,0,LENGTH(statement) - 1);
 	
-	
+		
     # create result table
-    var query = "CREATE TABLE " + nodeTableName + " AS SELECT " + statement + "  FROM " + prevNodeTableName;
+    var query = "CREATE TABLE " + nodeTableName + " AS ( SELECT  " + statement + "  FROM " + prevNodeTableName +" t ) WITH DATA PRIMARY INDEX(SNDG)";
+	DEBUGMESSAGE(formulaName + 'query=', query);
 	SQLEXECUTE(query, predictiveDatasourceName, null, {});
-
-    DEBUGMESSAGE(formulaName + 'query=', query);
-
-    LIB_VMCommons.setNodeStatus(nodeName, ['updated': true, 'variables': variables], sessionId, modelId);
+	DEBUGMESSAGE(formulaName + 'query=OK');
+    
+	LIB_VMCommons.setNodeStatus(nodeName, ['updated': true, 'variables': variables], sessionId, modelId);
 }
 
 # creating output result

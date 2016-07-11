@@ -28,8 +28,6 @@ var updated = nodeStatus['updated'];
 var variables = nodeStatus['variables'];
 DEBUGMESSAGE(formulaName + ' updated : ', updated);
 
-var variables = nodeValue['variables'];
-
 if (updated == false){
     # only if not yet created
     if (nodeValue['saved'] == NULL or nodeValue['saved'] == false) {
@@ -92,7 +90,7 @@ if (updated == false){
 	statement = statement + " "+function+"( "+constantValue + " + (" +EXPRESSION +" ) ) as " +dataVar['columnName'] ;
 	
     # create result table
-    var query = "CREATE TABLE " + nodeTableName + " AS SELECT " + statement + "  FROM " + prevNodeTableName;
+    var query = "CREATE TABLE " + nodeTableName + " AS ( SELECT " + statement + "  FROM " + prevNodeTableName +") WITH DATA PRIMARY INDEX(SNDG)";
 	SQLEXECUTE(query, predictiveDatasourceName, null, {});
 	
     DEBUGMESSAGE(formulaName + 'query=', query);

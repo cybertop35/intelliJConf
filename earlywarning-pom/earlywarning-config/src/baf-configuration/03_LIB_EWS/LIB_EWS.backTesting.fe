@@ -8,6 +8,7 @@ DEBUGMESSAGE("LIB_EWS.backTesting.fe"); # stacktrace
 VAR analysisUnitID = Param1;
 
 VAR SQL_COLUMNS;
+VAR SQL_COLUMNS_INS;
 VAR COLUMNS;
 VAR SQL ;
 
@@ -24,8 +25,8 @@ VAR externalInfoFormula 	= analysisUnit.CustomerInfoFormula;
 VAR JDBC_NAME 				= Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
 
 VAR SETUP = EVAL(externalInfoFormula, {analysisUnit});
-VAR  CRR_COLUMN_NAME = SETUP["CRR_INDICATOR"];
-VAR  backtestingMonth = SETUP["backtestingMonth"];
+VAR CRR_COLUMN_NAME = SETUP["CRR_INDICATOR"];
+VAR backtestingMonth = SETUP["backtestingMonth"];
 
 
 ########################
@@ -33,10 +34,11 @@ VAR  backtestingMonth = SETUP["backtestingMonth"];
 ########################
 COLUMNS = analysisUnit.AnalysisUnit_Variable.Variable.ColumnName order by [ColumnName];
 SQL_COLUMNS = " SNDG,EXPOSURE, ADD_MONTHS (CURRENT_DATE,-1) as HISTORY_DATE";
-
+SQL_COLUMNS_INS = " SNDG,EXPOSURE, HISTORY_DATE";
 FOREACH( COLUMNS as column ) {
 	if(column <> "TARGET" and column <> "SNDG" AND column <> "EXPOSURE"){
-		SQL_COLUMNS =SQL_COLUMNS +"," +column;
+		SQL_COLUMNS 		= SQL_COLUMNS +"," +column;
+		SQL_COLUMNS_INS 	= SQL_COLUMNS_INS+"," +column;
     }
 }
 
@@ -91,8 +93,8 @@ if(SIZE(month) > 0 ) {
 else
 	month = 0;
     
-IF ((currentMonth - month) == 2){
-	SQL = "INSERT INTO "+backTestingHistoryTable+" SELECT "+SQL_COLUMNS+" FROM "+analysisUnitTable+"_BCK";
+IF (((currentMonth - month) == 2) OR month == null){
+	SQL = "INSERT INTO "+backTestingHistoryTable+" ( "+SQL_COLUMNS_INS+") SELECT "+SQL_COLUMNS+" FROM "+analysisUnitTable+"_BCK";
     SQLEXECUTE(SQL,JDBC_NAME,0,{});
     SAVE_LOG("Info", logActionName, "Insert table "+backTestingCRRTable);
 }
