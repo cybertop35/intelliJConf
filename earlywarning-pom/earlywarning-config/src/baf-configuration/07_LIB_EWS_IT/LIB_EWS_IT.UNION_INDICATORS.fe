@@ -95,6 +95,16 @@ sql = "select
 	,"+ LIB_EWS_IT.INDICATOR_233() +"
 	,"+ LIB_EWS_IT.INDICATOR_235() +"
 	,"+ LIB_EWS_IT.INDICATOR_236() +"
+	,"+ LIB_EWS_IT.INDICATOR_62() +"
+	,"+ LIB_EWS_IT.INDICATOR_63() +"
+	,"+ LIB_EWS_IT.INDICATOR_64() +"
+	,"+ LIB_EWS_IT.INDICATOR_65() +"
+	,"+ LIB_EWS_IT.INDICATOR_66() +"
+	,"+ LIB_EWS_IT.INDICATOR_67() +"
+	,"+ LIB_EWS_IT.INDICATOR_68() +"
+	,"+ LIB_EWS_IT.INDICATOR_69() +"
+	,"+ LIB_EWS_IT.INDICATOR_70() +"
+	
 
 	from "+schema+"."+customerUnit.Source_tableName;
 
