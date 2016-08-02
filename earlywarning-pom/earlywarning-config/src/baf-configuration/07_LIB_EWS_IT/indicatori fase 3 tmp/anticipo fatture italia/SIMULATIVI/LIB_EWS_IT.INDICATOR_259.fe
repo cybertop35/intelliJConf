@@ -1,0 +1,17 @@
+VAR formulaName = "[LIB_EWS_IT.INDICATOR_259.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+
+CAST(0 AS DECIMAL(18,6)) AS IND_259,
+	NULL AS ERROR_MSG_IND_259
+
+";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;
