@@ -24,7 +24,7 @@ var inputs = vm_eval_inputs(context["topology"], context["node"], visualModeling
 var saved = false;
 var widgets = {};
 
-var variablesInfo = LIB_VMCommons.getVariablesInfo(inputs[0]['nodeTableName'], inputs[0]['variables']);
+var variablesInfo = NULL; #LIB_VMCommons.getVariablesInfo(inputs[0]['nodeTableName'], inputs[0]['variables']);
 var dataTableRows = TransformWoe.getVariablesDatasource(nodeValue, inputs, variablesInfo);
 
 var dataTable =

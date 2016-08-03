@@ -40,7 +40,7 @@ if(weightedModel <> NULL){
 	}
 }
 
-var variablesInfo = LIB_VMCommons.getVariablesInfo(inputs[0]['nodeTableName'], inputs[0]['variables']);
+var variablesInfo = NULL;#LIB_VMCommons.getVariablesInfo(inputs[0]['nodeTableName'], inputs[0]['variables']);
 var cols = WeightedModelWoe.getVariablesDatasource(nodeValue, inputs, variablesInfo);
 
 # data table column headers
