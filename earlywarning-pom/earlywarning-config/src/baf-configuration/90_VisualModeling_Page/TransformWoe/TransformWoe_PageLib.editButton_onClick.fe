@@ -6,6 +6,7 @@ var routerMap 	= Param2;
 var symbolTable 	= Param3;
 
 VAR thresholdsMap 	= symbolTable["thresholds"];
+var variablesInfo 	= symbolTable["variablesInfo"];
 VAR variableId 		= symbolTable["selectedRow"][2];
 VAR variableType 		= symbolTable["selectedRow"][1];
 var minYModelValue 	= 0;
@@ -77,14 +78,20 @@ IF(variableType == "CONTINUOUS" ) {
 		
 	addelement(widgets,widget);
 }
-var distincValues = Variable[ID=$variableId].Variable_Distinct_Value.ItemValueString;
-DEBUGMESSAGE(formulaName,distincValues);
+var distincValues = {};
 
-IF(variableType == "CATEGORICAL" AND SIZE(distincValues) > 0) {
+IF(variableType == "CATEGORICAL") {
 	thresholds = {};
 	if (thresholdsMap[variableId] == NULL){
-		foreach(distincValues as val){
-			ADDELEMENT(thresholds, {['label': val],  ['inputValue': 0]});
+		foreach(variablesInfo as variable){
+			
+			DEBUGMESSAGE(formulaName,variable);
+			if(variable["id"] == variableId ){
+				distincValues = variable["categoricalValues"];
+				foreach(distincValues as val){
+					ADDELEMENT(thresholds, {['label': val],  ['inputValue': 0]});
+				}	
+			}
 		}
 		# put(thresholdsMap,variableId,thresholds);
 		# put(symbolTable,"thresholds",thresholdsMap);
