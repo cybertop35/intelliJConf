@@ -1,0 +1,16 @@
+VAR formulaName = "[LIB_EWS_IT.INDICATOR_31.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+	NVL( CAST(JD_ACC_RISTRUT AS CHAR(1)) , '0')
+		AS IND_31,
+		NULL AS ERROR_MSG_IND_31
+		";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;
