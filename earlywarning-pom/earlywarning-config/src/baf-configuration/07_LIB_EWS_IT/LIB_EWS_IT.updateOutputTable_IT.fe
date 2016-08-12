@@ -37,8 +37,8 @@ VAR SQL_UNION_BM;
 VAR DBCONNECTION 		= Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
 VAR T_OUT_TMP 			= analysisUnitInstance.ResultTableName+"_TMP";
 VAR T_OUT_BCK 			= analysisUnitInstance.ResultTableName+"_BCK";
-VAR T_OUT 				= analysisUnitInstance.ResultTableName;
-VAR T_OUT_VIEW 			= "OUTPUT_IRIS_WEB";
+VAR T_OUT 				= analysisUnitInstance.ResultTableName+"_CALC";
+VAR T_OUT_VIEW 			= analysisUnitInstance.ResultTableName;
 VAR typeOfDataToUse 	= "actual";
 VAR externalInfoFormula = analysisUnitInstance.CustomerInfoFormula;
 
@@ -103,7 +103,7 @@ FOREACH ( WORKSPACE_PLAN_LIST as WORKSPACE ){
 SQL_UNION_MATRIX = SUBSTRING(SQL_UNION_MATRIX, 0, LENGTH(SQL_UNION_MATRIX) - 10);
 SQL_UNION_BM = SUBSTRING(SQL_UNION_BM, 0, LENGTH(SQL_UNION_BM) - 10);
 
-SQL = "SELECT "+UNIT_TABLE+".SNDG";
+SQL = "SELECT "+UNIT_TABLE+".SNDG AS SNDG_JOIN";
 
 foreach (VARIABLES as v){
  	IF( v.ColumnName <> "TARGET" and v.ColumnName <> "EXPOSURE" and v.ColumnName <> "SNDG" and v.ColumnName <> "SEGMENT"){
@@ -120,6 +120,10 @@ foreach (VARIABLES as v){
 }
 
 SQL = SQL + ERROR_SQL;
+SQL = SQL + " FROM "+ UNIT_TABLE;
+
+VAR SQL_CALCOLO = "SELECT "+UNIT_TABLE+".SNDG ";
+
 
 COUNTER = 1;
 VAR brName;
@@ -129,36 +133,37 @@ foreach (BR_LIST as b){
 	brName = SUBSTRING(b.NAME,2,INDEX-2);
 	NOME_COLONNA = "BR0000"+brName;
 	IF(brName == '01' OR brName == '03' OR brName == '04' OR  brName == '05' OR brName == '09') THEN {
-		SQL = SQL +" ,GREATEST( CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END,"+NOME_COLONNA+"BIS,"+NOME_COLONNA+"TER ) as "+  NOME_COLONNA ;
+		SQL_CALCOLO = SQL_CALCOLO +" ,GREATEST( CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END,"+NOME_COLONNA+"BIS,"+NOME_COLONNA+"TER ) as "+  NOME_COLONNA ;
 	}
 	ELSE IF(brName == '08') THEN {
-		SQL = SQL +" ,GREATEST(CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END,"+NOME_COLONNA+"BIS) as "+  NOME_COLONNA ;
+		SQL_CALCOLO = SQL_CALCOLO +" ,GREATEST(CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END,"+NOME_COLONNA+"BIS) as "+  NOME_COLONNA ;
 		
 	}
 	ELSE IF(brName == '12') THEN {
-	SQL = SQL +" ,GREATEST(CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END,"+NOME_COLONNA+"TER) as "+  NOME_COLONNA ;
+	SQL_CALCOLO = SQL_CALCOLO +" ,GREATEST(CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END,"+NOME_COLONNA+"TER) as "+  NOME_COLONNA ;
 	}
 	else
-		SQL = SQL +" ,(CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END ) as "+  NOME_COLONNA ;
-		
+		SQL_CALCOLO = SQL_CALCOLO +" ,(CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END ) as "+  NOME_COLONNA ;
+	
+	
 	#COUNTER = COUNTER + 1 ;
 }
 VAR TMP;
 TMP = BM_TABLE+".CATEGORICAL_SCORE";
 
-SQL = SQL +" ,CAST(null as VARCHAR(50)) as WARNING_APP ";
-SQL = SQL +" ,CAST("+BR_DETAIL+" AS VARCHAR(3000) ) as BR_DETAILS  ";
-SQL = SQL +" ,CAST( "+LIB_EWS.getSqlDecodeColors(TMP)+" as VARCHAR(50)) as COLOR_APP ";
+SQL_CALCOLO = SQL_CALCOLO +" ,CAST(null as VARCHAR(50)) as WARNING_APP ";
+SQL_CALCOLO = SQL_CALCOLO +" ,CAST("+BR_DETAIL+" AS VARCHAR(3000) ) as BR_DETAILS  ";
+SQL_CALCOLO = SQL_CALCOLO +" ,CAST( "+LIB_EWS.getSqlDecodeColors(TMP)+" as VARCHAR(50)) as COLOR_APP ";
 #SQL = SQL +",CAST(null as VARCHAR(50)) as WARNING_SYSTEM";
 
 #SQL = SQL +",CAST(null as VARCHAR(50)) as COLOR_SYSTEM";
-SQL =  SQL +",COLOR_APP as COLOR_SYSTEM";
+SQL_CALCOLO =  SQL_CALCOLO +",COLOR_APP as COLOR_SYSTEM";
 
-SQL = SQL +" ,CURRENT_DATE AS CREATION_DATE";
-SQL = SQL +" FROM "+UNIT_TABLE +" "+UNIT_TABLE;
-
+SQL_CALCOLO = SQL_CALCOLO +" ,CURRENT_DATE AS CREATION_DATE";
+SQL_CALCOLO = SQL_CALCOLO +" FROM  ("+SQL_UNION_BM+") "+BM_TABLE ;
+SQL_CALCOLO = SQL_CALCOLO + " JOIN ("+UNIT_TABLE+") on "+UNIT_TABLE+".SNDG = "+BM_TABLE+".SNDG";
 #SQL = SQL +" JOIN ("+SQL_UNION_MATRIX+" ) "+MATRIX_TABLE+ "  ON "+MATRIX_TABLE+".SNDG="+UNIT_TABLE+".SNDG";
-SQL = SQL +" JOIN ("+SQL_UNION_BM+") "+BM_TABLE+ "  ON "+BM_TABLE+".SNDG="+UNIT_TABLE+".SNDG";
+#SQL = SQL +" JOIN ("+SQL_UNION_BM+") "+BM_TABLE+ "  ON "+BM_TABLE+".SNDG="+UNIT_TABLE+".SNDG";
 
  
 
@@ -166,8 +171,8 @@ IF(LIB_DB.isTableExisting(T_OUT_TMP,DBCONNECTION)) THEN{
     SQLEXECUTE("DROP TABLE "+ T_OUT_TMP,DBCONNECTION,NULL,{});
 }
     
-SQL = "CREATE TABLE "+T_OUT_TMP+" AS ( "+ SQL+" ) WITH DATA PRIMARY INDEX(SNDG)";
-SQLEXECUTE(SQL,DBCONNECTION,NULL,{});
+SQL_CALCOLO = "CREATE TABLE "+T_OUT_TMP+" AS ( "+ SQL_CALCOLO+" ) WITH DATA PRIMARY INDEX(SNDG)";
+SQLEXECUTE(SQL_CALCOLO,DBCONNECTION,NULL,{});
     
 CREATED = LIB_DB.isTableExistingAndHavingData(T_OUT_TMP, DBCONNECTION);
     
@@ -180,9 +185,15 @@ IF(CREATED) THEN {
     }
        
     LIB_DB.renameTable(T_OUT_TMP,T_OUT,DBCONNECTION,NULL);
-        
+      
+	SQL = "REPLACE VIEW "+T_OUT_VIEW+" AS (
+			SELECT * FROM "+T_OUT +" "+T_OUT+ " 
+				JOIN (" +SQL+ ") " + UNIT_TABLE +" 
+				ON "+ UNIT_TABLE+".SNDG_JOIN = "+T_OUT+".SNDG 
+			)";
 	
-		
+	 SQLEXECUTE(SQL,DBCONNECTION,NULL,{});
+	
 	return NOW();
     
 }
