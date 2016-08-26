@@ -1,0 +1,25 @@
+VAR formulaName = '[LIB_EWS.UpdatePredictiveModel] ';
+
+VAR analysisUnitID=Param1;
+VAR user = USER();
+VAR sessionId = "01" ;
+
+DEBUGMESSAGE(formulaName,"START");
+#AGGIUNGERE LO STATO AL MODELLO
+
+var workspace = Analysis_Unit[ID=$analysisUnitID].Workspace_AnalysisUnit.Workspace;
+VAR models = workspace.Model_Workspace.Predictive_Model[Topology <> null].ID;
+
+foreach (models as predictiveModelId ){
+	LIB_AnalysisUnit.setModelAsRunning(predictiveModelId,user,sessionId);
+	LIB_VMCommons.calculateDeployedModel(predictiveModelId,user,sessionId);
+	LIB_VMCommons.calculateGainsLift(predictiveModelId,user,sessionId);
+	LIB_AnalysisUnit.updateModelInfo(predictiveModelId,user,sessionId);
+	LIB_AnalysisUnit.setModelAsNotScheduled(predictiveModelId,user,sessionId);
+	
+	DEBUGMESSAGE(formulaName,"Model update:"+predictiveModelId);
+}
+
+DEBUGMESSAGE(formulaName,"END");
+
+return now();

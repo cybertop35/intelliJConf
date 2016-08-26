@@ -81,14 +81,21 @@ FOREACH ( WORKSPACE_PLAN_LIST as WORKSPACE ){
 	}
 	noneScore = conditionForSingleCategoricalScore[SIZE(conditionForSingleCategoricalScore)-1][0];
 	
-	array =  FastTrack.getCategoricalScoreInfo(fatsTrack.ID);
+	# DA USARE NEL NUOVO RILASCIO
+	# array =  FastTrack.getCategoricalScoreInfo(fatsTrack.ID);
+	
 	var BR_DETAIL = "CASE ";
 	foreach (conditionForSingleCategoricalScore as cs){
 		if (fatsTrack <> NULL) {
 			# obtaining SQL query
            	BR_DETAIL = BR_DETAIL +" when "+BM_TABLE+".CATEGORICAL_SCORE = '"+cs[0]+"' THEN '"+TEXTFILETOSTRING(cs[1])+"' ";
+			expressionSQLQuery = LIB_BRJson.getSQLquery(TEXTFILETOSTRING(cs[1]));
+			ADDELEMENT(array, {cs[0], expressionSQLQuery});
 			}
+		else {
+			ADDELEMENT(array, {cs[0], NULL});
 		}
+	}
 
     BR_DETAIL = BR_DETAIL+" END ";
 	tableFT = "(" + LIB_AnalysisUnit.getDecisionListCalculationQuery(array, analysisUnitInstance, typeOfDataToUse, WORKSPACE.Workspace.ID) + ")";
@@ -111,7 +118,7 @@ foreach (VARIABLES as v){
 			SQL = SQL +",cast("+UNIT_TABLE+"."+v.ColumnName+" as VARCHAR(50) ) as "+v.ColumnName ;
 		}
 		IF(v.Variable_DataType.Data_Type.ID == "REAL") {
-			SQL = SQL +",cast("+UNIT_TABLE+"."+v.ColumnName+" as NUMBER ) as "+v.ColumnName ;
+			SQL = SQL +",cast("+UNIT_TABLE+"."+v.ColumnName+" as DECIMAL(30,6) ) as "+v.ColumnName ;
 		}
         if(HAVE_ERROR_MESSAGE) {
 			ERROR_SQL = ERROR_SQL +",CAST("+UNIT_TABLE+".ERROR_MSG_"+v.ColumnName+" AS VARCHAR(200) ) as ERROR_MSG_" +v.ColumnName;
