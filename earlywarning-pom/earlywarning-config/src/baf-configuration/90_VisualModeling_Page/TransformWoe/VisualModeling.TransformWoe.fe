@@ -78,7 +78,7 @@ if (updated == false){
 							statement = statement + " WHEN " + variables[i]['columnName'] + " > " +conf["from"] +" and "+ variables[i]['columnName'] + " <= " +conf["to"]+ " THEN "+conf["score"];
 							addelement(continuousValuesTMP,NUM(conf["score"]));
 						}	
-						statement = statement +" ELSE 0";
+						statement = statement +" ELSE NULL";
 						statement = statement + " END AS " + variables[i]['columnName'] + "_WOE";					
 					}
 					ELSE IF(variables[i]['variableType'] == 'CATEGORICAL'){
