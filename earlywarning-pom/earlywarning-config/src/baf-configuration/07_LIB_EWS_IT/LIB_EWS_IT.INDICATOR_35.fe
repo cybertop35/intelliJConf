@@ -1,11 +1,11 @@
-VAR formulaName = "[LIB_EWS_IT.INDICATOR_33.fe] ";
+VAR formulaName = "[LIB_EWS_IT.INDICATOR_35.fe] ";
 DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
 sql = "
-cast(JD_PROTEST_ALTRE_BANCHE as char(1)) AS IND_33 ,
-null AS ERROR_MSG_IND_33
+JD_REATI_GRAVI_FAM AS IND_35
+,null AS ERROR_MSG_IND_35
 
 ";
 
