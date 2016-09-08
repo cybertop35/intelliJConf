@@ -4,9 +4,15 @@ DEBUGMESSAGE(formulaName, "START");
 VAR sql = "";
 
 sql = "
+
+CAST('' AS CHAR(1)) AS IND_31,
+	NULL AS ERROR_MSG_IND_31
+
+/*
 	NVL( CAST(JD_ACC_RISTRUT AS CHAR(1)) , '0')
 		AS IND_31,
 		NULL AS ERROR_MSG_IND_31
+*/
 		";
 
 

@@ -10,23 +10,55 @@ CAST('' AS CHAR(10)) AS IND_80,
 	NULL AS ERROR_MSG_IND_80
 
 /*	
+
+
 CAST(
 	CASE 
 		WHEN IND_77 < 0.7962 OR
 			 IND_73 IN ('B3','Ca', 'Caa', 'Caa1','Caa2','Caa3') OR
-			 IND_76 >= 800 THEN 'ROSSO'
+			 IND_76 >= 800 THEN 'S30'
 		
 		WHEN IND_77 < 2.6423 OR
-			 IND_73 IN ('Ba3','B1','B2') THEN 'ARANCIONE'
+			 IND_73 IN ('Ba3','B1','B2') THEN 'S20'
 			 
 		WHEN IND_77 < 5.1866 OR
-			 IND_73 IN ('Ba1','Ba2') THEN 'GIALLO'
+			 IND_73 IN ('Ba1','Ba2') THEN 'S10'
 		
 		WHEN IND_77 < 999 OR
 			 IND_73 IN ('Aaa','Aa1','Aa2','Aa3','A1','A2','A3','Baa1','Baa2','Baa3') THEN 'VERDE'
 		
 		ELSE 'NEUTRO'
-	END AS CHAR(10)) AS EQUITY_IND_80,
+	END AS CHAR(10)) AS COLOR_CAT,
+-------------------------------------------------	
+CASE 
+	WHEN IND_77 IS NOT NULL OR
+		 IND_73 IS NOT NULL THEN COLOR_CAT
+	ELSE null
+END AS COLOR_EQUITY,
+
+CASE 
+	WHEN IND_75 IS NOT NULL OR
+		 IND_76 IS NOT NULL THEN COLOR_CAT
+	ELSE null
+END AS COLOR_CDS,
+
+CASE 
+	WHEN IND_74 IS NOT NULL THEN COLOR_CAT
+	ELSE null
+END AS COLOR_BOND,
+
+---------------------------------------------------
+
+NVL(COLOR_EQUITY,'0') AS X,
+NVL(COLOR_CDS,'0') 	  AS Y,
+NVL(COLOR_BOND,'0')   AS Z,
+
+CASE
+	 when (Y<=X and X<=Z) or (Z<=X and X<=Y) then X,
+	 when (X<=Y and Y<=Z) or (Z<=Y and Y<=X) then Y,
+	 when (X<=Z and Z<=Y) or (Y<=Z and Z<=X) then Z
+END AS IND_80
+
 	
 	'' AS ERROR_MSG_IND_80
 */	

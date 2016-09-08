@@ -5,6 +5,11 @@ VAR sql = "";
 
 sql = "
 
+null AS IND_76,
+	NULL AS ERROR_MSG_IND_76
+
+/*
+
 CAST(
 	CASE 
 		WHEN CDS_SPREAD_5Y IS NULL THEN NULL
@@ -16,6 +21,8 @@ CAST(
 		WHEN(CDS_SPREAD_5Y IS NULL) THEN 'MARK001' 
 		ELSE ''
 	END AS ERROR_MSG_IND_76 
+
+*/
 
 ";
 
