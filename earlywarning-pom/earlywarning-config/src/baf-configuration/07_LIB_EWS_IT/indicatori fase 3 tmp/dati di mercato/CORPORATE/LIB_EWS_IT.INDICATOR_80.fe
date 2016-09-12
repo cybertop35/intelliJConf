@@ -25,7 +25,7 @@ CAST(
 			 IND_73 IN ('Ba1','Ba2') THEN 'S10'
 		
 		WHEN IND_77 < 999 OR
-			 IND_73 IN ('Aaa','Aa1','Aa2','Aa3','A1','A2','A3','Baa1','Baa2','Baa3') THEN 'VERDE'
+			 IND_73 IN ('Aaa','Aa1','Aa2','Aa3','A1','A2','A3','Baa1','Baa2','Baa3') THEN 'S01'
 		
 		ELSE 'NEUTRO'
 	END AS CHAR(10)) AS COLOR_CAT,
@@ -49,15 +49,19 @@ END AS COLOR_BOND,
 
 ---------------------------------------------------
 
-NVL(COLOR_EQUITY,'0') AS X,
-NVL(COLOR_CDS,'0') 	  AS Y,
-NVL(COLOR_BOND,'0')   AS Z,
+NVL(COLOR_EQUITY,'S00') AS X,
+NVL(COLOR_CDS,'S00') 	AS Y,
+NVL(COLOR_BOND,'S00')   AS Z,
 
 CASE
 	 when (Y<=X and X<=Z) or (Z<=X and X<=Y) then X,
 	 when (X<=Y and Y<=Z) or (Z<=Y and Y<=X) then Y,
 	 when (X<=Z and Z<=Y) or (Y<=Z and Z<=X) then Z
-END AS IND_80
+END AS IND_80,
+
+x S10
+Y S30 
+Z S30
 
 	
 	'' AS ERROR_MSG_IND_80
