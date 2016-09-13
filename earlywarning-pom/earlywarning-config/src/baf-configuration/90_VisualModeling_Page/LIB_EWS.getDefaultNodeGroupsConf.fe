@@ -1,6 +1,6 @@
 VAR nodes = LIB_VMCommons.getDefaultNodeGroupsConf();
-var dataPreparation 	= nodes[2];
-VAR modeling 		= nodes[3];
+var dataPreparation 	= nodes[1];
+VAR modeling 		= nodes[2];
 dataPreparation 	= get(dataPreparation,"nodes");
 modeling 		= get(modeling,"nodes");
 VAR node;

@@ -10,8 +10,11 @@ var tmp = "(CASE ";
 SQL =  "SELECT SNDG";
 
 foreach(threshold as t){
-	tmp = tmp+" WHEN "+model.ModelColumnName+" > "+t.From+" AND "+model.ModelColumnName+" <= "+t.To+" THEN '"+t.LabelKey+"'";
+	if(t.LabelKey <> 'MISSING'){
+		tmp = tmp+" WHEN "+model.ModelColumnName+" > "+t.From+" AND "+model.ModelColumnName+" <= "+t.To+" THEN '"+t.LabelKey+"'";
+	}
 }
+tmp = tmp+" ELSE NULL ";
 tmp = tmp+ " END ) as CATEGORICAL_SCORE";
 
 SQL =SQL +","+tmp;

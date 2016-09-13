@@ -11,8 +11,6 @@ VAR analysisUnitID = Param1;
 VAR analysisUnitInstance = Analysis_Unit[ID=$analysisUnitID];
 
 VAR WORKSPACE_PLAN_LIST;
-VAR MATRIX_TABLE = "MATRIX";
-VAR BM_TABLE = "BM";
 VAR UNIT_TABLE;
 VAR BR;
 VAR BR_LIST = {};
@@ -31,110 +29,87 @@ VAR SQL;
 VAR ERROR_SQL;
 VAR COUNTER = 1;
 VAR NOME_COLONNA = NULL;
-VAR SQL_UNION_MATRIX;
-VAR SQL_UNION_BM;
 
-VAR DBCONNECTION 		= Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
+
+VAR DBCONNECTION 			= Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
 VAR T_OUT_TMP 			= analysisUnitInstance.ResultTableName+"_TMP";
 VAR T_OUT_BCK 			= analysisUnitInstance.ResultTableName+"_BCK";
 VAR T_OUT 				= analysisUnitInstance.ResultTableName+"_CALC";
 VAR T_OUT_VIEW 			= analysisUnitInstance.ResultTableName;
-VAR typeOfDataToUse 	= "actual";
-VAR externalInfoFormula = analysisUnitInstance.CustomerInfoFormula;
+VAR typeOfDataToUse 		= "actual";
+VAR externalInfoFormula 	= analysisUnitInstance.CustomerInfoFormula;
 
 VAR SETUP = EVAL(externalInfoFormula, {analysisUnitInstance});
 VAR HAVE_ERROR_MESSAGE 	= SETUP["HAVE_ERROR_MESSAGE"];
 
 UNIT_TABLE 	= analysisUnitInstance.AnalyticalTable;
-VARIABLES 	= analysisUnitInstance.AnalysisUnit_Variable.Variable order by [ColumnName ASC];
-
 # RECUPERO LA MATRICE IN PROD
 WORKSPACE_PLAN_LIST =  analysisUnitInstance.Workspace_AnalysisUnit.Workspace.Workspace_Plan[Status="Production"];
+VARIABLES 	= analysisUnitInstance.AnalysisUnit_Variable.Variable order by [ColumnName ASC];
 
 IF(SIZE (WORKSPACE_PLAN_LIST ) == 0) {
 	RETURN;
 }
-
-
+VAR SQL_UNION = "SELECT * FROM (";
 
 FOREACH ( WORKSPACE_PLAN_LIST as WORKSPACE ){
+
+	LIB_DB.DropTableIfExists("TMP_OUTWP_"+WORKSPACE.ID,DBCONNECTION);   
+    SQLEXECUTE("CREATE TABLE TMP_OUTWP_"+WORKSPACE.ID+" AS ( "+  LIB_EWS.getQueryOutputForWorkplace(WORKSPACE) +" ) WITH DATA PRIMARY INDEX(SNDG)",DBCONNECTION,NULL,{});
+        
+	SQL_UNION = SQL_UNION +" SELECT * FROM TMP_OUTWP_"+WORKSPACE.ID;
+	SQL_UNION = SQL_UNION + " UNION ALL ";
 	
 	fatsTrack = WORKSPACE.WorkspacePlan_FastTrack.Fast_Track;
+    if(fatsTrack <> null) {
+        BR = fatsTrack.FastTrack_BusinessRule.Business_Rule order by [NAME];
+        conditionForSingleCategoricalScore = fatsTrack.FastTrack_Score.[Categorical_Score.ID,ExpressionQuery] ORDER BY [Categorical_Score.OrderPosition];
+        
+        FOREACH (BR as tmp){
+            if (not CONTAINSVALUE(BR_LIST, tmp)){
+                ADDELEMENT(BR_LIST,tmp);
+            }
+        }    
     
-	BR = fatsTrack.FastTrack_BusinessRule.Business_Rule order by [NAME];
-    
-    FOREACH (BR as tmp){
-    	if (not CONTAINSVALUE(BR_LIST, tmp)){
-        	ADDELEMENT(BR_LIST,tmp);
+        var BR_DETAIL = "CASE ";
+        foreach (conditionForSingleCategoricalScore as cs){
+            # obtaining SQL query
+            BR_DETAIL = BR_DETAIL +" when TMP.CATEGORICAL_SCORE = '"+cs[0]+"' THEN '"+TEXTFILETOSTRING(cs[1])+"' ";
+            expressionSQLQuery = LIB_BRJson.getSQLquery(TEXTFILETOSTRING(cs[1]));
+            ADDELEMENT(array, {cs[0], expressionSQLQuery});
+
         }
-    }    
     
-    SQL_UNION_MATRIX = SQL_UNION_MATRIX + " SELECT * FROM "+WORKSPACE.ResultTableName;
-    SQL_UNION_MATRIX = SQL_UNION_MATRIX + " UNION ALL";
-	
-	
-	conditionForSingleCategoricalScore = Categorical_Score[IsFastTrackCategory=TRUE].[ID]  ORDER BY [OrderPosition];
-	noneScore = conditionForSingleCategoricalScore[SIZE(conditionForSingleCategoricalScore)-1][0];
-	
-	if (fatsTrack <> NULL) {
-		conditionForSingleCategoricalScore = fatsTrack.FastTrack_Score.[Categorical_Score.ID,ExpressionQuery] ORDER BY [Categorical_Score.OrderPosition];
-	}
-	noneScore = conditionForSingleCategoricalScore[SIZE(conditionForSingleCategoricalScore)-1][0];
-	
-	# DA USARE NEL NUOVO RILASCIO
-	# array =  FastTrack.getCategoricalScoreInfo(fatsTrack.ID);
-	
-	var BR_DETAIL = "CASE ";
-	foreach (conditionForSingleCategoricalScore as cs){
-		if (fatsTrack <> NULL) {
-			# obtaining SQL query
-           	BR_DETAIL = BR_DETAIL +" when "+BM_TABLE+".CATEGORICAL_SCORE = '"+cs[0]+"' THEN '"+TEXTFILETOSTRING(cs[1])+"' ";
-			expressionSQLQuery = LIB_BRJson.getSQLquery(TEXTFILETOSTRING(cs[1]));
-			ADDELEMENT(array, {cs[0], expressionSQLQuery});
-			}
-		else {
-			ADDELEMENT(array, {cs[0], NULL});
-		}
-	}
-
-    BR_DETAIL = BR_DETAIL+" END ";
-	tableFT = "(" + LIB_AnalysisUnit.getDecisionListCalculationQuery(array, analysisUnitInstance, typeOfDataToUse, WORKSPACE.Workspace.ID) + ")";
-	
-	
-	SQL_UNION_BM  = SQL_UNION_BM +" "+ tableFT;
-	SQL_UNION_BM = SQL_UNION_BM + " UNION ALL";
-	
+        BR_DETAIL = BR_DETAIL+" END ";
+    }
 }
+SQL_UNION = SUBSTRING(SQL_UNION, 0, LENGTH(SQL_UNION) - 10);
+SQL_UNION = SQL_UNION + " ) t";
 
-
-SQL_UNION_MATRIX = SUBSTRING(SQL_UNION_MATRIX, 0, LENGTH(SQL_UNION_MATRIX) - 10);
-SQL_UNION_BM = SUBSTRING(SQL_UNION_BM, 0, LENGTH(SQL_UNION_BM) - 10);
-
-SQL = "SELECT "+UNIT_TABLE+".SNDG AS SNDG_JOIN";
+VAR SQL_CALCOLO = "SELECT tmp.* ";
+VAR SELECT_VIEW = "SELECT "+UNIT_TABLE+".SNDG as SNDG_JOIN ";
 
 foreach (VARIABLES as v){
  	IF( v.ColumnName <> "TARGET" and v.ColumnName <> "EXPOSURE" and v.ColumnName <> "SNDG" and v.ColumnName <> "SEGMENT"){
 		IF(v.Variable_DataType.Data_Type.ID == "STRING") {
-			SQL = SQL +",cast("+UNIT_TABLE+"."+v.ColumnName+" as VARCHAR(50) ) as "+v.ColumnName ;
+			SELECT_VIEW = SELECT_VIEW +",cast("+UNIT_TABLE+"."+v.ColumnName+" as VARCHAR(50) ) as "+v.ColumnName ;
 		}
 		IF(v.Variable_DataType.Data_Type.ID == "REAL") {
-			SQL = SQL +",cast("+UNIT_TABLE+"."+v.ColumnName+" as DECIMAL(30,6) ) as "+v.ColumnName ;
+			SELECT_VIEW = SELECT_VIEW +",cast( (CASE WHEN "+UNIT_TABLE+"."+v.ColumnName+" = -8888888 THEN NULL else  "+UNIT_TABLE+"."+v.ColumnName+" END) as DECIMAL(30,6) ) as "+v.ColumnName ;
 		}
         if(HAVE_ERROR_MESSAGE) {
-			ERROR_SQL = ERROR_SQL +",CAST("+UNIT_TABLE+".ERROR_MSG_"+v.ColumnName+" AS VARCHAR(200) ) as ERROR_MSG_" +v.ColumnName;
+			SELECT_VIEW = SELECT_VIEW +",CAST("+UNIT_TABLE+".ERROR_MSG_"+v.ColumnName+" AS VARCHAR(200) ) as ERROR_MSG_" +v.ColumnName;
         }
 	}
 }
+SELECT_VIEW = SELECT_VIEW + " FROM "+UNIT_TABLE+" "+UNIT_TABLE;
 
-SQL = SQL + ERROR_SQL;
-SQL = SQL + " FROM "+ UNIT_TABLE;
-
-VAR SQL_CALCOLO = "SELECT "+UNIT_TABLE+".SNDG ";
 
 
 COUNTER = 1;
 VAR brName;
 VAR INDEX ;
+
 foreach (BR_LIST as b){
 	INDEX = INDEXOF(b.NAME,'_');
 	brName = SUBSTRING(b.NAME,2,INDEX-2);
@@ -155,24 +130,14 @@ foreach (BR_LIST as b){
 	
 	#COUNTER = COUNTER + 1 ;
 }
-VAR TMP;
-TMP = BM_TABLE+".CATEGORICAL_SCORE";
-
 SQL_CALCOLO = SQL_CALCOLO +" ,CAST(null as VARCHAR(50)) as WARNING_APP ";
 SQL_CALCOLO = SQL_CALCOLO +" ,CAST("+BR_DETAIL+" AS VARCHAR(3000) ) as BR_DETAILS  ";
-SQL_CALCOLO = SQL_CALCOLO +" ,CAST( "+LIB_EWS.getSqlDecodeColors(TMP)+" as VARCHAR(50)) as COLOR_APP ";
-#SQL = SQL +",CAST(null as VARCHAR(50)) as WARNING_SYSTEM";
-
-#SQL = SQL +",CAST(null as VARCHAR(50)) as COLOR_SYSTEM";
+SQL_CALCOLO = SQL_CALCOLO +" ,CAST( TMP.SEMAFORO_APP as VARCHAR(50)) as COLOR_APP ";
 SQL_CALCOLO =  SQL_CALCOLO +",COLOR_APP as COLOR_SYSTEM";
-
 SQL_CALCOLO = SQL_CALCOLO +" ,CURRENT_DATE AS CREATION_DATE";
-SQL_CALCOLO = SQL_CALCOLO +" FROM  ("+SQL_UNION_BM+") "+BM_TABLE ;
-SQL_CALCOLO = SQL_CALCOLO + " JOIN ("+UNIT_TABLE+") on "+UNIT_TABLE+".SNDG = "+BM_TABLE+".SNDG";
-#SQL = SQL +" JOIN ("+SQL_UNION_MATRIX+" ) "+MATRIX_TABLE+ "  ON "+MATRIX_TABLE+".SNDG="+UNIT_TABLE+".SNDG";
-#SQL = SQL +" JOIN ("+SQL_UNION_BM+") "+BM_TABLE+ "  ON "+BM_TABLE+".SNDG="+UNIT_TABLE+".SNDG";
+SQL_CALCOLO = SQL_CALCOLO +" FROM  "+UNIT_TABLE+" "+UNIT_TABLE ;
+SQL_CALCOLO = SQL_CALCOLO +"  JOIN  ("+ SQL_UNION+") TMP on "+UNIT_TABLE+".SNDG = TMP.SNDG";
 
- 
 
 IF(LIB_DB.isTableExisting(T_OUT_TMP,DBCONNECTION)) THEN{
     SQLEXECUTE("DROP TABLE "+ T_OUT_TMP,DBCONNECTION,NULL,{});
@@ -194,9 +159,10 @@ IF(CREATED) THEN {
     LIB_DB.renameTable(T_OUT_TMP,T_OUT,DBCONNECTION,NULL);
       
 	SQL = "REPLACE VIEW "+T_OUT_VIEW+" AS (
-			SELECT * FROM "+T_OUT +" "+T_OUT+ " 
-				JOIN (" +SQL+ ") " + UNIT_TABLE +" 
-				ON "+ UNIT_TABLE+".SNDG_JOIN = "+T_OUT+".SNDG 
+			SELECT * 
+			FROM "+T_OUT +" "+T_OUT+ " 
+				JOIN (" +SELECT_VIEW+ ") " + UNIT_TABLE +" 
+				ON "+ UNIT_TABLE+".SNDG_JOIN = "+T_OUT+".SNDG
 			)";
 	
 	 SQLEXECUTE(SQL,DBCONNECTION,NULL,{});
@@ -205,3 +171,4 @@ IF(CREATED) THEN {
     
 }
 return null;
+

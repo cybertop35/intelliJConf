@@ -33,14 +33,18 @@ VAR configuration;
 var tableFT;
 VAR array = {};
 VAR expressionSQLQuery;
-
+VAR DBCONNECTION 			= Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
 ##### RECUPERO FAST TRACK #####################
 array = FastTrack.getCategoricalScoreInfo(fastTrackId);
-tableFT = "(" + LIB_AnalysisUnit.getDecisionListCalculationQuery(array, analysisUnitInstance, typeOfDataToUse, workspaceId) + ")";
+LIB_DB.DropTableIfExists("TMP_FT_"+fastTrackId,DBCONNECTION);
+SQLEXECUTE("CREATE TABLE TMP_FT_"+fastTrackId +" AS ( "+ LIB_AnalysisUnit.getDecisionListCalculationQuery(array, analysisUnitInstance, typeOfDataToUse, workspaceId)  +" ) WITH DATA PRIMARY INDEX(SNDG)",DBCONNECTION,NULL,{});
+
 
 ##### RECUPERO LA MATRICE #####################
 ##NON CONSIDERO IL FAST_TRACK NEL CALCOLO #####
 tableMatrix = LIB_AnalysisUnit.calculateMatrix(matrixInstance,null,typeOfDataToUse);
+LIB_DB.DropTableIfExists("TMP_MX_"+matrixId,DBCONNECTION);
+SQLEXECUTE("CREATE TABLE TMP_MX_"+matrixId +" AS  "+ tableMatrix +"  WITH DATA PRIMARY INDEX(SNDG)",DBCONNECTION,NULL,{});
 
 ##### RECUPERO I MODELLI #####################
 VAR sqlModelJoin;
@@ -61,6 +65,7 @@ foreach (models as model){
 
 SQL = "SELECT "+AnalysisTable+".SNDG";
 tmp = "WS.CATEGORICAL_SCORE";
+SQL = SQL + ","+tmp;
 SQL = SQL + ",cast("+LIB_EWS.getSqlDecodeColors(tmp) +" as VARCHAR(50) ) as  SEMAFORO_APP";
 SQL = SQL + ",CAST(null as VARCHAR(50)) as SEMAFORO_SYSTEM";
 SQL = SQL + ",cast( ( CASE WHEN FT.CATEGORICAL_SCORE = 'NONE' OR FT.CATEGORICAL_SCORE IS NULL THEN 0 ELSE 1 END) as VARCHAR(1) ) as  FAST_TRACK";
@@ -93,8 +98,8 @@ SQL = SQL +" ,CAST("+detectionRationale+" as VARCHAR(200)) as DETECTION_RATIONAL
 SQL = SQL +" FROM "+AnalysisTable +" "+AnalysisTable;
 SQL = SQL +" JOIN (SELECT * FROM "+workspacePlan.ResultTableName +") ws ON WS.SNDG = "+AnalysisTable+".SNDG";
 SQL = SQL + sqlModelJoin;
-SQL = SQL +" JOIN ("+tableFT+" ) FT  ON FT.SNDG="+AnalysisTable+".SNDG";
-SQL = SQL +" JOIN ("+ tableMatrix +") MATRIX ON MATRIX.SNDG = "+AnalysisTable+".SNDG";
+SQL = SQL +" JOIN TMP_FT_"+fastTrackId+" FT  ON FT.SNDG="+AnalysisTable+".SNDG";
+SQL = SQL +" JOIN TMP_MX_"+matrixId +" MATRIX ON MATRIX.SNDG = "+AnalysisTable+".SNDG";
 
 # IF(SIZE(adjustments) > 0 ) then {
 # 	SQL = SQL +" JOIN ("+ calculationQueryWithAdj +") ADJ ON ADJ.SNDG = "+AnalysisTable+".SNDG";
