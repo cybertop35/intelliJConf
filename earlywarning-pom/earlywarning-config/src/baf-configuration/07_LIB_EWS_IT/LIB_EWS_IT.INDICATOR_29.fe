@@ -5,9 +5,10 @@ VAR sql = "";
 
 sql = "
 
+
 CAST(
 	CASE 
-		WHEN COVE_FLG_ROTTURA = '1' THEN cast (CURRENT_DATE as integer) - cast(COVE_DATA_INIZIO_ROTTURA as integer)
+		WHEN COV_FLG_ROTTURA = '1' THEN cast (CURRENT_DATE as integer) - cast(COV_DATA_INIZIO_ROTTURA as integer)
 		ELSE null
 	END AS DECIMAL(10,0)) AS IND_29,
 	

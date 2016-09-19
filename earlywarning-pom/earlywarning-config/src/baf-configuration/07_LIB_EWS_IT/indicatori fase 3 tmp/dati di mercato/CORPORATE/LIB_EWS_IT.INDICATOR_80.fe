@@ -5,11 +5,10 @@ VAR sql = "";
 
 sql = "
 
-
-CAST('' AS CHAR(10)) AS IND_80,
-	NULL AS ERROR_MSG_IND_80
-
-/*	
+•	EDF_CREDIT_EDGE
+•	EDF_MIR
+•	BOND_IMPLIED_RATING
+•	CDS_IMPLIED_RATING
 
 
 CAST(
@@ -32,7 +31,7 @@ CAST(
 -------------------------------------------------	
 CASE 
 	WHEN IND_77 IS NOT NULL OR
-		 IND_73 IS NOT NULL THEN COLOR_CAT
+		 IND_73 IS NOT THEN COLOR_CAT
 	ELSE null
 END AS COLOR_EQUITY,
 
@@ -58,10 +57,6 @@ CASE
 	 when (X<=Y and Y<=Z) or (Z<=Y and Y<=X) then Y,
 	 when (X<=Z and Z<=Y) or (Y<=Z and Z<=X) then Z
 END AS IND_80,
-
-x S10
-Y S30 
-Z S30
 
 	
 	'' AS ERROR_MSG_IND_80
