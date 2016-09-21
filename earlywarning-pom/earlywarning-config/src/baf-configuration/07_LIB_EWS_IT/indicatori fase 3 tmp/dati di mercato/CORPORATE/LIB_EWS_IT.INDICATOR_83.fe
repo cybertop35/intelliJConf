@@ -8,20 +8,15 @@ sql = "
 
 CAST(
 	CASE 
-		WHEN IND_77 < 0.7962 OR
-			 IND_73 IN ('B3','Ca', 'Caa', 'Caa1','Caa2','Caa3') OR
-			 IND_76 >= 830 THEN 'S30'
+		WHEN IND_74 IN ('B3','Ca', 'Caa', 'Caa1','Caa2','Caa3') THEN 'S30'
 		
-		WHEN IND_77 < 2.6423 OR
-			 IND_73 IN ('Ba3','B1','B2') THEN 'S20'
+		WHEN IND_74 IN ('Ba3','B1','B2') THEN 'S20'
 			 
-		WHEN IND_77 < 5.1866 OR
-			 IND_73 IN ('Ba1','Ba2') THEN 'S10'
+		WHEN IND_74 IN ('Ba1','Ba2') THEN 'S10'
 		
-		WHEN IND_77 < 999 OR
-			 IND_73 IN ('Aaa','Aa1','Aa2','Aa3','A1','A2','A3','Baa1','Baa2','Baa3') THEN 'S01'
+		WHEN IND_74 IN ('Aaa','Aa1','Aa2','Aa3','A1','A2','A3','Baa1','Baa2','Baa3') THEN 'S01'
 		
-		ELSE 'NEUTRO'
+		ELSE 'S00'
 	END AS CHAR(10)) AS COLOR_CAT,
 
 CASE 
