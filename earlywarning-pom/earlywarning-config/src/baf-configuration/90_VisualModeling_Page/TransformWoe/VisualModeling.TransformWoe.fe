@@ -94,7 +94,9 @@ if (updated == false){
 
 					min = MIN(continuousValuesTMP);
 					max = MAX(continuousValuesTMP);
-
+					if(min == max )
+						max = max +1 ;
+						
 					DEBUGMESSAGE(key+" = MIN: "+min+" MAX: "+max);		
 					
 					continuousValues = ['min':min,'max':max];

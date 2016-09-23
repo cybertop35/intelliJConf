@@ -87,7 +87,7 @@ if (updated == false){
 	PUT(dataVar, 'columnName', 	columName + "_WM");
 	PUT(dataVar, 'columnLabel',	columName + " New (WM Woe)");
 	
-	statement = statement + "CAST( "+function+"( "+constantValue + " + (" +EXPRESSION +" ) ) AS DECIMAL(36,6)) as " +dataVar['columnName'] ;
+	statement = statement + "CAST( "+function+"( "+constantValue + " + (" +EXPRESSION +" ) ) AS DECIMAL(36,12)) as " +dataVar['columnName'] ;
 	
     # create result table
     var query = "CREATE TABLE " + nodeTableName + " AS ( SELECT " + statement + "  FROM " + prevNodeTableName +") WITH DATA PRIMARY INDEX(SNDG)";
@@ -103,7 +103,7 @@ if (updated == false){
 	if(resulSet[0] <> null and SIZE(resulSet[0]) > 0)
 		continuousValues = ['min':resulSet[0][0],'max':resulSet[0][1]];
 	else
-		continuousValues = ['min':0,'max':0];
+		continuousValues = ['min':0,'max':1];
 		
 	PUT(dataVar, 'continuousValues',continuousValues);
 	PUT(dataVar, 'variableType', 	'CONTINUOUS');

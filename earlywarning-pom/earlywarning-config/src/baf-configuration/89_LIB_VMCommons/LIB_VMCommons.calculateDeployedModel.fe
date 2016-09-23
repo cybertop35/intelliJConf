@@ -1,0 +1,187 @@
+VAR formulaName = "[LIB_VMCommons.calculateDeployedModel] ";
+DEBUGMESSAGE(formulaName, "START");
+
+# Param1 FEString: model id
+# Param2 FEstring: user
+# Param3 FEString: session id
+# Result FEBoolean
+# It calculates model on actual, backtesting and tt. It applies model flow deploying the score on the result model table.
+
+var modelId = Param1;
+var user = Param2;
+var sessionId = Param3;
+
+
+# Datasource
+VAR predictiveDatasourceName = Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
+VAR predictiveDatasourceType = LIB_DB.getJDBCConnectionType(predictiveDatasourceName);
+
+var locked = LIB_Lock.lock('Model', modelId, user, sessionId, TRUE);
+if (NOT locked) {
+    DEBUGMESSAGE(formulaName, "END");
+	return false;
+}
+VAR tableCopy;
+VAR a = {};
+var model = Predictive_Model[ID=$modelId];
+var workspaceId = model.Model_Workspace.Workspace.ID;
+var analysisUnitId = Utils.SingleSetToElement(model.Model_Workspace.Workspace.Workspace_AnalysisUnit.Analysis_Unit.ID);
+
+var topologyFile = model.Topology;
+var topologyString = TEXTFILETOSTRING(topologyFile);
+var topology = JSONSTRINGTOMAP(topologyString);
+
+# prepare visual modeling context
+var visualModelingContext = [];
+visualModelingContext['workspaceId'] = workspaceId;
+visualModelingContext['analysisUnitId'] = analysisUnitId;
+visualModelingContext['modelId'] = modelId;
+visualModelingContext['sessionId'] = sessionId;
+var nodeInfo = LIB_VMCommons.createNodeTmpInfo("INMGM", sessionId, modelId);
+var inputVariables = InputManagement.getVariables(analysisUnitId, workspaceId, FALSE);
+LIB_VMCommons.setNodeStatus(nodeInfo['nodeName'], ['updated': true, 'variables': inputVariables], sessionId, modelId);
+visualModelingContext['inputManagementNodeName'] = nodeInfo['nodeName'];
+visualModelingContext['inputManagementNodeTableName'] = nodeInfo['nodeTableName'];
+
+# getting visual modeling gems
+LIB_VMCommons.getModelGems(sessionId, modelId);
+
+var analysisUnitInstance = Analysis_Unit[ID=$analysisUnitId];
+var sourceTables = [ 'analyticalTable' : analysisUnitInstance.AnalyticalTable, 'bktestAnalyticalTable' : analysisUnitInstance.BktestAnalyticalTable, 'ttTable' : 'TT_' + workspaceId ];
+var deployedTable = "MODEL_" + modelId;
+var sourceTable;
+var result;
+var inputs;
+var nodeTableName;
+var keyColumn;
+var scoreColumn;
+var deployedScore;
+var deployedTableName;
+
+VAR tableName_New;
+VAR tableName_Bkp;
+VAR tableName;
+VAR outcome;
+VAR createTableQuery;
+VAR calculationQuery;
+VAR insertQuery;
+var gemFile;
+var actualBacktesting;
+var sparkDeployJarResult;
+var scoreColumnName;
+var scoreTablesPath;
+var actual = false;
+var yarnConfigurationMap = JSONSTRINGTOMAP(Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].YarnConfigurationJson);
+foreach (KEYSET(sourceTables) as keySrc) {
+    DEBUGMESSAGE(formulaName + " keySrc = ", keySrc);
+    sourceTable = sourceTables[keySrc];
+    DEBUGMESSAGE(formulaName + " sourceTable = ", sourceTable);
+    if (sourceTable <> NULL) {
+        IF(VisualModeling.isConnectedToImpala()){
+            deployedTableName = IIF(keySrc == 'analyticalTable', deployedTable, deployedTable + '_BKTEST');
+            gemFile = Predictive_Model[ID=$modelId].SparkJarFile;
+            actualBacktesting = IIF(keySrc == 'analyticalTable', "actual", "backtesting");
+            sparkDeployJarResult = SPARKDEPLOYJAR(gemFile, {actualBacktesting}, "Gem", deployedTable + "_" + actualBacktesting, yarnConfigurationMap);
+            ASSERT(sparkDeployJarResult['status'] == 'SUCCESSFUL', "Jar deploy failed: " + actualBacktesting);
+
+            scoreColumnName;
+            foreach (topology['nodes'] as modelNode) {
+                if (modelNode['deployed'] == true) {
+                    scoreColumnName = modelNode['scoreColumn'];
+                    break;
+                }
+            }
+            keyColumn = Utils.SingleSetToElement(analysisUnitInstance.AnalysisUnit_Variable.Variable[IsKeyColumn=TRUE].ColumnName);
+            scoreTablesPath = Analysis_Unit[ID=$analysisUnitId].ScoreTablesPath;
+            SQLEXECUTE("DROP TABLE IF EXISTS " + deployedTableName , predictiveDatasourceName, 1, null);
+            SQLEXECUTE(" CREATE EXTERNAL TABLE  " + deployedTableName + " LIKE PARQUET '" + scoreTablesPath + deployedTableName + "/_metadata' STORED AS PARQUETFILE LOCATION '" + scoreTablesPath + deployedTableName + "'", predictiveDatasourceName, 1, null);
+
+        } ELSE {
+            # set new source table for input management
+            visualModelingContext['sourceTable'] = sourceTable;
+
+            # run deployed flow
+            IF(keySrc == 'analyticalTable'){
+                deployedTableName = deployedTable;
+               
+                actual = true;
+            } ELSE IF(keySrc == 'bktestAnalyticalTable') {
+                deployedTableName = deployedTable  + '_BKTEST';
+            } ELSE {
+                deployedTableName = deployedTable  + '_TT';
+            }
+
+            foreach (topology['nodes'] as modelNode) {
+                if (modelNode['deployed'] == true) {
+
+                    #eval inputs and deployed node
+                    inputs = vm_eval_inputs(topology, modelNode, visualModelingContext);
+                    result = EVAL("VisualModeling", REPLACESTRING(modelNode['name'], ' ', ''), {modelNode['value'], inputs, visualModelingContext});
+                    scoreColumn = modelNode['scoreColumn'];
+                    nodeTableName = result['nodeTableName'];
+                    keyColumn;
+                    foreach (result['variables'] as variable) {
+                        if (variable['isKeyColumn']) {
+                            keyColumn = variable['columnName'];
+                        }
+                        if (variable['id'] == scoreColumn) {
+                            deployedScore = variable['columnName'];
+                        }
+                    }
+
+					tableCopy = deployedTableName+"_VM";
+
+                    outcome = LIB_DB.DropTableIfExists(tableCopy, predictiveDatasourceName);
+                    createTableQuery = "CREATE MULTISET TABLE "+ tableCopy +" as (SELECT * FROM " +nodeTableName+" ) WITH DATA";
+                    SQLEXECUTE(createTableQuery, predictiveDatasourceName,NULL,{});
+                    
+                    # Drop table
+                    tableName_New = deployedTableName + "_NEW";
+                    tableName_Bkp = deployedTableName + "_BKP";
+                    tableName = deployedTableName;
+					addelement(a,nodeTableName);
+					
+                    # Drop table
+                    outcome = LIB_DB.DropTableIfExists(tableName_New, predictiveDatasourceName);
+                    DEBUGMESSAGE(formulaName, "Drop table " + tableName_New + ": " + PARSESTRING(outcome));
+
+                    # Create table new
+                    createTableQuery =
+                        " CREATE TABLE " + tableName_New + " (" +
+                        "  " + keyColumn + " " + LIB_DB.getDBRelatedStringType(['datasourceType' : predictiveDatasourceType]) + "," +
+                        " SCORE " + LIB_DB.getDBRelatedNumberType(['datasourceType' : predictiveDatasourceType]) +
+                        " )";
+                    DEBUGMESSAGE(formulaName, "createTableQuery: " + createTableQuery);
+                    SQLEXECUTE(createTableQuery, predictiveDatasourceName,NULL,{});
+
+                    # Get calculation query
+                    calculationQuery = " SELECT  " + keyColumn + " as " + keyColumn + ", " + deployedScore + " as SCORE  FROM " + nodeTableName;
+
+                    # Fill table new
+                    insertQuery =
+                        "insert into " + tableName_New + " " + calculationQuery;
+                    DEBUGMESSAGE(formulaName, "insertQuery:" + insertQuery);
+                    SQLEXECUTE(insertQuery, predictiveDatasourceName, NULL, {});
+
+                    LIB_DB.swapPreviousTableWithNewOneIfCorrect(tableName, tableName_Bkp, tableName_New, predictiveDatasourceName, analysisUnitInstance.ScoreTablesPath);
+
+                    # set all nodes as obsolete (updated=false)
+                    LIB_VMCommons.setNodeObsolete(NULL, sessionId, modelId);
+
+                    break;
+                }
+                }
+        }
+    }
+}
+
+# save the model
+model.ResultTableName = deployedTable;
+model.ModelColumnName = "SCORE";
+SAVE(model);
+
+LIB_VMCommons.cleanVisualModelingSession(sessionId, modelId);
+#
+locked = LIB_Lock.lock('Model', modelId, user, sessionId, FALSE);
+DEBUGMESSAGE(formulaName, "END");
+return locked;
