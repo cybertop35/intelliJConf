@@ -14,19 +14,20 @@ CAST(
 			 
 		WHEN IND_75 IN ('Ba1','Ba2') THEN 'S10'
 		
-		WHEN IND_75 IN ('Aaa','Aa1','Aa2','Aa3','A1','A2','A3','Baa1','Baa2','Baa3') THEN 'S01'
+		WHEN IND_75 IN ('Aaa','Aa1','Aa2','Aa3','A1','A2','A3','Baa1','Baa2','Baa3') OR
+             IND_25 < 800 THEN 'S01'
 		
 		ELSE 'S00'
-	END AS CHAR(10)) AS COLOR_CAT,
-
+	END AS VARCHAR(10)) AS COLOR_CAT_82,
+CAST(
 CASE 
 	WHEN IND_75 IS NOT NULL OR
-		 IND_25 IS NOT NULL THEN COLOR_CAT
+		 IND_25 IS NOT NULL THEN COLOR_CAT_82
 	ELSE null
-END AS IND_82,
+END AS VARCHAR(10)) AS IND_82,
 	
-	'' AS ERROR_MSG_IND_82
-*/	
+	null AS ERROR_MSG_IND_82
+	
 ";
 
 DEBUGMESSAGE(formulaName, sql);

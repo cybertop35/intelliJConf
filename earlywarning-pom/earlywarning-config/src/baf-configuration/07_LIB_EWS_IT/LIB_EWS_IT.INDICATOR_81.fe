@@ -5,7 +5,6 @@ VAR sql = "";
 
 sql = "
 
-CAST(
 	CASE 
 		WHEN IND_77 < 0.7962 OR
 			 IND_73 IN ('B3','Ca', 'Caa', 'Caa1','Caa2','Caa3') OR
@@ -17,20 +16,20 @@ CAST(
 		WHEN IND_77 < 5.1866 OR
 			 IND_73 IN ('Ba1','Ba2') THEN 'S10'
 		
-		WHEN IND_77 < 999 OR
+		WHEN IND_77 >= 5.1866 OR
 			 IND_73 IN ('Aaa','Aa1','Aa2','Aa3','A1','A2','A3','Baa1','Baa2','Baa3') THEN 'S01'
 		
 		ELSE 'S00'
-	END AS CHAR(10)) AS COLOR_CAT,
+	END AS COLOR_CAT_81,
 	
 CASE 
 	WHEN IND_77 IS NOT NULL OR
-		 IND_73 IS NOT NULL THEN COLOR_CAT
+		 IND_73 IS NOT NULL THEN COLOR_CAT_81
 	ELSE null
-END AS IND_81,
+END  AS IND_81,
 	
-	'' AS ERROR_MSG_IND_81
-*/	
+	null AS ERROR_MSG_IND_81
+
 ";
 
 DEBUGMESSAGE(formulaName, sql);

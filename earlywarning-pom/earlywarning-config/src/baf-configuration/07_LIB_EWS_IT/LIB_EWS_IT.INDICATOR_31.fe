@@ -5,9 +5,11 @@ VAR sql = "";
 
 sql = "
 
-JD_COV_NON_RISP_SAN AS IND_31
+case 
+	when JD_COV_NON_RISP_SAN is null then '0'
+	else JD_COV_NON_RISP_SAN
+end AS IND_31
 ,null AS ERROR_MSG_IND_31
-
 		";
 
 
@@ -15,3 +17,4 @@ DEBUGMESSAGE(formulaName, sql);
 DEBUGMESSAGE(formulaName, "END");
 
 return sql;
+
