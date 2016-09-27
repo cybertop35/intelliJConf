@@ -89,7 +89,7 @@ SQL = SQL + ",cast( ( CASE WHEN FT.CATEGORICAL_SCORE = 'NONE' OR FT.CATEGORICAL_
 
 VAR adjMap=[];
 foreach(adjustments as adj) {
-	SQL = SQL +" ,CAST((CASE when MATRIX.ADJID = '"+adj.ID+"' AND FAST_TRACK = 0 then 1 when MATRIX.ADJID <> '"+adj.ID+"' AND FAST_TRACK = 0 then 0 END )as VARCHAR(50)) as EXCEPTION_"+(adj.OrderPosition+1);
+	SQL = SQL +" ,CAST((CASE when MATRIX.ADJID LIKE '%"+adj.ID+"%' AND FAST_TRACK = 0 then 1 when MATRIX.ADJID NOT LIKE '%"+adj.ID+"%' AND FAST_TRACK = 0 then 0 END )as VARCHAR(50)) as EXCEPTION_"+(adj.OrderPosition+1);
 	put(adjMap,"EXCEPTION_"+(adj.OrderPosition+1),adj);
 	exceptionCount = exceptionCount + 1 ;
 }
