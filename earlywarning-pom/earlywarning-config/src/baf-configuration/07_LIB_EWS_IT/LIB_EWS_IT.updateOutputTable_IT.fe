@@ -88,7 +88,7 @@ SQL_UNION = SUBSTRING(SQL_UNION, 0, LENGTH(SQL_UNION) - 10);
 SQL_UNION = SQL_UNION + " ) t";
 
 VAR SQL_CALCOLO = "SELECT tmp.* ";
-VAR SELECT_VIEW = "SELECT "+UNIT_TABLE+".SNDG as SNDG_JOIN ";
+VAR SELECT_VIEW = "SELECT "+UNIT_TABLE+".SNDG as SNDG_JOIN, "+UNIT_TABLE+".SEGMENT";
 
 foreach (VARIABLES as v){
  	IF( v.ColumnName <> "TARGET" and v.ColumnName <> "EXPOSURE" and v.ColumnName <> "SNDG" and v.ColumnName <> "SEGMENT"){
@@ -96,7 +96,7 @@ foreach (VARIABLES as v){
 			SELECT_VIEW = SELECT_VIEW +",cast("+UNIT_TABLE+"."+v.ColumnName+" as VARCHAR(50) ) as "+v.ColumnName ;
 		}
 		IF(v.Variable_DataType.Data_Type.ID == "REAL") {
-			SELECT_VIEW = SELECT_VIEW +",cast( (CASE WHEN "+UNIT_TABLE+"."+v.ColumnName+" = -8888888 THEN NULL else  "+UNIT_TABLE+"."+v.ColumnName+" END) as DECIMAL(30,6) ) as "+v.ColumnName ;
+			SELECT_VIEW = SELECT_VIEW +",cast( (CASE WHEN "+UNIT_TABLE+"."+v.ColumnName+" = -8888888 THEN NULL else  "+UNIT_TABLE+"."+v.ColumnName+" END) as DECIMAL(30,12) ) as "+v.ColumnName ;
 		}
         if(HAVE_ERROR_MESSAGE) {
 			SELECT_VIEW = SELECT_VIEW +",CAST("+UNIT_TABLE+".ERROR_MSG_"+v.ColumnName+" AS VARCHAR(200) ) as ERROR_MSG_" +v.ColumnName;

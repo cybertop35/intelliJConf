@@ -101,7 +101,7 @@ if (updated == false){
 	
 	DEBUGMESSAGE(formulaName + 'resulSet[0]=', resulSet[0][0]);
 	if(resulSet[0] <> null and SIZE(resulSet[0]) > 0)
-		continuousValues = ['min':resulSet[0][0],'max':resulSet[0][1]];
+		continuousValues = ['min':resulSet[0][1],'max':resulSet[0][0]];
 	else
 		continuousValues = ['min':0,'max':1];
 		
