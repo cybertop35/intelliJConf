@@ -8,7 +8,7 @@ sql = "
 
 CAST(
 	CASE 
-		WHEN IND_74 IN ('B3','Ca', 'Caa', 'Caa1','Caa2','Caa3') THEN 'S30'
+		WHEN IND_74 IN ('B3','Ca', 'Caa','C', 'Caa1','Caa2','Caa3') THEN 'S30'
 		
 		WHEN IND_74 IN ('Ba3','B1','B2') THEN 'S20'
 			 
@@ -17,14 +17,14 @@ CAST(
 		WHEN IND_74 IN ('Aaa','Aa1','Aa2','Aa3','A1','A2','A3','Baa1','Baa2','Baa3') THEN 'S01'
 		
 		ELSE 'S00'
-	END AS CHAR(3)) AS COLOR_CAT_83,
-
-CASE
+	END AS VARCHAR(10)) AS COLOR_CAT_83,
+CAST(
+CASE 
 	WHEN IND_74 IS NOT NULL THEN COLOR_CAT_83
 	ELSE null
-END AS IND_83,
+END AS VARCHAR(10)) AS IND_83,
 	
-	'' AS ERROR_MSG_IND_83
+	null AS ERROR_MSG_IND_83
 
 ";
 

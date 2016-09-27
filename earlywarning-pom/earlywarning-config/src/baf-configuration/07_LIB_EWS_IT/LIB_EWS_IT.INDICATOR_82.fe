@@ -7,7 +7,7 @@ sql = "
 
 CAST(
 	CASE 
-		WHEN IND_75 IN ('B3','Ca', 'Caa', 'Caa1','Caa2','Caa3') OR
+		WHEN IND_75 IN ('B3','Ca', 'C','Caa', 'Caa1','Caa2','Caa3') OR
 			 IND_25 >= 800 THEN 'S30'
 		
 		WHEN IND_75 IN ('Ba3','B1','B2') THEN 'S20'

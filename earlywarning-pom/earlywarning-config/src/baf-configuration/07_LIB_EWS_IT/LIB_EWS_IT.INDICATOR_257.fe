@@ -1,12 +1,12 @@
-VAR formulaName = "[LIB_EWS_IT.INDICATOR_258.fe] ";
+VAR formulaName = "[LIB_EWS_IT.INDICATOR_257.fe] ";
 DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
 sql = "
 
-CAST(0 AS DECIMAL(30,6)) AS IND_258,
-	NULL AS ERROR_MSG_IND_258
+CAST(0 AS DECIMAL(30,12)) AS IND_257,
+	NULL AS ERROR_MSG_IND_257
 
 ";
 
