@@ -3,32 +3,32 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "(
+sql = "CAST(
 		CASE
-			WHEN (-5.183951 + (0.4554721 	* IND_212)  
-					 + (0.18027 	* IND_213)
-					 + (0.0251268 	* IND_1)
-					 + (3.564812 	* IND_205)
-					 + (0.5329995 	* IND_56)
+			WHEN (-5.183951 + (0.4554721 	* ZEROIFNULL(IND_212))  
+					 + (0.18027 	* ZEROIFNULL(IND_213))
+					 + (0.0251268 	* ZEROIFNULL(IND_1))
+					 + (3.564812 	* ZEROIFNULL(IND_205))
+					 + (0.5329995 	* ZEROIFNULL(IND_56))
 					 ) <= -20
 				THEN EXP(-20)
-			WHEN (-5.183951 + (0.4554721 	* IND_212)  
-					 + (0.18027 	* IND_213)
-					 + (0.0251268 	* IND_1)
-					 + (3.564812 	* IND_205)
-					 + (0.5329995 	* IND_56)
+			WHEN (-5.183951 + (0.4554721 	* ZEROIFNULL(IND_212))  
+					 + (0.18027 	* ZEROIFNULL(IND_213))
+					 + (0.0251268 	* ZEROIFNULL(IND_1))
+					 + (3.564812 	* ZEROIFNULL(IND_205))
+					 + (0.5329995 	* ZEROIFNULL(IND_56))
 					 ) > 6
 				THEN EXP(6)
 			ELSE		
-				EXP(-5.183951 + (0.4554721 	* IND_212)  
-					 + (0.18027 	* IND_213)
-					 + (0.0251268 	* IND_1)
-					 + (3.564812 	* IND_205)
-					 + (0.5329995 	* IND_56)
+				EXP(-5.183951 + (0.4554721 	* ZEROIFNULL(IND_212))  
+					 + (0.18027 	* ZEROIFNULL(IND_213))
+					 + (0.0251268 	* ZEROIFNULL(IND_1))
+					 + (3.564812 	* ZEROIFNULL(IND_205))
+					 + (0.5329995 	* ZEROIFNULL(IND_56))
 					) 
 					 
 		END
-		) as KOPER_MOD_RETAIL_1";
+		as DECIMAL(30,12)) as KOPER_MOD_RETAIL_1";
 
 DEBUGMESSAGE(formulaName, sql);
 DEBUGMESSAGE(formulaName, "END");

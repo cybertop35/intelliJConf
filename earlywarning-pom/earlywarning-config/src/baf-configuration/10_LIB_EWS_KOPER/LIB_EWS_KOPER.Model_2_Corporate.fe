@@ -3,29 +3,30 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
 
-sql = "(
+sql = "cast(
 		CASE 
 			WHEN
-				(-2.53600 + (-0.000021  	* IND_13)  
-					 + (-0.2762625 	* IND_216)
-					 + (0.7868118 	* IND_172)
-					 + (-1.250993 	* IND_8)
+				(-2.53600 + (-0.000021  	* ZEROIFNULL(IND_13))  
+					 + (-0.2762625 	* ZEROIFNULL(IND_216))
+					 + (0.7868118 	* ZEROIFNULL(IND_172))
+					 + (-1.250993 	* ZEROIFNULL(IND_8))
 					 ) <= -20 
 			THEN EXP(-20)
 			WHEN
-				(-2.53600 + (-0.000021  	* IND_13)  
-					 + (-0.2762625 	* IND_216)
-					 + (0.7868118 	* IND_172)
-					 + (-1.250993 	* IND_8)
+				(-2.53600 + (-0.000021  	* ZEROIFNULL(IND_13))  
+					 + (-0.2762625 	* ZEROIFNULL(IND_216))
+					 + (0.7868118 	* ZEROIFNULL(IND_172))
+					 + (-1.250993 	* ZEROIFNULL(IND_8))
 					 ) > 6 
 			THEN EXP(6)
 			ELSE 
-				EXP (-2.53600 + (-0.000021  	* IND_13)  
-					 + (-0.2762625 	* IND_216)
-					 + (0.7868118 	* IND_172)
-					 + (-1.250993 	* IND_8)
+				EXP (-2.53600 + (-0.000021  	* ZEROIFNULL(IND_13))  
+					 + (-0.2762625 	* ZEROIFNULL(IND_216))
+					 + (0.7868118 	* ZEROIFNULL(IND_172))
+					 + (-1.250993 	* ZEROIFNULL(IND_8))
 					 )
-		END ) as KOPER_MOD_CORP_2";
+		END 
+		as DECIMAL(30,12)) as KOPER_MOD_CORP_2";
 
 DEBUGMESSAGE(formulaName, sql);
 DEBUGMESSAGE(formulaName, "END");
