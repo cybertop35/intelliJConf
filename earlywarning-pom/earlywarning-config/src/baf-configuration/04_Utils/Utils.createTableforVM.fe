@@ -1,0 +1,15 @@
+var workspace = Workspace;
+VAR tableName;
+VAR DBCONNECTION 			= Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
+VAR sql;
+var analyticalTable;
+foreach(workspace as w){
+	
+    tableName = "TT_"+w.ID;
+    LIB_DB.DropTableIfExists(tableName,DBCONNECTION);
+    analyticalTable = w.Workspace_AnalysisUnit.Analysis_Unit.AnalyticalTable;
+    sql = "SELECT T.*, CAST( NULL AS INTEGER) AS PARTITION_COLUMN FROM "+analyticalTable[0]+" t WHERE "+LIB_AnalysisUnit.getWorkspaceFilterSql(w.ID);
+    sql = LIB_DB.createTableAs(tableName,sql,DBCONNECTION);
+	SQLEXECUTE(sql,DBCONNECTION,NULL,{});
+	DEBUGMESSAGE("CREATE TABLE: ",tableName);
+}
