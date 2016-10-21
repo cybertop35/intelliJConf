@@ -1,0 +1,26 @@
+VAR formulaName = "[LIB_EWS_IT.INDICATOR_42.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+
+
+CAST(
+	CASE 
+		WHEN RATING IS NULL THEN NULL
+		ELSE RATING
+	END AS DECIMAL(30,12)) AS IND_42,
+
+	CASE 
+		WHEN RATING IS NULL THEN 'E0001'
+		ELSE ''
+	END AS ERROR_MSG_IND_42 
+
+";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;
