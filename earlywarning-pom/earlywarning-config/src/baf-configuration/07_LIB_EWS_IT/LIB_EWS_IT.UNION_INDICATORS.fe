@@ -169,6 +169,9 @@ sql = "select
 	,"+ LIB_EWS_IT.INDICATOR_273() +"
 	,"+ LIB_EWS_IT.INDICATOR_274() +"
 	,"+ LIB_EWS_IT.INDICATOR_275() +"
+	,"+ LIB_EWS_IT.INDICATOR_QUOTA_EXP_GRP1() +"
+	,"+ LIB_EWS_IT.INDICATOR_QUOTA_EXP_GRP2() +"
+	,"+ LIB_EWS_IT.INDICATOR_QUOTA_EXP_GRP3() +"
 	
 
 	from "+schema+"."+customerUnit.Source_tableName;
