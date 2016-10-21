@@ -224,9 +224,12 @@ sql = "SELECT SNDG as SNDG,
 		,"+ LIB_EWS_BE.INDICATOR_217() +"
 		,"+ LIB_EWS_BE.INDICATOR_218() +"
 		,"+ LIB_EWS_BE.INDICATOR_219() +"
-		,"+ LIB_EWS_BE.INDICATOR_220() +"
+   		,"+ LIB_EWS_BE.INDICATOR_220() +"
 		,"+ LIB_EWS_BE.INDICATOR_221() +"
-		,"+ LIB_EWS_BE.INDICATOR_225() +"	
+		,"+ LIB_EWS_BE.INDICATOR_222() +"
+		,"+ LIB_EWS_BE.INDICATOR_223() +"
+		,"+ LIB_EWS_BE.INDICATOR_224() +"
+   		,"+ LIB_EWS_BE.INDICATOR_225() +"	
 	from "+schema+"."+customerUnit.Source_tableName;
 
 
