@@ -53,12 +53,44 @@ IF(SIZE (WORKSPACE_PLAN_LIST ) == 0) {
 }
 VAR SQL_UNION = "SELECT * FROM (";
 var BR_DETAIL;
+VAR model;
+VAR modelSelct ;
+VAR modelTable;
 FOREACH ( WORKSPACE_PLAN_LIST as WORKSPACE ){
 
 	LIB_DB.DropTableIfExists("TMP_OUTWP_"+WORKSPACE.ID,DBCONNECTION);   
     SQLEXECUTE("CREATE TABLE TMP_OUTWP_"+WORKSPACE.ID+" AS ( "+  LIB_EWS.getQueryOutputForWorkplace(WORKSPACE) +" ) WITH DATA PRIMARY INDEX(SNDG)",DBCONNECTION,NULL,{});
         
-	SQL_UNION = SQL_UNION +" SELECT * FROM TMP_OUTWP_"+WORKSPACE.ID;
+	model = WORKSPACE.WorkspacePlan_Matrix.Matrix.Matrix_Model.Model;
+	IF (model <> NULL and SIZE(model) > 0 ){
+    	modelTable = model.ResultTableName;
+       	modelTable = modelTable[0];
+            
+		modelSelct= "select sndg AS sndg_model,
+							Score_000023_WM AS Score_CR,
+							Score_000045_WM AS Score_CR_ALZO_ZERO,
+							Score_000046_WM AS Score_XRA_F,
+							MATRIX_0 AS MATRIX_COLOR_CR,
+							Score_000046_WM_WOE AS Score_XRA, 
+							MATRIX_0_WOE AS MATRIX_SCORE_CR, 
+							Score_000242_WM AS Score_CR_XRA 
+					FROM "+modelTable+"_VM";
+	}
+	else {
+			modelSelct = "
+					select CAST (NULL AS VARCHAR(16)) AS sndg_model,
+					CAST (NULL AS DECIMAL(36,12)) AS Score_CR,
+					CAST (NULL AS DECIMAL(36,12)) AS Score_CR_ALZO_ZERO,
+					CAST (NULL AS DECIMAL(36,12)) AS Score_XRA_F,
+					CAST (NULL AS VARCHAR(16)) AS MATRIX_COLOR_CR,
+					CAST (NULL AS DECIMAL(36,12)) AS Score_XRA, 
+					CAST (NULL AS DECIMAL(36,12)) AS MATRIX_SCORE_CR, 
+					CAST (NULL AS DECIMAL(36,12)) AS Score_CR_XRA";	
+	}
+	
+	SQL_UNION = SQL_UNION +" SELECT * 	
+						 FROM TMP_OUTWP_"+WORKSPACE.ID + " WS 
+						 LEFT JOIN ( "+modelSelct+" ) MODEL ON WS.SNDG = MODEL.sndg_model";
 	SQL_UNION = SQL_UNION + " UNION ALL ";
 	
 	fatsTrack = WORKSPACE.WorkspacePlan_FastTrack.Fast_Track;
@@ -88,7 +120,7 @@ SQL_UNION = SUBSTRING(SQL_UNION, 0, LENGTH(SQL_UNION) - 10);
 SQL_UNION = SQL_UNION + " ) t";
 
 VAR SQL_CALCOLO = "SELECT tmp.* ";
-VAR SELECT_VIEW = "SELECT "+UNIT_TABLE+".SNDG as SNDG_JOIN ," +UNIT_TABLE+".SEGMENT " ;
+VAR SELECT_VIEW = "SELECT "+UNIT_TABLE+".SNDG as SNDG_JOIN " ;
 
 foreach (VARIABLES as v){
  	IF( v.ColumnName <> "TARGET" and v.ColumnName <> "EXPOSURE" and v.ColumnName <> "SNDG" and v.ColumnName <> "SEGMENT"){
@@ -105,7 +137,8 @@ foreach (VARIABLES as v){
 }
 SELECT_VIEW = SELECT_VIEW + " FROM "+UNIT_TABLE+" "+UNIT_TABLE;
 
-
+LIB_DB.DropTableIfExists("TMP_VAR_"+analysisUnitID,DBCONNECTION); 
+SQLEXECUTE("CREATE MULTISET TABLE TMP_VAR_"+analysisUnitID+" AS ( "+ SELECT_VIEW +" ) WITH DATA PRIMARY INDEX(SNDG_JOIN)",DBCONNECTION,NULL,{});
 
 COUNTER = 1;
 VAR brName;
@@ -131,10 +164,16 @@ foreach (BR_LIST as b){
 	
 	#COUNTER = COUNTER + 1 ;
 }
+
+
 SQL_CALCOLO = SQL_CALCOLO +" ,CAST(null as VARCHAR(50)) as WARNING_APP ";
 SQL_CALCOLO = SQL_CALCOLO +" ,CAST("+BR_DETAIL+" AS VARCHAR(3000) ) as BR_DETAILS  ";
 SQL_CALCOLO = SQL_CALCOLO +" ,CAST( TMP.SEMAFORO_APP as VARCHAR(50)) as COLOR_APP ";
+SQL_CALCOLO = SQL_CALCOLO + ","+UNIT_TABLE+".SEGMENT";
 SQL_CALCOLO =  SQL_CALCOLO +",COLOR_APP as COLOR_SYSTEM";
+				 
+SQL_CALCOLO = SQL_CALCOLO + ","+LIB_EWS_IT.SEMAFORO_DI_GRUPPO();
+
 SQL_CALCOLO = SQL_CALCOLO +" ,CURRENT_DATE AS CREATION_DATE";
 SQL_CALCOLO = SQL_CALCOLO +" FROM  "+UNIT_TABLE+" "+UNIT_TABLE ;
 SQL_CALCOLO = SQL_CALCOLO +"  JOIN  ("+ SQL_UNION+") TMP on "+UNIT_TABLE+".SNDG = TMP.SNDG";
@@ -146,6 +185,7 @@ IF(LIB_DB.isTableExisting(T_OUT_TMP,DBCONNECTION)) THEN{
     
 SQL_CALCOLO = "CREATE TABLE "+T_OUT_TMP+" AS ( "+ SQL_CALCOLO+" ) WITH DATA PRIMARY INDEX(SNDG)";
 SQLEXECUTE(SQL_CALCOLO,DBCONNECTION,NULL,{});
+
     
 CREATED = LIB_DB.isTableExistingAndHavingData(T_OUT_TMP, DBCONNECTION);
     
@@ -162,7 +202,7 @@ IF(CREATED) THEN {
 	SQL = "REPLACE VIEW "+T_OUT_VIEW+" AS (
 			SELECT * 
 			FROM "+T_OUT +" "+T_OUT+ " 
-				JOIN (" +SELECT_VIEW+ ") " + UNIT_TABLE +" 
+				JOIN TMP_VAR_" +analysisUnitID+ " " + UNIT_TABLE +" 
 				ON "+ UNIT_TABLE+".SNDG_JOIN = "+T_OUT+".SNDG
 			)";
 	
