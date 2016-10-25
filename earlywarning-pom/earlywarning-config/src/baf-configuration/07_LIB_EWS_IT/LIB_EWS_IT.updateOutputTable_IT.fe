@@ -7,27 +7,21 @@ DEBUGMESSAGE("LIB_EWS_IT.updateOutputTable_IT.fe"); # stacktrace
 
 
 VAR analysisUnitID = Param1;
-
 VAR analysisUnitInstance = Analysis_Unit[ID=$analysisUnitID];
 
 VAR WORKSPACE_PLAN_LIST;
-VAR UNIT_TABLE;
-VAR BR;
+VAR analysisTable;
 VAR BR_LIST = {};
 var fatsTrack;
 
-VAR noneScore;
 VAR conditionForSingleCategoricalScore;
-var tableFT;
 VAR array = {};
 VAR expressionSQLQuery;
 
 VAR VARIABLES;
-VAR columns = {};
 VAR CREATED;
 VAR SQL;
 VAR ERROR_SQL;
-VAR COUNTER = 1;
 VAR NOME_COLONNA = NULL;
 
 
@@ -39,19 +33,20 @@ VAR T_OUT_VIEW 			= analysisUnitInstance.ResultTableName;
 VAR typeOfDataToUse 		= "actual";
 VAR externalInfoFormula 	= analysisUnitInstance.CustomerInfoFormula;
 
-VAR SETUP = EVAL(externalInfoFormula, {analysisUnitInstance});
+VAR SETUP 				= EVAL(externalInfoFormula, {analysisUnitInstance});
 VAR HAVE_ERROR_MESSAGE 	= SETUP["HAVE_ERROR_MESSAGE"];
+VAR variablesTableName 	= "TMP_VAR_" +analysisUnitID;
 
-UNIT_TABLE 	= analysisUnitInstance.AnalyticalTable;
 # RECUPERO LA MATRICE IN PROD
-WORKSPACE_PLAN_LIST 	=  analysisUnitInstance.Workspace_AnalysisUnit.Workspace.Workspace_Plan[Status="Production"];
+WORKSPACE_PLAN_LIST 	= analysisUnitInstance.Workspace_AnalysisUnit.Workspace.Workspace_Plan[Status="Production"];
 VARIABLES 			= analysisUnitInstance.AnalysisUnit_Variable.Variable order by [ColumnName ASC];
 BR_LIST 				= analysisUnitInstance.Subset_AnalysisUnit.Business_Rule;
+analysisTable 		= analysisUnitInstance.AnalyticalTable;
 
 IF(SIZE (WORKSPACE_PLAN_LIST ) == 0) {
 	RETURN;
 }
-VAR SQL_UNION = "SELECT * FROM (";
+VAR SQL_UNION = "";
 var BR_DETAIL;
 VAR model;
 VAR modelSelct ;
@@ -60,50 +55,46 @@ FOREACH ( WORKSPACE_PLAN_LIST as WORKSPACE ){
 
 	LIB_DB.DropTableIfExists("TMP_OUTWP_"+WORKSPACE.ID,DBCONNECTION);   
     SQLEXECUTE("CREATE TABLE TMP_OUTWP_"+WORKSPACE.ID+" AS ( "+  LIB_EWS.getQueryOutputForWorkplace(WORKSPACE) +" ) WITH DATA PRIMARY INDEX(SNDG)",DBCONNECTION,NULL,{});
-        
+		
 	model = WORKSPACE.WorkspacePlan_Matrix.Matrix.Matrix_Model.Model;
 	IF (model <> NULL and SIZE(model) > 0 ){
     	modelTable = model.ResultTableName;
        	modelTable = modelTable[0];
             
-		modelSelct= "select sndg AS sndg_model,
-							Score_000023_WM AS Score_CR,
-							Score_000045_WM AS Score_CR_ALZO_ZERO,
-							Score_000046_WM AS Score_XRA_F,
-							MATRIX_0 AS MATRIX_COLOR_CR,
-							Score_000046_WM_WOE AS Score_XRA, 
-							MATRIX_0_WOE AS MATRIX_SCORE_CR, 
-							Score_000242_WM AS Score_CR_XRA 
+		modelSelct= "SELECT SNDG AS SNDG_MODEL,
+							SCORE_000023_WM 		AS SCORE_CR_SISTEMA,
+							SCORE_000045_WM 		AS SCORE_CR_ALZO_ZERO,
+							SCORE_000046_WM 		AS SCORE_XRA,
+							MATRIX_0 			AS MATRIX_COLOR_CR,
+							SCORE_000046_WM_WOE	AS SCORE_XRA_WOE, 
+							MATRIX_0_WOE 		AS MATRIX_SCORE_CR, 
+							SCORE_000242_WM 		AS SCORE_CR_XRA 
 					FROM "+modelTable+"_VM";
 	}
 	else {
 			modelSelct = "
-					select CAST (NULL AS VARCHAR(16)) AS sndg_model,
-					CAST (NULL AS DECIMAL(36,12)) AS Score_CR,
-					CAST (NULL AS DECIMAL(36,12)) AS Score_CR_ALZO_ZERO,
-					CAST (NULL AS DECIMAL(36,12)) AS Score_XRA_F,
-					CAST (NULL AS VARCHAR(16)) AS MATRIX_COLOR_CR,
-					CAST (NULL AS DECIMAL(36,12)) AS Score_XRA, 
-					CAST (NULL AS DECIMAL(36,12)) AS MATRIX_SCORE_CR, 
-					CAST (NULL AS DECIMAL(36,12)) AS Score_CR_XRA";	
+					SELECT CAST (NULL AS VARCHAR(16)) 	AS SNDG_MODEL,
+							CAST (NULL AS DECIMAL(30,12)) 		AS SCORE_CR,
+							CAST (NULL AS DECIMAL(30,12)) 		AS SCORE_CR_ALZO_ZERO,
+							CAST (NULL AS DECIMAL(30,12)) 		AS SCORE_XRA,
+							CAST (NULL AS VARCHAR(16)) 		AS MATRIX_COLOR_CR,
+							CAST (NULL AS DECIMAL(30,12)) 		AS SCORE_XRA_WOE, 
+							CAST (NULL AS DECIMAL(30,12)) 		AS MATRIX_SCORE_CR, 
+							CAST (NULL AS DECIMAL(30,12)) 		AS SCORE_CR_XRA" ;	
 	}
 	
+	IF(LENGTH (SQL_UNION) > 0){
+		SQL_UNION = SQL_UNION + " UNION ALL ";
+	}
 	SQL_UNION = SQL_UNION +" SELECT * 	
 						 FROM TMP_OUTWP_"+WORKSPACE.ID + " WS 
 						 LEFT JOIN ( "+modelSelct+" ) MODEL ON WS.SNDG = MODEL.sndg_model";
-	SQL_UNION = SQL_UNION + " UNION ALL ";
+	
 	
 	fatsTrack = WORKSPACE.WorkspacePlan_FastTrack.Fast_Track;
     if(fatsTrack <> null) {
-        #BR = fatsTrack.FastTrack_BusinessRule.Business_Rule order by [NAME];
+       
         conditionForSingleCategoricalScore = fatsTrack.FastTrack_Score.[Categorical_Score.ID,ExpressionQuery] ORDER BY [Categorical_Score.OrderPosition];
-        
-        #FOREACH (BR as tmp){
-        #    if (not CONTAINSVALUE(BR_LIST, tmp)){
-        #        ADDELEMENT(BR_LIST,tmp);
-        #    }
-        #}    
-    
         BR_DETAIL = "CASE ";
         foreach (conditionForSingleCategoricalScore as cs){
             # obtaining SQL query
@@ -116,37 +107,38 @@ FOREACH ( WORKSPACE_PLAN_LIST as WORKSPACE ){
         BR_DETAIL = BR_DETAIL+" END ";
     }
 }
-SQL_UNION = SUBSTRING(SQL_UNION, 0, LENGTH(SQL_UNION) - 10);
-SQL_UNION = SQL_UNION + " ) t";
 
-VAR SQL_CALCOLO = "SELECT tmp.* ";
-VAR SELECT_VIEW = "SELECT "+UNIT_TABLE+".SNDG as SNDG_JOIN " ;
-
+VAR SELECT_VIEW = "SELECT "+analysisTable+".SNDG as SNDG_JOIN , SEGMENT" ;
 foreach (VARIABLES as v){
  	IF( v.ColumnName <> "TARGET" and v.ColumnName <> "EXPOSURE" and v.ColumnName <> "SNDG" and v.ColumnName <> "SEGMENT"){
 		IF(v.Variable_DataType.Data_Type.ID == "STRING") {
-			SELECT_VIEW = SELECT_VIEW +",cast("+UNIT_TABLE+"."+v.ColumnName+" as VARCHAR(50) ) as "+v.ColumnName ;
+			SELECT_VIEW = SELECT_VIEW +",cast("+analysisTable+"."+v.ColumnName+" as VARCHAR(50) ) as "+v.ColumnName ;
 		}
 		IF(v.Variable_DataType.Data_Type.ID == "REAL") {
-			SELECT_VIEW = SELECT_VIEW +",cast( (CASE WHEN "+UNIT_TABLE+"."+v.ColumnName+" = -8888888 THEN NULL else  "+UNIT_TABLE+"."+v.ColumnName+" END) as DECIMAL(30,12) ) as "+v.ColumnName ;
+			SELECT_VIEW = SELECT_VIEW +",cast( (CASE WHEN "+analysisTable+"."+v.ColumnName+" = -8888888 THEN NULL else  "+analysisTable+"."+v.ColumnName+" END) as DECIMAL(30,12) ) as "+v.ColumnName ;
 		}
         if(HAVE_ERROR_MESSAGE) {
-			SELECT_VIEW = SELECT_VIEW +",CAST("+UNIT_TABLE+".ERROR_MSG_"+v.ColumnName+" AS VARCHAR(200) ) as ERROR_MSG_" +v.ColumnName;
+			SELECT_VIEW = SELECT_VIEW +",CAST("+analysisTable+".ERROR_MSG_"+v.ColumnName+" AS VARCHAR(200) ) as ERROR_MSG_" +v.ColumnName;
         }
 	}
 }
-SELECT_VIEW = SELECT_VIEW + " FROM "+UNIT_TABLE+" "+UNIT_TABLE;
+SELECT_VIEW = SELECT_VIEW + " FROM "+analysisTable+" "+analysisTable;
 
-LIB_DB.DropTableIfExists("TMP_VAR_"+analysisUnitID,DBCONNECTION); 
-SQLEXECUTE("CREATE MULTISET TABLE TMP_VAR_"+analysisUnitID+" AS ( "+ SELECT_VIEW +" ) WITH DATA PRIMARY INDEX(SNDG_JOIN)",DBCONNECTION,NULL,{});
+LIB_DB.DropTableIfExists(variablesTableName,DBCONNECTION); 
+SQLEXECUTE("CREATE MULTISET TABLE "+variablesTableName+" AS ( "+ SELECT_VIEW +" ) WITH DATA PRIMARY INDEX(SNDG_JOIN)",DBCONNECTION,NULL,{});
 
-COUNTER = 1;
 VAR brName;
 VAR INDEX ;
-
+VAR SQL_CALCOLO = "SELECT tmp.* ";
+var skip = {};
 foreach (BR_LIST as b){
 	INDEX = INDEXOF(b.NAME,'_');
-	brName = SUBSTRING(b.NAME,2,INDEX-2);
+    if(INDEX < 0){
+    	brName = b.ID;
+    }
+    else {
+		brName = SUBSTRING(b.NAME,2,INDEX-2);
+    }
 	NOME_COLONNA = "BR0000"+brName;
 	IF(brName == '01' OR brName == '03' OR brName == '04' OR  brName == '05' OR brName == '09') THEN {
 		SQL_CALCOLO = SQL_CALCOLO +" ,GREATEST( CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END,"+NOME_COLONNA+"BIS,"+NOME_COLONNA+"TER ) as "+  NOME_COLONNA ;
@@ -160,23 +152,31 @@ foreach (BR_LIST as b){
 	}
 	else
 		SQL_CALCOLO = SQL_CALCOLO +" ,(CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END ) as "+  NOME_COLONNA ;
-	
-	
-	#COUNTER = COUNTER + 1 ;
+
 }
 
+VAR modules = LIB_EWS_IT.getAllModulesElaboration(analysisUnitInstance);
+
+VAR columnsModules = "";
+foreach (modules['columns'] as column) {
+	if(LENGTH(columnsModules) > 0 ){
+		columnsModules = columnsModules +",";
+	}
+	columnsModules = columnsModules+ "CASE WHEN FAST_TRACk = 1 THEN NULL ELSE MODULI."+column +" END AS "+column; 
+}
 
 SQL_CALCOLO = SQL_CALCOLO +" ,CAST(null as VARCHAR(50)) as WARNING_APP ";
 SQL_CALCOLO = SQL_CALCOLO +" ,CAST("+BR_DETAIL+" AS VARCHAR(3000) ) as BR_DETAILS  ";
 SQL_CALCOLO = SQL_CALCOLO +" ,CAST( TMP.SEMAFORO_APP as VARCHAR(50)) as COLOR_APP ";
-SQL_CALCOLO = SQL_CALCOLO + ","+UNIT_TABLE+".SEGMENT";
 SQL_CALCOLO =  SQL_CALCOLO +",COLOR_APP as COLOR_SYSTEM";
 				 
 SQL_CALCOLO = SQL_CALCOLO + ","+LIB_EWS_IT.SEMAFORO_DI_GRUPPO();
+SQL_CALCOLO = SQL_CALCOLO + ","+columnsModules;
 
 SQL_CALCOLO = SQL_CALCOLO +" ,CURRENT_DATE AS CREATION_DATE";
-SQL_CALCOLO = SQL_CALCOLO +" FROM  "+UNIT_TABLE+" "+UNIT_TABLE ;
-SQL_CALCOLO = SQL_CALCOLO +"  JOIN  ("+ SQL_UNION+") TMP on "+UNIT_TABLE+".SNDG = TMP.SNDG";
+SQL_CALCOLO = SQL_CALCOLO + " FROM "+ variablesTableName + " "+variablesTableName;
+SQL_CALCOLO = SQL_CALCOLO + " JOIN  ("+ SQL_UNION+") TMP ON TMP.SNDG =  "+variablesTableName+".SNDG_JOIN" ;
+SQL_CALCOLO = SQL_CALCOLO +" LEFT JOIN ("+ modules['query']+")MODULI on MODULI."+modules['keyColumn']+" = TMP.SNDG";
 
 
 IF(LIB_DB.isTableExisting(T_OUT_TMP,DBCONNECTION)) THEN{
@@ -184,9 +184,11 @@ IF(LIB_DB.isTableExisting(T_OUT_TMP,DBCONNECTION)) THEN{
 }
     
 SQL_CALCOLO = "CREATE TABLE "+T_OUT_TMP+" AS ( "+ SQL_CALCOLO+" ) WITH DATA PRIMARY INDEX(SNDG)";
+
+
 SQLEXECUTE(SQL_CALCOLO,DBCONNECTION,NULL,{});
 
-    
+ 
 CREATED = LIB_DB.isTableExistingAndHavingData(T_OUT_TMP, DBCONNECTION);
     
 IF(CREATED) THEN {
@@ -202,8 +204,8 @@ IF(CREATED) THEN {
 	SQL = "REPLACE VIEW "+T_OUT_VIEW+" AS (
 			SELECT * 
 			FROM "+T_OUT +" "+T_OUT+ " 
-				JOIN TMP_VAR_" +analysisUnitID+ " " + UNIT_TABLE +" 
-				ON "+ UNIT_TABLE+".SNDG_JOIN = "+T_OUT+".SNDG
+				JOIN " +variablesTableName+ " " + analysisTable +" 
+				ON "+ analysisTable+".SNDG_JOIN = "+T_OUT+".SNDG
 			)";
 	
 	 SQLEXECUTE(SQL,DBCONNECTION,NULL,{});

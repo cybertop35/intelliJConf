@@ -35,4 +35,3 @@ foreach(Analysis_Unit  as analysisUnit ){
 DEBUGMESSAGE(formulaName,"END");
 
 return now();
-return now();

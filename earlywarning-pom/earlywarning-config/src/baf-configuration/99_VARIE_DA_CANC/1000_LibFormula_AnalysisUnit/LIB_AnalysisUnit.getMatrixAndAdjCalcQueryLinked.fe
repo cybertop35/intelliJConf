@@ -1,0 +1,83 @@
+var formulaName = "[LIB_AnalysisUnit.getMatrixAndAdjCalcQueryLinked] ";
+DEBUGMESSAGE(formulaName, "START");
+
+# Param1 TYPE 
+# Param2 TYPE
+# ...
+# Result TYPE
+# Brief description of the formula purpose
+
+var adjConfiguration = Param1;
+var cellsConfiguration = Param2;
+
+var sourceTable = cellsConfiguration['sourceTable'];
+var keyColumn = cellsConfiguration['keyColumn'];
+
+var currentAdjSubQueryName = "MATRIX_QUERY";
+var currentPreviousSubquery = LIB_AnalysisUnit.getMatrixCalculationQuery(cellsConfiguration, adjConfiguration);
+
+var adjFieldNameStringList = "";
+var adjIndex;
+for(adjIndex = 0; adjIndex < SIZE(adjConfiguration); adjIndex = adjIndex + 1) {
+    adjFieldNameStringList = adjFieldNameStringList + "ADJ_" + PARSESTRING(adjIndex, "#") + "_F, ";
+}
+
+var currentAdjName;
+var currentAdjSubQueryFieldCondition;
+var currentAdjSubQuery;
+var adjInfo;
+var actualWhenClauseData;
+var keyToUse;
+for(adjIndex = 0; adjIndex < SIZE(adjConfiguration); adjIndex = adjIndex + 1) {
+    adjInfo = adjConfiguration[adjIndex];
+    if (not IS_EMPTY(TRIM(adjInfo['query']))) {
+        currentAdjName = "ADJ_" + PARSESTRING(adjIndex, "#");
+        currentAdjSubQueryFieldCondition = currentAdjName + "_F = 1";
+        currentAdjSubQuery = "SELECT " + keyColumn + ", " + adjFieldNameStringList;
+        actualWhenClauseData = [];
+        foreach(adjInfo['categoricalScores'] as catScore){
+            if(is_empty(actualWhenClauseData[ catScore['to'] ])) {
+                actualWhenClauseData[ catScore['to'] ] = {catScore['from']};
+            } else {
+                addelement(actualWhenClauseData[ catScore['to'] ], catScore['from']);
+            }
+        }
+        currentAdjSubQuery = currentAdjSubQuery + "CASE ";
+        if(SIZE(keyset(actualWhenClauseData))==1) {
+            keyToUse = Utils.SingleSetToElement(keyset(actualWhenClauseData));
+            currentAdjSubQuery = currentAdjSubQuery + "WHEN " + currentAdjSubQueryFieldCondition + " THEN '" + keyToUse + "'";
+        } else {
+            foreach(keyset(actualWhenClauseData) as actualWhenClauseDataKeyI) {
+                if(SIZE(actualWhenClauseData[actualWhenClauseDataKeyI])>1) {
+                    currentAdjSubQuery = currentAdjSubQuery + "WHEN " + currentAdjSubQueryFieldCondition + " AND CATEGORICAL_SCORE IN ('" + ARRAY_TO_STRING(actualWhenClauseData[actualWhenClauseDataKeyI], "', '") + "') THEN '" + actualWhenClauseDataKeyI + "'";
+                } else {
+                    currentAdjSubQuery = currentAdjSubQuery + "WHEN " + currentAdjSubQueryFieldCondition + " AND CATEGORICAL_SCORE = '" + Utils.SingleSetToElement(actualWhenClauseData[actualWhenClauseDataKeyI]) + "' THEN '" + actualWhenClauseDataKeyI + "'";
+                }
+            }
+        }
+        currentAdjSubQuery = currentAdjSubQuery + " ELSE CATEGORICAL_SCORE END AS CATEGORICAL_SCORE,";
+        currentAdjSubQuery = currentAdjSubQuery + " CONTINUOUS_SCORE,";
+        currentAdjSubQuery = currentAdjSubQuery + " MATRIX_SCORE,";
+        if(adjIndex == 0) {
+            currentAdjSubQuery = currentAdjSubQuery + " '' || CASE WHEN " + currentAdjSubQueryFieldCondition + " THEN '" +  adjInfo['adjID']  + ";' ELSE 'NO_ADJ;' END AS ADJID";
+        } else {
+            currentAdjSubQuery = currentAdjSubQuery + " ADJID || CASE WHEN " + currentAdjSubQueryFieldCondition + " THEN '" + adjInfo['adjID'] + ";' ELSE 'NO_ADJ;' END AS ADJID";
+        }
+        currentAdjSubQuery = currentAdjSubQuery + " FROM (" + currentPreviousSubquery + ") " + currentAdjSubQueryName;
+
+        # update subquery name for next cycle
+        currentPreviousSubquery = currentAdjSubQuery;
+        currentAdjSubQueryName = currentAdjName + "_T";
+    }
+
+}
+
+var predictiveDatasourceName = Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
+
+var queryMA = "select "
++ "MT." + keyColumn + ", MT.CATEGORICAL_SCORE, MT.CONTINUOUS_SCORE, MT.MATRIX_SCORE, MT.ADJID"
++ " from (" + currentAdjSubQuery + ") MT inner join "
++ sourceTable + " T on MT." + keyColumn + " = T." + keyColumn;
+
+DEBUGMESSAGE(formulaName, "END");
+return queryMA;
