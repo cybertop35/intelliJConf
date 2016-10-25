@@ -1,0 +1,75 @@
+VAR formulaName = "[Matrix.getMatrixData] ";
+DEBUGMESSAGE(formulaName, "START");
+
+var symbolTable = Param1;
+
+VAR matrixConfiguration = symbolTable['matrixConfiguration'];
+
+VAR analysisUnitId = symbolTable['analysisUnitId'];
+VAR analysisUnitInstance = Analysis_Unit[ID=$analysisUnitId];
+VAR ntile = Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].NTile;
+
+VAR horThresholdList = matrixConfiguration['xAxis']['thresholds'];
+VAR verThresholdList = matrixConfiguration['yAxis']['thresholds'];
+
+VAR customField = symbolTable['customField']['columnName'];
+
+VAR fieldToUse = {"BIN_ID", "CASES", "CASES_WORKSPACE_PERCENTAGE", "CASES_IN_TARGET", customField, customField + "_WORKSPACE_PERCENTAGE", customField + "_IN_TARGET","CONTINUOUS_SCORE"};
+VAR fieldToUseShortSet = {"CASES", "CASES_WORKSPACE_PERCENTAGE", "CASES_IN_TARGET", customField, customField + "_WORKSPACE_PERCENTAGE", customField + "_IN_TARGET","CONTINUOUS_SCORE"};
+VAR fieldValueToUse = IIF(symbolTable['data']=='backtesting', {0, 0, 0, 0, 0, 0, IIF(matrixConfiguration['xAxis']['model']['weight']<>NULL,0,NULL)}, {0, 0, NULL, 0, 0, NULL, IIF(matrixConfiguration['xAxis']['model']['weight']<>NULL,0,NULL)});
+
+VAR datasourceName = Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
+
+VAR query;
+VAR tableToUse;
+# in case of visual modeling matrixId is NULL
+#IF(analysisUnitInstance.StoreIntermediateResults AND symbolTable['matrixId'] <> NULL) THEN {
+IF(1 == 0 AND symbolTable['matrixId'] <> NULL) THEN {
+    tableToUse = IIF(symbolTable['data']=='backtesting', symbolTable['aggregatedBktestTableName'], symbolTable['aggregatedTableName']);
+    query = Matrix.getMatrixDataIntermediateQuery(matrixConfiguration, tableToUse, fieldToUse, analysisUnitInstance.StoreIntermediateResults);
+} ELSE {
+    tableToUse = IIF(symbolTable['data']=='backtesting', symbolTable['bktestAnalyticalTable'], symbolTable['analyticalTable']);
+    VAR intermediateTableToUse = "LABEL_CONVERSION";
+    var withElements = Matrix.getMatrixAggregatedTableQueryPreamble(symbolTable);
+    VAR voidMatrixQueryPart = Matrix.getVoidMatrixQueryPart(horThresholdList, verThresholdList, fieldToUseShortSet, fieldValueToUse);
+    withElements = CONCAT(withElements, voidMatrixQueryPart);
+    ADDELEMENT(withElements, intermediateTableToUse + " AS (
+                               " +
+                               "  SELECT
+                               " +
+                               "    H_SCORE*" + ntile + " AS H_BUCKET,
+                               " +
+                               "    V_SCORE*" + ntile + " AS V_BUCKET,
+                               " +
+                               "    1 AS CASES,
+                               " +
+                               "    1.0/(SELECT TOTAL_CASES FROM WORKSPACE_AGGREGATION) AS CASES_WORKSPACE_PERCENTAGE,
+                               " +
+                               "    TARGET AS CASES_IN_TARGET,
+                               " +
+                               "    " + customField + ",
+                               " +
+                               "    " + customField + "/(SELECT TOTAL_" + customField + " FROM WORKSPACE_AGGREGATION) AS " + customField + "_WORKSPACE_PERCENTAGE,
+                               " +
+                               "    TARGET * " + customField + " AS " + customField + "_IN_TARGET,
+                               " +
+                               " " +  IIF(matrixConfiguration['xAxis']['model']['weight']<>NULL," (" + matrixConfiguration['xAxis']['model']['weight'] + "*H_SCORE)+(" + matrixConfiguration['yAxis']['model']['weight'] + "*V_SCORE)","NULL") + " AS CONTINUOUS_SCORE
+                               " +
+                               "  FROM CROSSED_MODELS1
+                               " +
+                               "  UNION ALL
+                               " +
+                               "  SELECT * FROM VOID_MATRIX_QUERY_PART
+                               " +
+                               ")");
+    #query = LIB_DB.getWithClause(withElements, datasourceName) + Matrix.getMatrixDataIntermediateQuery(matrixConfiguration, intermediateTableToUse, fieldToUse, analysisUnitInstance.StoreIntermediateResults);
+    query = LIB_DB.getWithClause(withElements, datasourceName) + Matrix.getMatrixDataIntermediateQuery(matrixConfiguration, intermediateTableToUse, fieldToUse, false);
+}
+query = query + " ORDER BY BIN_ID";
+
+DEBUGMESSAGE(formulaName + "query=", query);
+VAR dataForMatrixPopulating = SQLEXECUTE(query, datasourceName, 0, {});
+DEBUGMESSAGE(formulaName + "dataForMatrixPopulating=", dataForMatrixPopulating);
+
+DEBUGMESSAGE(formulaName, "END");
+RETURN dataForMatrixPopulating;

@@ -1,5 +1,6 @@
+DEBUGMESSAGE("LIB_EWS_IT.getAllModulesElaboration"," START");
 
-VAR analysisUnitInstance = Analysis_Unit[ID="CUSTOMER"] ;
+VAR analysisUnitInstance = Param1 ;
 VAR workspacePlanList = analysisUnitInstance.Workspace_AnalysisUnit.Workspace.Workspace_Plan[Status="Production"];
 
 var matrixInstance;
@@ -13,6 +14,8 @@ VAR sql;
 VAR sqlUnion;
 VAR modulesName = {};
 var modules = {};
+var result = [];
+
 foreach (workspacePlanList as plan){
 	
 	matrixInstance = plan.WorkspacePlan_Matrix.Matrix;
@@ -88,7 +91,7 @@ foreach (workspacePlanList as plan){
 			else { 	
                 sql = sql + "CASE ";
                 foreach(adjConfiguration as conf){
-                    sql = sql+ " WHEN " + conf['sql']+" THEN '"+ LIB_EWS.getSqlDecodeColors(conf['color'])+"'";
+                    sql = sql+ " WHEN " + conf['sql']+" THEN "+ LIB_EWS.getSqlDecodeColors("'"+conf['color']+"'")+"";
                     workspaceId = conf['workspaceId'];
                 }
                 sql = sql+ " END AS "+key;
@@ -103,4 +106,11 @@ foreach (workspacePlanList as plan){
     
     sqlUnion = sqlUnion+"  " + sql;
  }
- return sqlUnion;
+ 
+ PUT(result,'query',sqlUnion);
+ PUT(result,'keyColumn','ID');
+ PUT(result,'columns',modulesName);
+ 
+ DEBUGMESSAGE("LIB_EWS_IT.getAllModulesElaboration"," END");
+ 
+ return result;

@@ -3,8 +3,29 @@ DEBUGMESSAGE(formulaName, "START");
 
 
 VAR list = Workspace_Plan[Status="Production"];
+VAR analysisUnitInstance ;
+VAR fastTrack;
+VAR matrix;
+var workspaceInstance;
 foreach(list as plan) {
+	workspaceInstance 	= plan.Workspace;
+	analysisUnitInstance 	= Utils.SingleSetToElement(workspaceInstance.Workspace_AnalysisUnit.Analysis_Unit);
+	if(analysisUnitInstance.StoreIntermediateResults == TRUE){
+		fastTrack 		= plan.WorkspacePlan_FastTrack.Fast_Track;
+		matrix 			= plan.WorkspacePlan_Matrix.Matrix;
+		IF(fastTrack <> NULL){
+			LIB_AnalysisUnit.updateFastTrackResultTable(fastTrack);	
+            DEBUGMESSAGE(formulaName+"Update FastTrack:",fastTrack.ID);
+        }
+        IF(matrix <> NULL){
+			Matrix.updateMatrixResultTable(matrix);
+            DEBUGMESSAGE(formulaName+"Update Matrix:",matrix.ID);
+		}
+		
+	}
+
 	LIB_AnalysisUnit.updateWorkspacePlanResultTable(plan);
+    DEBUGMESSAGE(formulaName+"Update Worspace Plan:",plan.ID);
 }
 
 

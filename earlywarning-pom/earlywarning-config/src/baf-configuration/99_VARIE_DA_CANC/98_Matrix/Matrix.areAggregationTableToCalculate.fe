@@ -1,0 +1,42 @@
+VAR formulaName = "[Matrix.areAggregationTableToCalculate] ";
+DEBUGMESSAGE(formulaName, "START");
+
+# Param1: FEInstance      Analysis_Unit instance
+# Param2: FEInstance      Matrix instance
+# Param3: FEString        data to use ('actual' or 'backtesting')
+# Result: FEBoolean
+# Return the information whether the aggregated tables are to calculate or not
+
+VAR analysisUnitInstance = Param1;
+VAR matrixInstance = Param2;
+VAR dataToUse = Param3;
+
+return  false;
+VAR areAggregationTableToCalculate = FALSE;
+IF(analysisUnitInstance.StoreIntermediateResults) THEN {
+    VAR datasourceName = Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
+
+    IF(dataToUse=='actual') THEN {
+        IF(NOT areAggregationTableToCalculate AND IS_EMPTY(matrixInstance.AggregatedTableName)) THEN {
+            areAggregationTableToCalculate = TRUE;
+        } ELSE {
+            IF(NOT LIB_DB.isTableExisting(matrixInstance.AggregatedTableName, datasourceName)) THEN {
+                areAggregationTableToCalculate = TRUE;
+            }
+        }
+    }
+
+    IF(dataToUse=='backtesting') THEN {
+        IF(NOT areAggregationTableToCalculate AND IS_EMPTY(matrixInstance.AggregatedBktestTableName)) THEN {
+            areAggregationTableToCalculate = TRUE;
+        } ELSE {
+            IF(NOT LIB_DB.isTableExisting(matrixInstance.AggregatedBktestTableName, datasourceName)) THEN {
+                areAggregationTableToCalculate = TRUE;
+            }
+        }
+    }
+}
+DEBUGMESSAGE(formulaName + "areAggregationTableToCalculate=", areAggregationTableToCalculate);
+
+DEBUGMESSAGE(formulaName, "END");
+RETURN areAggregationTableToCalculate;
