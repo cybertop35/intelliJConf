@@ -36,7 +36,7 @@ VAR calculateMatrixSQL;
 VAR SQL;
 VAR ERROR_SQL;
 VAR maxModel=5;
-VAR maxException = 12;
+VAR maxException = 15;
 VAR configuration;
 var tableFT;
 VAR array = {};

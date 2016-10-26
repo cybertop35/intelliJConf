@@ -49,8 +49,10 @@ IF(SIZE (WORKSPACE_PLAN_LIST ) == 0) {
 VAR SQL_UNION = "";
 var BR_DETAIL;
 VAR model;
+VAR modelID;
 VAR modelSelct ;
 VAR modelTable;
+var axis;
 FOREACH ( WORKSPACE_PLAN_LIST as WORKSPACE ){
 
 	LIB_DB.DropTableIfExists("TMP_OUTWP_"+WORKSPACE.ID,DBCONNECTION);   
@@ -60,24 +62,41 @@ FOREACH ( WORKSPACE_PLAN_LIST as WORKSPACE ){
 	IF (model <> NULL and SIZE(model) > 0 ){
     	modelTable = model.ResultTableName;
        	modelTable = modelTable[0];
-            
-		modelSelct= "SELECT SNDG AS SNDG_MODEL,
-							SCORE_000023_WM 		AS SCORE_CR_SISTEMA,
-							SCORE_000045_WM 		AS SCORE_CR_ALZO_ZERO,
-							SCORE_000046_WM 		AS SCORE_XRA,
-							MATRIX_0 			AS MATRIX_COLOR_CR,
-							SCORE_000046_WM_WOE	AS SCORE_XRA_WOE, 
-							MATRIX_0_WOE 		AS MATRIX_SCORE_CR, 
-							SCORE_000242_WM 		AS SCORE_CR_XRA 
+        model = model[0];
+        modelID = model.ID;
+        model = Predictive_Model[ID=$modelID];
+      
+        axis = LIB_EWS_IT.getMatrixAxis(model); 
+        
+		modelSelct= "SELECT   SNDG										AS SNDG_MODEL,
+							SCORE_000023_WM 							AS SCORE_CR_SISTEMA,
+							SCORE_000045_WM 							AS SCORE_CR_ALZO_ZERO,
+							SCORE_000046_WM 							AS SCORE_XRA,
+							"+axis['xAxis']+" 							AS COLOR_CR_SISTEMA,
+							"+axis['yAxis']+" 							AS COLOR_CR_ALZO_ZERO,
+							CASE 
+								WHEN SCORE_XRA < -3.175998827 THEN 'S01'
+								WHEN SCORE_XRA >= -3.175998827 and SCORE_XRA < -2.487701243 THEN 'S10'
+								WHEN SCORE_XRA >= -2.487701243 and SCORE_XRA < -1.73345452 THEN 'S20'
+								WHEN SCORE_XRA >= -1.73345452 THEN 'S30'
+								ELSE 'S00' 
+							END as COLOR_XRA, 
+							"+LIB_EWS.getSqlDecodeColors("MATRIX_0")+ " AS MATRIX_COLOR_CR,
+							SCORE_000046_WM_WOE							AS SCORE_XRA_WOE, 
+							MATRIX_0_WOE 								AS MATRIX_SCORE_CR, 
+							SCORE_000242_WM 							AS SCORE_CR_XRA 
 					FROM "+modelTable+"_VM";
 	}
 	else {
 			modelSelct = "
-					SELECT CAST (NULL AS VARCHAR(16)) 	AS SNDG_MODEL,
+					SELECT CAST (NULL AS VARCHAR(16)) 			AS SNDG_MODEL,
 							CAST (NULL AS DECIMAL(30,12)) 		AS SCORE_CR,
 							CAST (NULL AS DECIMAL(30,12)) 		AS SCORE_CR_ALZO_ZERO,
 							CAST (NULL AS DECIMAL(30,12)) 		AS SCORE_XRA,
-							CAST (NULL AS VARCHAR(16)) 		AS MATRIX_COLOR_CR,
+							CAST (NULL AS VARCHAR(10)) 		AS COLOR_CR_SISTEMA,
+							CAST (NULL AS VARCHAR(10)) 		AS COLOR_CR_ALZO_ZERO,
+							CAST (NULL AS VARCHAR(10)) 		AS COLOR_XRA,
+							CAST (NULL AS VARCHAR(10)) 		AS MATRIX_COLOR_CR,
 							CAST (NULL AS DECIMAL(30,12)) 		AS SCORE_XRA_WOE, 
 							CAST (NULL AS DECIMAL(30,12)) 		AS MATRIX_SCORE_CR, 
 							CAST (NULL AS DECIMAL(30,12)) 		AS SCORE_CR_XRA" ;	
@@ -162,7 +181,7 @@ foreach (modules['columns'] as column) {
 	if(LENGTH(columnsModules) > 0 ){
 		columnsModules = columnsModules +",";
 	}
-	columnsModules = columnsModules+ "CASE WHEN FAST_TRACk = 1 THEN NULL ELSE MODULI."+column +" END AS "+column; 
+	columnsModules = columnsModules+ "CASE WHEN FAST_TRACk = 1 THEN NULL ELSE MODULI."+column +" END AS MODULE_"+column; 
 }
 
 SQL_CALCOLO = SQL_CALCOLO +" ,CAST(null as VARCHAR(50)) as WARNING_APP ";

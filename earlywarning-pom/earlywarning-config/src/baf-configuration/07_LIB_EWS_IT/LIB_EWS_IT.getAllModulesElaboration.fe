@@ -94,6 +94,7 @@ foreach (workspacePlanList as plan){
                     sql = sql+ " WHEN " + conf['sql']+" THEN "+ LIB_EWS.getSqlDecodeColors("'"+conf['color']+"'")+"";
                     workspaceId = conf['workspaceId'];
                 }
+				sql = sql + " ELSE 'S00' ";
                 sql = sql+ " END AS "+key;
             }
 		}
