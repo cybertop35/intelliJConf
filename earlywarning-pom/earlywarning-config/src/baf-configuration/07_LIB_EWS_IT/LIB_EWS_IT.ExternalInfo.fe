@@ -19,7 +19,7 @@ var setup =["CRR_INDICATOR":"IND_02",
 			"executableQuery" : "SELECT SNDG, EXPOSURE AS CI_EXPOSURE, SCONFINO AS CI_SCONFINO FROM " + analysisUnitInstance.AnalyticalTable,
 			"fieldList" : {"CI_EXPOSURE", "CI_SCONFINO"},
 			"keyColumn" : "SNDG",
-			"backtestingMonth": 6,
+			"backtestingMonth": 3,
 			"updateOutput": "LIB_EWS_IT.updateOutputTable_IT(Param1);",
 			"updateAnalysisTable": "LIB_EWS_IT.UpdateAnalysisUnit_IT(Param1);"
 		];

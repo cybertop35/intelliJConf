@@ -152,6 +152,11 @@ VAR SQL_CALCOLO = "SELECT tmp.* ";
 var skip = {};
 foreach (BR_LIST as b){
 	INDEX = INDEXOF(b.NAME,'_');
+	
+	if(INDEX < 0){
+		INDEX = INDEXOF(b.NAME,'-');
+	}
+	
     if(INDEX < 0){
     	brName = b.ID;
     }
