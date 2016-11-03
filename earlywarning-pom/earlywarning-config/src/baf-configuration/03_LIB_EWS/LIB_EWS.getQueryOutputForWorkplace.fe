@@ -96,7 +96,7 @@ foreach (models as model){
 	
 }
 
-SQL = "SELECT "+AnalysisTable+".SNDG";
+SQL = "SELECT "+AnalysisTable+".SNDG, "+AnalysisTable+".COUNTRY ";
 tmp = "WS.CATEGORICAL_SCORE";
 SQL = SQL + ","+tmp;
 SQL = SQL + ",cast("+LIB_EWS.getSqlDecodeColors(tmp) +" as VARCHAR(50) ) as  SEMAFORO_APP";

@@ -39,7 +39,7 @@ foreach (variables as v){
 		}
 }
 
-select = select +  ",SYSTEM_DATE
+select = select +  ",SYSTEM_DATE,COUNTRY
 					,"+ LIB_EWS_BIR.Model_1_Corporate() +"
                     ,"+ LIB_EWS_BIR.Model_1_Retail() +" 
          FROM " +" "+customerUnit.TableName+" 
