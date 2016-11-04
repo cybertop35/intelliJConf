@@ -3,8 +3,22 @@ DEBUGMESSAGE("Utils.getColumnName.fe"," START"); # stacktrace
 VAR tablename = Param1;
 VAR keyColumn = Param2;
 VAR DBCONNECTION 	= Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
+VAR condtition = "";
 
-VAR condtition = IIF(LENGTH (keyColumn) > 0,"and trim(columnname) not in ('"+keyColumn+"')","" );
+if(TYPEOF(keyColumn) == 'FEArray' and SIZE(keyColumn)> 0 ){
+	foreach(keyColumn as col){
+    	if(LENGTH(condtition) > 0)
+        	condtition = condtition+",";
+		condtition = condtition + "'"+col+"'";
+	}
+    
+    condtition = "and trim(columnname) not in ("+condtition+")";
+}
+
+if(TYPEOF(keyColumn) == 'FEString' and LENGTH (keyColumn) > 0){
+	condtition = "and trim(columnname) not in ('"+keyColumn+"')";
+}
+
 VAR result = {};
 var sql = "select trim(columnname)		
 			from dbc.columns 	

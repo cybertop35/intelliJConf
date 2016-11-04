@@ -22,13 +22,13 @@ foreach(analysisUnitList as unit){
 	
 	if(LIB_DB.isTableExisting(analysisUnitTable,DBCONNECTION)) THEN {	
 		UNION = UNION + "select * from "+unit.ResultTableName;
-        columns = "BASE.*,"+ ARRAY_TO_STRING( Utils.getColumnName(analysisUnitTable,"SNDG")   );
+        columns = "BASE.*,"+ ARRAY_TO_STRING( Utils.getColumnName(analysisUnitTable,{"SNDG","COUNTRY"})   );
 		UNION = UNION + " UNION ALL ";	
 	}
 
 }
 UNION = SUBSTRING(UNION, 0, LENGTH(UNION) - 10);
-UNION = UNION+ " ) SCORE ON base.SNDG = SCORE.SNDG";
+UNION = UNION+ " ) SCORE ON base.SNDG = SCORE.SNDG and BASE.COUNTRY = SCORE.COUNTRY";
 
 
 SQL = "SELECT  "+columns+" FROM "+customerUnit.TableName+" base";
