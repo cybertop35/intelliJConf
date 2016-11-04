@@ -127,7 +127,7 @@ FOREACH ( WORKSPACE_PLAN_LIST as WORKSPACE ){
     }
 }
 
-VAR SELECT_VIEW = "SELECT "+analysisTable+".SNDG as SNDG_JOIN , SEGMENT" ;
+VAR SELECT_VIEW = "SELECT "+analysisTable+".SNDG as SNDG_JOIN , SEGMENT, SYSTEM_DATE" ;
 foreach (VARIABLES as v){
  	IF( v.ColumnName <> "TARGET" and v.ColumnName <> "EXPOSURE" and v.ColumnName <> "SNDG" and v.ColumnName <> "SEGMENT"){
 		IF(v.Variable_DataType.Data_Type.ID == "STRING") {

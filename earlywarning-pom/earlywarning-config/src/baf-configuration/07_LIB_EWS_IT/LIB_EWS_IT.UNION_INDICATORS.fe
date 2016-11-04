@@ -12,6 +12,7 @@ sql = "select
 		,null as TARGET
 		,EXPOSURE_K_EURO_CTPY as EXPOSURE
 		,WORKSPACE as SEGMENT
+		,creation_DT as SYSTEM_DATE
 		,'IT' as COUNTRY
 	,"+ LIB_EWS_IT.INDICATOR_1() +"  
 	,"+ LIB_EWS_IT.INDICATOR_2() +"   
