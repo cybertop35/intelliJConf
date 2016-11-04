@@ -27,7 +27,7 @@ if (fastTrackInstance <> NULL)  {
 			brName = br.ID;
 		}
 		else {
-			brName = SUBSTRING(br.NAME,0,INDEX-2);
+			brName = SUBSTRING(br.NAME,0,INDEX);
 		}
 	
 		sql= sql + " case when "+fastTrackColumnName+ " = 1 AND "+ br. SqlQuery       +" then '"+brName+";' ELSE '' END || ";
@@ -50,7 +50,7 @@ if (fastTrackInstance <> NULL)  {
 			brName = br.ID;
 		}
 		else {
-			brName = SUBSTRING(br.NAME,0,INDEX-2);
+			brName = SUBSTRING(br.NAME,0,INDEX);
 		}
 			sql= sql + " case when "+fastTrackColumnName+ " = 0 AND "+key+ " = 1 AND "+ br. SqlQuery       +" then '"+brName+";' ELSE '' END || ";
 		}
