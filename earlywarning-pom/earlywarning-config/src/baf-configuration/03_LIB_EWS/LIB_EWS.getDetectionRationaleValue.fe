@@ -10,12 +10,27 @@ VAR brList = {};
 VAR adj;
 VAR counter = 1;
 VAR modelIndex;
+VAR brName;
+VAR INDEX;
 if (fastTrackInstance <> NULL)  {
 	
 	sql= "(";
 	brList = fastTrackInstance.FastTrack_BusinessRule.Business_Rule;
 	foreach (brList as br ){
-		sql= sql + " case when "+fastTrackColumnName+ " = 1 AND "+ br. SqlQuery       +" then '"+SUBSTRING(br.NAME,0,4)+";' ELSE '' END || ";
+		INDEX = INDEXOF(br.NAME,'_');
+		
+		if(INDEX < 0){
+			INDEX = INDEXOF(br.NAME,'-');
+		}
+	
+		if(INDEX < 0){
+			brName = br.ID;
+		}
+		else {
+			brName = SUBSTRING(br.NAME,0,INDEX-2);
+		}
+	
+		sql= sql + " case when "+fastTrackColumnName+ " = 1 AND "+ br. SqlQuery       +" then '"+brName+";' ELSE '' END || ";
 	}
     
 	# sql =  sql + "''  ";
@@ -23,8 +38,21 @@ if (fastTrackInstance <> NULL)  {
 	FOREACHKEY (adjMap AS key){
     	
     	adj = adjMap[key];
+	
     	foreach (adj.Adjustment_BR.Business_Rule as br ){
-			sql= sql + " case when "+fastTrackColumnName+ " = 0 AND "+key+ " = 1 AND "+ br. SqlQuery       +" then '"+SUBSTRING(br.NAME,0,4)+";' ELSE '' END || ";
+		INDEX = INDEXOF(br.NAME,'_');
+		
+		if(INDEX < 0){
+			INDEX = INDEXOF(br.NAME,'-');
+		}
+	
+		if(INDEX < 0){
+			brName = br.ID;
+		}
+		else {
+			brName = SUBSTRING(br.NAME,0,INDEX-2);
+		}
+			sql= sql + " case when "+fastTrackColumnName+ " = 0 AND "+key+ " = 1 AND "+ br. SqlQuery       +" then '"+brName+";' ELSE '' END || ";
 		}
     }
 	foreach(models as mod){
