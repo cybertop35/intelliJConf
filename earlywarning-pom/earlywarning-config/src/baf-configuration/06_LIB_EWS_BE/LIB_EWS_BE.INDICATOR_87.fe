@@ -28,9 +28,9 @@ END AS IND_87,
 
 CASE 
                 WHEN (DEN_IND_87 <> 0 AND DEN_IND_87 IS NOT NULL AND NUM_IND_87 IS NOT NULL) THEN ''
-                WHEN (NUM_IND_87 IS NULL) THEN 'E0001 '
-                WHEN (DEN_IND_87 = 0) THEN 'E0001 '
-                WHEN (DEN_IND_87 IS NULL) THEN 'E0001 ' 
+                WHEN (NUM_IND_87 IS NULL) THEN 'E0001 ;'
+                WHEN (DEN_IND_87 = 0) THEN 'E0001 ;'
+                WHEN (DEN_IND_87 IS NULL) THEN 'E0001 ;' 
 END AS ERROR_MSG_IND_87
 
 ";

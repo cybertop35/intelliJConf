@@ -16,9 +16,9 @@ END AS IND_166,
 
 CASE 
                 WHEN (BILLS_DUE_M1 <> 0 AND BILLS_DUE_M1 IS NOT NULL AND BILLS_DUE_M0 IS NOT NULL) THEN ''
-                WHEN (BILLS_DUE_M0 IS NULL) THEN 'E0001 '
-                WHEN (BILLS_DUE_M1 = 0) THEN 'E0001 '
-                WHEN (BILLS_DUE_M1 IS NULL) THEN 'E0001 ' 
+                WHEN (BILLS_DUE_M0 IS NULL) THEN 'E0001 ;'
+                WHEN (BILLS_DUE_M1 = 0) THEN 'E0001 ;'
+                WHEN (BILLS_DUE_M1 IS NULL) THEN 'E0001 ;' 
 END AS ERROR_MSG_IND_166
 
 ";

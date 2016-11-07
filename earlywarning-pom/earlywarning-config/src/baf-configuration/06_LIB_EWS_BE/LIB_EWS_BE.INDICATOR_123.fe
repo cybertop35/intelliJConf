@@ -31,9 +31,9 @@ END AS IND_123,
 
 CASE 
                 WHEN (DEN_IND_123 <> 0 AND DEN_IND_123 IS NOT NULL AND NUM_IND_123 IS NOT NULL) THEN ''
-                WHEN (NUM_IND_123 IS NULL) THEN 'E0001 '
-                WHEN (DEN_IND_123 = 0) THEN 'E0001 '
-                WHEN (DEN_IND_123 IS NULL) THEN 'E0001 ' 
+                WHEN (NUM_IND_123 IS NULL) THEN 'E0001 ;'
+                WHEN (DEN_IND_123 = 0) THEN 'E0001 ;'
+                WHEN (DEN_IND_123 IS NULL) THEN 'E0001 ;' 
 END AS ERROR_MSG_IND_123
 
 

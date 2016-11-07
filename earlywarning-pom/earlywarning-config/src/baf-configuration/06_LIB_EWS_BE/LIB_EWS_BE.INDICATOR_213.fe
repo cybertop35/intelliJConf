@@ -19,7 +19,7 @@ CAST(
                 END AS  DECIMAL(10,0)) AS IND_213,
 
 	CASE
-                WHEN BLOCKADE_ENTRIES_SIX IS NULL OR BLOCKADE_ENTRIES_SIX < 0 THEN 'E0001; ' ELSE ''
+                WHEN BLOCKADE_ENTRIES_SIX IS NULL OR BLOCKADE_ENTRIES_SIX < 0 THEN 'E0001 ;' ELSE ''
 END ||
                 
                 CASE
