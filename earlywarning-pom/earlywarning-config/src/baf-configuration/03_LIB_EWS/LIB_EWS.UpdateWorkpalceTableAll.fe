@@ -1,23 +1,31 @@
 VAR formulaName = "[LIB_EWS.UpdateWorkpalceStatusAll] ";
 DEBUGMESSAGE(formulaName, "START");
 
-
 VAR list = Workspace_Plan[Status="Production"];
 VAR analysisUnitInstance ;
 VAR fastTrack;
 VAR matrix;
 var workspaceInstance;
+
+VAR logActionName	= "UpdateWorkpalce";
+
 foreach(list as plan) {
 	workspaceInstance 	= plan.Workspace;
 	analysisUnitInstance 	= Utils.SingleSetToElement(workspaceInstance.Workspace_AnalysisUnit.Analysis_Unit);
+	
+	SAVE_LOG("Info", logActionName, "Start update Workpalce: "+analysisUnitInstance.ID);
+	
 	if(analysisUnitInstance.StoreIntermediateResults == TRUE){
 		fastTrack 		= plan.WorkspacePlan_FastTrack.Fast_Track;
 		matrix 			= plan.WorkspacePlan_Matrix.Matrix;
 		IF(fastTrack <> NULL){
+			SAVE_LOG("Info", logActionName, "Start update fastTrack table: "+fastTrack.ID);
 			LIB_AnalysisUnit.updateFastTrackResultTable(fastTrack);	
+			
             DEBUGMESSAGE(formulaName+"Update FastTrack:",fastTrack.ID);
         }
         IF(matrix <> NULL){
+			SAVE_LOG("Info", logActionName, "Start update matrix table: "+matrix.ID);
 			Matrix.updateMatrixResultTable(matrix);
             DEBUGMESSAGE(formulaName+"Update Matrix:",matrix.ID);
 		}
@@ -25,10 +33,8 @@ foreach(list as plan) {
 	}
 
 	LIB_AnalysisUnit.updateWorkspacePlanResultTable(plan);
+	SAVE_LOG("Info", logActionName, "END update Workpalce: "+analysisUnitInstance.ID);
     DEBUGMESSAGE(formulaName+"Update Worspace Plan:",plan.ID);
 }
-
-
-
 
 DEBUGMESSAGE(formulaName, "END");

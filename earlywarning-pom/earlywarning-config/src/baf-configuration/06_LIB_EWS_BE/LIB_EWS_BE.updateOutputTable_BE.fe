@@ -31,7 +31,7 @@ UNION = SUBSTRING(UNION, 0, LENGTH(UNION) - 10);
 UNION = UNION+ " ) SCORE ON base.SNDG = SCORE.SNDG and BASE.COUNTRY = SCORE.COUNTRY";
 
 
-SQL = "SELECT  "+columns+" FROM "+customerUnit.TableName+" base";
+SQL = "SELECT  "+columns+" ,CURRENT_DATE AS CREATION_DATE FROM "+customerUnit.TableName+" base";
 
 SQL = SQL + UNION;
 
