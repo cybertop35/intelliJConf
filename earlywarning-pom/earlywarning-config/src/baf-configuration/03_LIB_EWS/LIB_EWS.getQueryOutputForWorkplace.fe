@@ -24,6 +24,10 @@ VAR matrixInstance;
 VAR models;
 VAR adjustments;
 
+VAR logActionName 			= "getQueryOutputForWorkplace";
+SAVE_LOG("Info", logActionName, "START");
+SAVE_LOG("Info", logActionName, "WORKSPACE "+workspacePlanId);
+
 IF(matrixId <> null) {
  	matrixInstance 		= Matrix[ID=$matrixId];
  	models 				= matrixInstance.Matrix_Model.Model order by[NAME asc];
@@ -140,5 +144,5 @@ SQL = SQL + " WHERE " +LIB_AnalysisUnit.getWorkspaceFilterSql(workspaceId);
 # }
 
 DEBUGMESSAGE(formulaName, "END");
-
+SAVE_LOG("Info", logActionName, "END");
 return SQL;

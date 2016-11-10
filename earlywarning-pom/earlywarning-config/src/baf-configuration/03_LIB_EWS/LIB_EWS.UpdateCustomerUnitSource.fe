@@ -3,12 +3,15 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR units = Customer_Unit;
 Var formula;
+
+VAR logActionName	= "UpdateCustomerUnitSource";
+
 foreach(units as unit){
 	formula = unit.UpdateSourceTable_Formula;
+	SAVE_LOG("Info", logActionName, "Update source: "+unit.NAME);
 	if(LENGTH(formula) > 0 ){
 		EVAL(formula,{unit});
 	}
 }
-
 
 DEBUGMESSAGE(formulaName, "END");
