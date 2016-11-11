@@ -7,7 +7,7 @@ sql = "
 
 CAST(CASE
                 WHEN NULLIF(FLG_BANKRUPT_APPL_GROUP , '') IS NULL THEN 0
-                ELSE 1  
+                ELSE FLG_BANKRUPT_APPL_GROUP  
 END AS CHAR(1)) AS IND_50,
 
 CASE
