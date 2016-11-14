@@ -48,11 +48,11 @@ CASE
                                                INFLOWS_ACCOUNT_M8 IS NULL OR
                                                INFLOWS_ACCOUNT_M9 IS NULL OR
                                                INFLOWS_ACCOUNT_M10 IS NULL OR
-                                               INFLOWS_ACCOUNT_M11 IS NULL THEN 'E0001 ;'
+                                               INFLOWS_ACCOUNT_M11 IS NULL THEN 'E0001'
                 WHEN (DEN_IND_8 <> 0 AND DEN_IND_8 IS NOT NULL AND NUM_IND_8 IS NOT NULL) THEN ''
-                WHEN (NUM_IND_8 IS NULL) THEN 'E0001 ;'
-                WHEN (DEN_IND_8 = 0) THEN 'E0001 ;'
-                WHEN (DEN_IND_8 IS NULL) THEN 'E0001 ;'
+                WHEN (NUM_IND_8 IS NULL) THEN 'E0001'
+                WHEN (DEN_IND_8 = 0) THEN 'E0001'
+                WHEN (DEN_IND_8 IS NULL) THEN 'E0001'
 END ||
 CASE
                 WHEN (VAL_MAX_IND_8 IS NOT NULL AND IND_8_TMP > VAL_MAX_IND_8) THEN 'E0002'

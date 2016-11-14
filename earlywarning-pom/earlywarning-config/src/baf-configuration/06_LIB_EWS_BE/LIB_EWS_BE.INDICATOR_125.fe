@@ -29,9 +29,9 @@ END AS IND_125,
 
 CASE 
                 WHEN (DEN_IND_125 <> 0 AND DEN_IND_125 IS NOT NULL AND NUM_IND_125 IS NOT NULL) THEN ''
-                WHEN (NUM_IND_125 IS NULL) THEN 'E0001 ;'
-                WHEN (DEN_IND_125 = 0) THEN 'E0001 ;'
-                WHEN (DEN_IND_125 IS NULL) THEN 'E0001 ;' 
+                WHEN (NUM_IND_125 IS NULL) THEN 'E0001'
+                WHEN (DEN_IND_125 = 0) THEN 'E0001'
+                WHEN (DEN_IND_125 IS NULL) THEN 'E0001' 
 END AS ERROR_MSG_IND_125
 ";
 

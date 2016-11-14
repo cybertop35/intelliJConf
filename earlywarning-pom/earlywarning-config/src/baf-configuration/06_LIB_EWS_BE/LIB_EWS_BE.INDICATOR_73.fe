@@ -35,9 +35,9 @@ END AS DECIMAL(18,6)) AS IND_73,
 
 CASE 
                 WHEN (DEN_IND_73 <> 0 AND DEN_IND_73 IS NOT NULL AND NUM_IND_73 IS NOT NULL) THEN ''
-                WHEN (NUM_IND_73 IS NULL) THEN 'E0001 ;'
-                WHEN (DEN_IND_73 = 0) THEN 'E0001 ;'
-                WHEN (DEN_IND_73 IS NULL) THEN 'E0001 ;' 
+                WHEN (NUM_IND_73 IS NULL) THEN 'E0001'
+                WHEN (DEN_IND_73 = 0) THEN 'E0001'
+                WHEN (DEN_IND_73 IS NULL) THEN 'E0001' 
 END AS ERROR_MSG_IND_73
 
 ";

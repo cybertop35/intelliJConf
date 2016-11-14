@@ -14,9 +14,9 @@ END AS DECIMAL(18,6)) AS IND_74,
 
                 CASE 
                 WHEN (ST_ASSETS_Y1 <> 0 AND ST_ASSETS_Y1 IS NOT NULL AND ST_ASSETS_Y0 IS NOT NULL) THEN ''
-                WHEN (ST_ASSETS_Y0 IS NULL) THEN 'E0001 ;'
-                WHEN (ST_ASSETS_Y1 = 0) THEN 'E0001 ;'
-                WHEN (ST_ASSETS_Y1 IS NULL) THEN 'E0001 ;' 
+                WHEN (ST_ASSETS_Y0 IS NULL) THEN 'E0001'
+                WHEN (ST_ASSETS_Y1 = 0) THEN 'E0001'
+                WHEN (ST_ASSETS_Y1 IS NULL) THEN 'E0001' 
                 END
 AS ERROR_MSG_IND_74
 ";
