@@ -6,7 +6,7 @@ VAR sql = "";
 sql = "
 
 CAST(CAST(CASE
-                WHEN FLG_MISSING_FIN_STAT IS NULL THEN 0
+                WHEN FLG_MISSING_FIN_STAT IS NULL THEN '0'
                 ELSE FLG_MISSING_FIN_STAT 
 		END AS INTEGER) AS CHAR(1)) AS IND_20,
 		

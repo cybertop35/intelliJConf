@@ -44,11 +44,11 @@ foreach (workspacePlanList as plan){
 			}
 			if(index == null OR index <= 0){
 				index  = INDEXOF(name,'VERDINO');
-				color = "LIGTH_GREEN";       
+				color = "LIGHT_GREEN";       
 			}
 			if(index == null OR index <= 0){
 				index  = INDEXOF(name,'GIALLO');
-				color = "LIGTH_GREEN";       
+				color = "LIGHT_GREEN";       
 			}
             
 						
