@@ -21,5 +21,5 @@ CAST(
 
 DEBUGMESSAGE(formulaName, sql);
 DEBUGMESSAGE(formulaName, "END");
-
+ 
 return sql;
