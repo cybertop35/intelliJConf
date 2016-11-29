@@ -27,8 +27,7 @@ IF(LIB_DB.isTableExisting(CAU_TMP_TABLE_NAME,DBCONNECTION)) THEN
 {
 	SQLEXECUTE("DROP TABLE "+ CAU_TMP_TABLE_NAME,DBCONNECTION,NULL,{});
 }
-VAR select = " ";
-sql = "SELECT SNDG as SNDG,
+VAR select = "SELECT SNDG as SNDG,
 			EXPOSURE_AMOUNT AS EXPOSURE,
 			null as TARGET, 
 			REGULAMENTARY_SEGMENT as SEGMENT
@@ -167,14 +166,11 @@ sql = "SELECT SNDG as SNDG,
 		,"+LIB_EWS_BE.INDICATOR_222()+"
 		,"+LIB_EWS_BE.INDICATOR_223()+"
 		,"+LIB_EWS_BE.INDICATOR_224()+"
-		,"+LIB_EWS_BE.INDICATOR_225() ;
-				
-
-select = select +  ",SYSTEM_DATE,COUNTRY
-					,"+ LIB_EWS_KOPER.Model_1_Corporate() +"
-                    ,"+ LIB_EWS_KOPER.Model_2_Corporate() +"
-                    ,"+ LIB_EWS_KOPER.Model_1_Retail() +"
-                    ,"+ LIB_EWS_KOPER.Model_2_Retail() +" 
+		,"+LIB_EWS_BE.INDICATOR_225()+"
+		,"+ LIB_EWS_KOPER.Model_1_Corporate() +"
+		,"+ LIB_EWS_KOPER.Model_2_Corporate() +"
+		,"+ LIB_EWS_KOPER.Model_1_Retail() +"
+		,"+ LIB_EWS_KOPER.Model_2_Retail() +" 
          FROM " +" "+customerUnit.TableName+" 
          WHERE COUNTRY='KOPER'";
 
