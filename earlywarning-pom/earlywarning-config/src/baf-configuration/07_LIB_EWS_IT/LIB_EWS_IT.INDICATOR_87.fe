@@ -9,8 +9,10 @@ cast(
 		when ESP_FL_FORBORNE_SCONFINO is null then '0'
 		else ESP_FL_FORBORNE_SCONFINO
 	end as char(1)) AS IND_87
-	
-,null AS ERROR_MSG_IND_87
+,
+CASE when ESP_FL_FORBORNE_SCONFINO is null then 'ESP000_1'
+		else ''
+END AS ERROR_MSG_IND_87
 
 ";
 
