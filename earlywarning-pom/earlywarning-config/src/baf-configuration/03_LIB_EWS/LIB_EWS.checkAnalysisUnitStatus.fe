@@ -1,0 +1,8 @@
+var unit = Param1;
+var ws = unit.Workspace_AnalysisUnit.Workspace.Workspace_Plan;
+foreach(ws as plan){
+	if(plan.Status == 'Production')
+    	return true;
+}
+
+return false;
