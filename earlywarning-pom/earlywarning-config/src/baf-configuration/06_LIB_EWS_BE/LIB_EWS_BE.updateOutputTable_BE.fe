@@ -14,13 +14,13 @@ VAR SQL;
 VAR analysisUnitTable;
 VAR UNION;
 VAR analysisUnitList = customerUnit.CustomerUnit_AnalysisUnit.Analysis_Unit;
-
+VAR includeUnit;
 
 UNION = UNION+ " JOIN (";
 foreach(analysisUnitList as unit){
 	analysisUnitTable = unit.ResultTableName;
-	
-	if(LIB_DB.isTableExisting(analysisUnitTable,DBCONNECTION)) THEN {	
+	includeUnit = LIB_EWS.checkAnalysisUnitStatus(unit);
+	if(LIB_DB.isTableExisting(analysisUnitTable,DBCONNECTION) and includeUnit == true) THEN {	
 		UNION = UNION + "select * from "+unit.ResultTableName;
         columns = "BASE.*,"+ ARRAY_TO_STRING( Utils.getColumnName(analysisUnitTable,{"SNDG","COUNTRY"})   );
 		UNION = UNION + " UNION ALL ";	
