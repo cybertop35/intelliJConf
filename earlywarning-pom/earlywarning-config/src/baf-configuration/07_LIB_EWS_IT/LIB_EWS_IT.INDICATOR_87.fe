@@ -4,6 +4,10 @@ DEBUGMESSAGE(formulaName, "START");
 VAR sql = "";
 
 sql = "
+
+cast(0 as char(1)) AS IND_87,
+null AS ERROR_MSG_IND_87
+/*
 cast(
 	case 
 		when ESP_FL_FORBORNE_SCONFINO is null then '0'
@@ -13,7 +17,7 @@ cast(
 CASE when ESP_FL_FORBORNE_SCONFINO is null then 'ESP000_1'
 		else ''
 END AS ERROR_MSG_IND_87
-
+*/
 ";
 
 
