@@ -1,5 +1,5 @@
+VAR analysisUnit = Param1;
 VAR formulaName = '[LIB_EWS.UpdatePredictiveModel] ';
-
 
 VAR user = USER();
 VAR sessionId = "01" ;
@@ -11,25 +11,23 @@ VAR models;
 
 VAR logActionName	= "UpdatePredictiveModel";
 
-foreach(Analysis_Unit  as analysisUnit ){
-	DEBUGMESSAGE(formulaName + "analysisUnit:",analysisUnit.ID);
-	workspace = analysisUnit.Workspace_AnalysisUnit.Workspace;
-	models = workspace.Model_Workspace.Predictive_Model[Topology <> null].ID;
+workspace 	= analysisUnit.Workspace_AnalysisUnit.Workspace;
+models 		= workspace.Model_Workspace.Predictive_Model[Topology <> null].ID;
 
-	foreach (models as predictiveModelId ){
-		SAVE_LOG("Info", logActionName, "Start update model: "+predictiveModelId);
-		
-		LIB_AnalysisUnit.setModelAsRunning(predictiveModelId,user,sessionId);
-		LIB_VMCommons.calculateDeployedModel(predictiveModelId,user,sessionId);
-		# LIB_VMCommons.calculateGainsLift(predictiveModelId,user,sessionId);
-		LIB_AnalysisUnit.updateModelInfo(predictiveModelId,user,sessionId);
-		LIB_AnalysisUnit.setModelAsNotScheduled(predictiveModelId,user,sessionId);
+foreach (models as predictiveModelId ){
+	SAVE_LOG("Info", logActionName, "Start update model: "+predictiveModelId);
 	
-		DEBUGMESSAGE(formulaName,"Model update:"+predictiveModelId);
-		
-		SAVE_LOG("Info", logActionName, "End update model: "+predictiveModelId);
-	}	
-}
+	LIB_AnalysisUnit.setModelAsRunning(predictiveModelId,user,sessionId);
+	LIB_VMCommons.calculateDeployedModel(predictiveModelId,user,sessionId);
+	# LIB_VMCommons.calculateGainsLift(predictiveModelId,user,sessionId);
+	LIB_AnalysisUnit.updateModelInfo(predictiveModelId,user,sessionId);
+	LIB_AnalysisUnit.setModelAsNotScheduled(predictiveModelId,user,sessionId);
+
+	DEBUGMESSAGE(formulaName,"Model update:"+predictiveModelId);
+	
+	SAVE_LOG("Info", logActionName, "End update model: "+predictiveModelId);
+}	
+
 
 
 DEBUGMESSAGE(formulaName,"END");

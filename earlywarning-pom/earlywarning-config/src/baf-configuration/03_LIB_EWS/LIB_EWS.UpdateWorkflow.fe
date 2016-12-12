@@ -1,0 +1,87 @@
+VAR analysisUnitID = Param1;
+VAR analysisUnit 	= Analysis_Unit[ID= $analysisUnitID];
+VAR wsPlan 		= analysisUnit.Workspace_AnalysisUnit.Workspace.Workspace_Plan;
+VAR workspace = analysisUnit.Workspace_AnalysisUnit.Workspace;
+workspace = workspace[0];
+var startTime = now();
+
+VAR logActionName	= "UpdateWorkflow";
+SAVE_LOG("Info", logActionName, "Start update workflow: "+analysisUnitID);
+
+foreach(wsPlan as plan ){
+	debugmessage(logActionName,"START Update "+plan.ID);
+	#workspace.DESCRIPTION = workspace.DESCRIPTION;
+	UPDATEFORMULA( plan , "Status" );
+	SAVERELATEDENTITY(workspace,plan);
+    debugmessage(logActionName,"END Update "+plan.ID);
+}
+
+SAVE(workspace);
+wsPlan 	= analysisUnit.Workspace_AnalysisUnit.Workspace.Workspace_Plan[Status="Production"];
+SAVE_LOG("Info", logActionName, "Update workspace plan status: "+analysisUnitID);
+
+###############################################################################
+analysisUnit.DESCRIPTION = analysisUnit.DESCRIPTION ;
+UPDATEFORMULA( analysisUnit, "LastUpdateAnalysisUnit" );
+SAVE (analysisUnit);
+analysisUnit = Analysis_Unit[ID= $analysisUnitID];
+if(analysisUnit.LastUpdateAnalysisUnit > startTime ){
+	SAVE_LOG("Info", logActionName, "Update unit Table: "+analysisUnitID);
+}
+else{
+	SAVE_LOG("Error", logActionName, "Update unit Table: "+analysisUnitID);
+	return 1/0;
+}
+
+###############################################################################
+analysisUnit.DESCRIPTION = analysisUnit.DESCRIPTION ;
+UPDATEFORMULA( analysisUnit, "LastUpdateBackTesting" );
+SAVE (analysisUnit);
+analysisUnit = Analysis_Unit[ID= $analysisUnitID];
+if(analysisUnit.LastUpdateBackTesting > startTime ){
+	DEBUGMESSAGE(logActionName,analysisUnit.LastUpdateBackTesting);
+	SAVE_LOG("Info", logActionName, "Update Back Testing: "+analysisUnitID);
+}
+else{
+	DEBUGMESSAGE(logActionName+"ELSE " ,analysisUnit.LastUpdateBackTesting);	
+	SAVE_LOG("Error", logActionName, "Update Back Testing: "+analysisUnitID);
+}
+
+###############################################################################
+analysisUnit.DESCRIPTION = analysisUnit.DESCRIPTION ;
+UPDATEFORMULA( analysisUnit, "LastVariableUpdateDate" );
+SAVE (analysisUnit);
+analysisUnit = Analysis_Unit[ID= $analysisUnitID];
+if(analysisUnit.LastVariableUpdateDate > startTime ){
+	DEBUGMESSAGE(logActionName,analysisUnit.LastVariableUpdateDate);
+	SAVE_LOG("Info", logActionName, "Update variable: "+analysisUnitID);
+}
+else{
+	DEBUGMESSAGE(logActionName+"ELSE ",analysisUnit.LastVariableUpdateDate);
+	SAVE_LOG("Error", logActionName, "Update variable: "+analysisUnitID);
+
+}
+###############################################################################
+SAVE_LOG("Info", logActionName, "Update predictive Model: "+analysisUnitID);
+LIB_EWS.UpdatePredictiveModel(analysisUnit);
+
+###############################################################################
+SAVE_LOG("Info", logActionName, "Update worplace: "+analysisUnitID);
+LIB_EWS.UpdateWorkpalceTableAll(wsPlan);
+
+###############################################################################
+analysisUnit.DESCRIPTION = analysisUnit.DESCRIPTION ;
+UPDATEFORMULA( analysisUnit, "LastUpdateOutput" );
+SAVE (analysisUnit);
+analysisUnit = Analysis_Unit[ID= $analysisUnitID];
+if(analysisUnit.LastUpdateOutput > startTime ){
+	DEBUGMESSAGE(logActionName,analysisUnit.LastUpdateOutput);
+	SAVE_LOG("Info", logActionName, "Update output table: "+analysisUnitID);
+}
+else{
+	DEBUGMESSAGE(logActionName+"ELSE ",analysisUnit.LastUpdateOutput);
+	SAVE_LOG("Error", logActionName, "Update output table: "+analysisUnitID);
+	return 1/0;
+}
+
+SAVE_LOG("Info", logActionName, "End update workflow: "+analysisUnitID);

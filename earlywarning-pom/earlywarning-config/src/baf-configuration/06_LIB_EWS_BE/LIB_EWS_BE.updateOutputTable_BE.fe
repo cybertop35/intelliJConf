@@ -15,6 +15,7 @@ VAR analysisUnitTable;
 VAR UNION;
 VAR analysisUnitList = customerUnit.CustomerUnit_AnalysisUnit.Analysis_Unit;
 VAR includeUnit;
+VAR tmp = "T_TEMP_BE";
 
 UNION = UNION+ " JOIN (";
 foreach(analysisUnitList as unit){
@@ -30,8 +31,12 @@ foreach(analysisUnitList as unit){
 UNION = SUBSTRING(UNION, 0, LENGTH(UNION) - 10);
 UNION = UNION+ " ) SCORE ON base.SNDG = SCORE.SNDG and BASE.COUNTRY = SCORE.COUNTRY";
 
+IF(LIB_DB.isTableExisting(tmp,DBCONNECTION)) THEN{
+    SQLEXECUTE("DROP TABLE "+ tmp,DBCONNECTION,NULL,{});
+}
+SQLEXECUTE("CREATE TABLE " +tmp+ " as ("+LIB_EWS_BE.UNION_INDICATORS(customerUnit)+") WITH DATA",DBCONNECTION,null,{});
 
-SQL = "SELECT  "+columns+" ,CURRENT_DATE AS CREATION_DATE FROM "+customerUnit.TableName+" base";
+SQL = "SELECT  "+columns+" ,CURRENT_DATE AS CREATION_DATE FROM "+tmp+" base";
 
 SQL = SQL + UNION;
 

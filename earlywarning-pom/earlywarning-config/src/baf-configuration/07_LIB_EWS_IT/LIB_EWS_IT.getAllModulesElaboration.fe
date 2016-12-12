@@ -15,6 +15,7 @@ VAR sqlUnion;
 VAR modulesName = {};
 var modules = {};
 var result = [];
+var addNPOG = false;
 
 foreach (workspacePlanList as plan){
 	
@@ -62,6 +63,12 @@ foreach (workspacePlanList as plan){
 				
 				if (adjConfiguration == null) adjConfiguration = {};
 				
+                IF(name == 'NOPG' and addNPOG == false){
+                	addNPOG = true;
+                    ADDELEMENT(adjConfiguration, ['sql':"(IND_79 IN ('S40'))",'color':"LIGHT_BLUE",'workspaceId':plan.Workspace.ID]);
+                    ADDELEMENT(adjConfiguration, ['sql':"(IND_79 IN ('S50'))",'color':"DARK_BLUE",'workspaceId':plan.Workspace.ID]);
+                }
+                
 				ADDELEMENT(adjConfiguration, ['sql':expressionSQLQuery,'color':color,'workspaceId':plan.Workspace.ID]);
 				put(adjMap,name,adjConfiguration);
                
@@ -70,10 +77,11 @@ foreach (workspacePlanList as plan){
                 
 			}   
 		}
-		
+		addNPOG = false;
 		addelement(modules,adjMap);
 	}     
 }
+
  var workspaceId;
 
 	foreach(modules as module){
@@ -107,7 +115,7 @@ foreach (workspacePlanList as plan){
     
     sqlUnion = sqlUnion+"  " + sql;
  }
- 
+
  PUT(result,'query',sqlUnion);
  PUT(result,'keyColumn','ID');
  PUT(result,'columns',modulesName);
