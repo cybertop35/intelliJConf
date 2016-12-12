@@ -5,6 +5,8 @@ VAR sql = "";
 
 sql = "
 
+
+
 CAST(
 CASE
 		WHEN  AMT_FINEXP_M0 IS NOT NULL OR 
@@ -44,6 +46,7 @@ CAST(
 		WHEN DEN_IND_273 < 0 THEN 'ANTEXP004_2'
 		ELSE ''
 	END AS ERROR_MSG_IND_273
+
 ";
 
 
