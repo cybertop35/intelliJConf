@@ -126,21 +126,28 @@ FOREACH ( WORKSPACE_PLAN_LIST as WORKSPACE ){
         BR_DETAIL = BR_DETAIL+" END ";
     }
 }
-
+VAR castFields ={};
 VAR SELECT_VIEW = "SELECT "+analysisTable+".SNDG as SNDG_JOIN , SEGMENT, SYSTEM_DATE" ;
 foreach (VARIABLES as v){
  	IF( v.ColumnName <> "TARGET" and v.ColumnName <> "EXPOSURE" and v.ColumnName <> "SNDG" and v.ColumnName <> "SEGMENT"){
 		IF(v.Variable_DataType.Data_Type.ID == "STRING") {
 			SELECT_VIEW = SELECT_VIEW +",("+analysisTable+"."+v.ColumnName+" ) as "+v.ColumnName ;
+			addelement(castFields,"(CAST ("+analysisTable+"."+v.ColumnName+" as VARCHAR(50)) ) as "+ v.ColumnName);
 		}
 		IF(v.Variable_DataType.Data_Type.ID == "REAL") {
 			SELECT_VIEW = SELECT_VIEW +",( (CASE WHEN "+analysisTable+"."+v.ColumnName+" = -8888888 THEN NULL else  "+analysisTable+"."+v.ColumnName+" END)  ) as "+v.ColumnName ;
+			addelement(castFields,"(CAST ("+analysisTable+"."+v.ColumnName+" as DECIMAL(30,12) ) ) as "+ v.ColumnName);
 		}
         if(HAVE_ERROR_MESSAGE) {
-			SELECT_VIEW = SELECT_VIEW +",CAST("+analysisTable+".ERROR_MSG_"+v.ColumnName+" AS VARCHAR(200) ) as ERROR_MSG_" +v.ColumnName;
+			SELECT_VIEW = SELECT_VIEW +",("+analysisTable+".ERROR_MSG_"+v.ColumnName+" ) as ERROR_MSG_" +v.ColumnName;
+			addelement(castFields,"(CAST ("+analysisTable+".ERROR_MSG_"+v.ColumnName+" as VARCHAR(200) ) ) as ERROR_MSG_" +v.ColumnName);
         }
 	}
 }
+#AGGIUNGO COLONNE DI DEFAULT
+addelement(castFields,analysisTable+".SEGMENT");
+addelement(castFields,analysisTable+".SYSTEM_DATE");
+
 SELECT_VIEW = SELECT_VIEW + " FROM "+analysisTable+" "+analysisTable;
 
 LIB_DB.DropTableIfExists(variablesTableName,DBCONNECTION); 
@@ -226,7 +233,7 @@ IF(CREATED) THEN {
     LIB_DB.renameTable(T_OUT_TMP,T_OUT,DBCONNECTION,NULL);
       
 	SQL = "REPLACE VIEW "+T_OUT_VIEW+" AS (
-			SELECT * 
+			SELECT "+T_OUT+".*,"+ARRAY_TO_STRING(castFields, ', ')+"
 			FROM "+T_OUT +" "+T_OUT+ " 
 				JOIN " +variablesTableName+ " " + analysisTable +" 
 				ON "+ analysisTable+".SNDG_JOIN = "+T_OUT+".SNDG
