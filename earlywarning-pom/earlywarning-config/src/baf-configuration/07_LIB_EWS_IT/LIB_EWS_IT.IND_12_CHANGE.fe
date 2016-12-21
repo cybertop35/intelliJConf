@@ -16,7 +16,6 @@ CAST(
 		END ) AS ERROR_MSG_IND_12_CHANGE
 ";
 
-
 DEBUGMESSAGE(formulaName, sql);
 DEBUGMESSAGE(formulaName, "END");
 
