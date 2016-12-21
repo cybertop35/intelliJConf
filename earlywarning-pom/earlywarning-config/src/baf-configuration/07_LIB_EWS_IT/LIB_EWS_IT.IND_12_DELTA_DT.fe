@@ -1,0 +1,23 @@
+VAR formulaName = "[LIB_EWS_IT.IND_12_DELTA_DT.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+CAST(
+		CASE 
+			WHEN BR_212_OPEN_DATE IS NULL THEN NULL 
+			ELSE (CURRENT_DATE - BR_212_OPEN_DATE)
+		END AS DECIMAL(3,0)) AS IND_12_DELTA_DT,
+		
+		(CASE
+			WHEN BR_212_OPEN_DATE IS NULL THEN '' 
+			ELSE ''
+		END ) AS ERROR_MSG_IND_12_DELTA_DT		
+";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;
