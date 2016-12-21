@@ -15,8 +15,6 @@ CAST(
 			ELSE ''
 		END ) AS ERROR_MSG_IND_12_DELTA_DT		
 ";
-
-
 DEBUGMESSAGE(formulaName, sql);
 DEBUGMESSAGE(formulaName, "END");
 
