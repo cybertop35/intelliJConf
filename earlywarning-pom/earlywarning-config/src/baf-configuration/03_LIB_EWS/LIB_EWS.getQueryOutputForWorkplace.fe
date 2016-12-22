@@ -1,4 +1,4 @@
-VAR formulaName = "[LIB_EWS_BE.getQueryOutputForWorkplace] ";
+VAR formulaName = "[LIB_EWS.getQueryOutputForWorkplace] ";
 DEBUGMESSAGE(formulaName, "START");
 
 VAR workspacePlan =  Param1;
@@ -60,7 +60,7 @@ SQL = "(SELECT cast(null as varchar(16) ) as SNDG, cast(null as varchar(11) ) as
 if(matrixInstance == null ){
 	MATRIX_TABLE = "TMP_MX_DAMMY";
 	matrixId = "DAMMY";
-	LIB_DB.DropTableIfExists("TMP_MX_"+matrixId,DBCONNECTION);
+	LIB_DB.DropTableIfExists(MATRIX_TABLE,DBCONNECTION);
 	SQLEXECUTE("CREATE MULTISET TABLE "+MATRIX_TABLE +" AS  "+ SQL +"  WITH DATA PRIMARY INDEX(SNDG)",DBCONNECTION,NULL,{});
 }
 else{
