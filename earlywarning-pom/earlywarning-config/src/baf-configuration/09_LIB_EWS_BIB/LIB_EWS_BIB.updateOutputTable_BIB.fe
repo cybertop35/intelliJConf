@@ -23,7 +23,7 @@ foreach(wp_list as wp){
 		LIB_DB.DropTableIfExists("TMP_OUTWP_"+wp.ID,DBCONNECTION);
         SQLEXECUTE("CREATE TABLE TMP_OUTWP_"+wp.ID+" AS ( "+  LIB_EWS.getQueryOutputForWorkplace(wp) +" ) WITH DATA PRIMARY INDEX(SNDG)",DBCONNECTION,NULL,{});
         
-		SQL = SQL +" SELECT * FROM TMP_OUTWP_"+wp.ID;
+		SQL = SQL +" SELECT t.*, CURRENT_DATE AS CREATION_DATE FROM TMP_OUTWP_"+wp.ID+ " t";
 		SQL = SQL + " UNION ALL ";
 }
 SQL = SUBSTRING(SQL, 0, LENGTH(SQL) - 10);
