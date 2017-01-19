@@ -174,7 +174,11 @@ foreach (BR_LIST as b){
 	IF(brName == '01' OR brName == '03' OR brName == '04' OR  brName == '05' OR brName == '09') THEN {
 		SQL_CALCOLO = SQL_CALCOLO +" ,GREATEST( CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END,"+NOME_COLONNA+"BIS,"+NOME_COLONNA+"TER ) as "+  NOME_COLONNA ;
 	}
-	ELSE IF(brName == '08') THEN {
+	ELSE IF(brName == '08' OR brName == '117' OR brName == '118' OR 
+		   brName == '25' OR brName == '525' OR brName == '512' OR 
+		   brName == '36' OR brName == '536' OR
+		   brName == '132' OR brName == '133' OR brName == '134' OR brName == '135' OR brName == '136' OR brName == '137' OR
+		   brName == '138' OR brName == '139' OR brName == '140' OR brName == '141' OR brName == '142') THEN {
 		SQL_CALCOLO = SQL_CALCOLO +" ,GREATEST(CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END,"+NOME_COLONNA+"BIS) as "+  NOME_COLONNA ;
 		
 	}

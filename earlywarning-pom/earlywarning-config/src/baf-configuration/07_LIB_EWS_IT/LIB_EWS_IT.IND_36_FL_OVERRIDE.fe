@@ -6,12 +6,12 @@ VAR sql = "";
 sql = "
 CAST(
 		CASE 
-			WHEN BR_36_OVERRIDE  = '0' AND VAL_BR_36_OVERRIDE = '1' THEN '1'
-			ELSE '0' 
+			WHEN BR_36_OVERRIDE  = '0' THEN '1'
+              ELSE '0'  
 		END AS CHAR(1)) AS IND_36_FL_OVERRIDE,
 		
 		(CASE
-			WHEN BR_36_OVERRIDE  = '0' AND VAL_BR_36_OVERRIDE = '1' THEN ''
+			WHEN BR_36_OVERRIDE  = '0' THEN ''
 			ELSE ''
 		END ) AS ERROR_MSG_IND_36_FL_OVERRIDE
 ";
@@ -21,4 +21,3 @@ DEBUGMESSAGE(formulaName, sql);
 DEBUGMESSAGE(formulaName, "END");
 
 return sql;
-
