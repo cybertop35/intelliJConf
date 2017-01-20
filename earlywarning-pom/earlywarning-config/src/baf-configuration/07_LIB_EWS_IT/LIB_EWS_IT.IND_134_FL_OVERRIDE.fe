@@ -14,6 +14,8 @@ CAST(
 			WHEN BR_134_OVERRIDE  = '0' THEN ''
 			ELSE ''
 		END ) AS ERROR_MSG_IND_134_FL_OVERRIDE
+		
+		
 ";
 
 
