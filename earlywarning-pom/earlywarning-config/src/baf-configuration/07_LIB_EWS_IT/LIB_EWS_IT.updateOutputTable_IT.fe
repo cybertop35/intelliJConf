@@ -235,9 +235,20 @@ IF(CREATED) THEN {
     }
        
     LIB_DB.renameTable(T_OUT_TMP,T_OUT,DBCONNECTION,NULL);
-      
-	SQL = "REPLACE VIEW "+T_OUT_VIEW+" AS (
-			SELECT "+T_OUT+".*,"+ARRAY_TO_STRING(castFields, ', ')+"
+    
+    array = Utils.getColumnName(T_OUT,{"SNDG","DETECTION_RATIONALE"});
+
+    
+    SQL = "REPLACE VIEW "+T_OUT_VIEW+" AS (
+			SELECT "+T_OUT +".SNDG,"+ARRAY_TO_STRING(array,', ')+"
+            	,REGEXP_REPLACE(detection_rationale, -- sourcestring
+                'BR(\d+)', -- regexp
+                'BR_\1', --replacestring
+                1, --startposition
+                0, -- occurrence, 0 = all
+                'i' -- match -> case insensitive
+				) as 	DETECTION_RATIONALE		
+            ,"+ARRAY_TO_STRING(castFields, ', ')+"
 			FROM "+T_OUT +" "+T_OUT+ " 
 				JOIN " +variablesTableName+ " " + analysisTable +" ON "+ analysisTable+".SNDG_JOIN = "+T_OUT+".SNDG
 				JOIN " +customerUnit.TeradataSchema+ "."+ customerUnit.Source_tableName+" " + customerUnit.Source_tableName +" ON "+ customerUnit.Source_tableName+".SNDG = "+T_OUT+".SNDG

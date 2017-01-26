@@ -2,29 +2,50 @@ VAR formulaName = "[LIB_EWS.getQueryOutputForWorkplace] ";
 DEBUGMESSAGE(formulaName, "START");
 
 VAR workspacePlan =  Param1;
+#VAR workspacePlan = Workspace_Plan[ID="WSP000002"] ;
 
-VAR workspacePlanId 	= workspacePlan.ID;
-VAR fastTrackId 		= workspacePlan.WorkspacePlan_FastTrack.Fast_Track.ID;
+VAR workspacePlanId 		= workspacePlan.ID;
+VAR fastTrackId 			= workspacePlan.WorkspacePlan_FastTrack.Fast_Track.ID;
 VAR matrixId 			= workspacePlan.WorkspacePlan_Matrix.Matrix.ID;
-
+VAR fastTrackInstance 	= Fast_Track[ID=$fastTrackId];
 var workspaceInstance 	= workspacePlan.Workspace;
 var workspaceId 			= workspaceInstance.ID;
 VAR analysisUnitInstance 	= Utils.SingleSetToElement(workspaceInstance.Workspace_AnalysisUnit.Analysis_Unit);
 VAR externalInfoFormula 	= analysisUnitInstance.CustomerInfoFormula;	
-VAR JDBC_NAME 			= Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
-VAR SETUP 				= EVAL(externalInfoFormula, {analysisUnitInstance});
-VAR HAVE_ERROR_MESSAGE 	= SETUP["HAVE_ERROR_MESSAGE"];
-VAR typeOfDataToUse 	= "actual";
+
 VAR AnalysisTable 		= analysisUnitInstance.AnalyticalTable;
 VAR variables 			= analysisUnitInstance.AnalysisUnit_Variable.Variable order by [ColumnName ASC];
+
+VAR SETUP 				= EVAL(externalInfoFormula, {analysisUnitInstance});
+VAR HAVE_ERROR_MESSAGE 	= SETUP["HAVE_ERROR_MESSAGE"];
 VAR DBCONNECTION 			= Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
 
-VAR fastTrackInstance 	= Fast_Track[ID=$fastTrackId];
+VAR typeOfDataToUse 		= "actual";
+VAR logActionName 		= "getQueryOutputForWorkplace";
+
 VAR matrixInstance;
 VAR models;
 VAR adjustments;
+VAR noneScore;
+VAR calculateMatrixSQL;
+VAR SQL;
+VAR ERROR_SQL;
+VAR configuration;
+VAR tableFT;
+VAR array = {};
+VAR expressionSQLQuery;
+VAR MATRIX_TABLE_ADJ;
+VAR MATRIX_TABLE_NO_ADJ;
+VAR modelColumns= {} ;
+VAR tmp;
+VAR fields;
+VAR join;
 
-VAR logActionName 			= "getQueryOutputForWorkplace";
+VAR maxModel=5;
+VAR maxException = 15;
+var modelCount = 1;
+VAR exceptionCount = 1;
+
 SAVE_LOG("Info", logActionName, "START");
 SAVE_LOG("Info", logActionName, "WORKSPACE "+workspacePlanId);
 
@@ -34,114 +55,104 @@ IF(matrixId <> null) {
  	adjustments  		= matrixInstance.Adjustment ORDER BY [OrderPosition];
 }
 
+#DEFAULT FIELDS ##
+fields 	= fields + AnalysisTable+".SNDG ";
+fields 	= fields + ","+ AnalysisTable+".COUNTRY ";
+tmp 		= "WS.CATEGORICAL_SCORE";
+fields 	= fields + ","+tmp;
+fields 	= fields + ",cast("+LIB_EWS.getSqlDecodeColors(tmp) +" as VARCHAR(50) ) as  SEMAFORO_APP";
+fields 	= fields + ",CAST(null as VARCHAR(50)) as SEMAFORO_SYSTEM";
 
-VAR noneScore;
-VAR calculateMatrixSQL;
-VAR SQL;
-VAR ERROR_SQL;
-VAR maxModel=5;
-VAR maxException = 15;
-VAR configuration;
-var tableFT;
-VAR array = {};
-VAR expressionSQLQuery;
-VAR MATRIX_TABLE;
+join = join +" LEFT JOIN (SELECT * FROM "+workspacePlan.ResultTableName +") ws ON WS.SNDG = "+AnalysisTable+".SNDG ";
 
 ##### RECUPERO FAST TRACK #####################
 array = FastTrack.getCategoricalScoreInfo(fastTrackId);
-LIB_DB.DropTableIfExists("TMP_FT_"+fastTrackId,DBCONNECTION);
-SQLEXECUTE("CREATE TABLE TMP_FT_"+fastTrackId +" AS ( "+ LIB_AnalysisUnit.getDecisionListCalculationQuery(array, analysisUnitInstance, typeOfDataToUse, workspaceId)  +" ) WITH DATA PRIMARY INDEX(SNDG)",DBCONNECTION,NULL,{});
+tableFT = "TMP_FT_"+fastTrackId;
+LIB_DB.DropTableIfExists(tableFT,DBCONNECTION);
+SQLEXECUTE("CREATE TABLE "+tableFT+" AS ( "+ LIB_AnalysisUnit.getDecisionListCalculationQuery(array, analysisUnitInstance, typeOfDataToUse, workspaceId)  +" ) WITH DATA PRIMARY INDEX(SNDG)",DBCONNECTION,NULL,{});
 
-
-##### RECUPERO LA MATRICE #####################
-##NON CONSIDERO IL FAST_TRACK NEL CALCOLO #####
-SQL = "(SELECT cast(null as varchar(16) ) as SNDG, cast(null as varchar(11) ) as CATEGORICAL_SCORE, 
-    					 cast(null as integer ) as CONTINUOUS_SCORE,cast(null as integer ) as MATRIX_SCORE, cast(null as varchar(255) ) as ADJID )";
-if(matrixInstance == null ){
-	MATRIX_TABLE = "TMP_MX_DAMMY";
-	matrixId = "DAMMY";
-	LIB_DB.DropTableIfExists(MATRIX_TABLE,DBCONNECTION);
-	SQLEXECUTE("CREATE MULTISET TABLE "+MATRIX_TABLE +" AS  "+ SQL +"  WITH DATA PRIMARY INDEX(SNDG)",DBCONNECTION,NULL,{});
-}
-else{
-	MATRIX_TABLE = matrixInstance.ResultTableName;
-	
-	if(analysisUnitInstance.StoreIntermediateResults <> TRUE){
-		calculateMatrixSQL = LIB_AnalysisUnit.calculateMatrix(matrixInstance,null,typeOfDataToUse);
-		
-		LIB_DB.DropTableIfExists(MATRIX_TABLE,DBCONNECTION);
-		SQLEXECUTE("CREATE MULTISET TABLE "+MATRIX_TABLE +" AS  "+ SQL +"  WITH DATA PRIMARY INDEX(SNDG)",DBCONNECTION,NULL,{});
-		
-		calculateMatrixSQL = TRIM(calculateMatrixSQL);
-		calculateMatrixSQL = SUBSTRING(calculateMatrixSQL, 1 ,LENGTH(calculateMatrixSQL) - 2 );		
-		
-		SQLEXECUTE("INSERT INTO "+MATRIX_TABLE +"  "+ calculateMatrixSQL ,DBCONNECTION,NULL,{});
-	}
-}
-
-
-
-
+fields 	= fields + ",cast( ( CASE WHEN FT.CATEGORICAL_SCORE = 'NONE' OR FT.CATEGORICAL_SCORE IS NULL THEN 0 ELSE 1 END) as VARCHAR(1) ) as  FAST_TRACK";
+join 	= join +" LEFT JOIN "+tableFT+" FT  ON FT.SNDG="+AnalysisTable+".SNDG ";
 
 ##### RECUPERO I MODELLI #####################
-VAR sqlModelJoin;
-VAR columnModel;
-var modelCount = 1;
-VAR exceptionCount = 1;
-VAR modelColumns= {} ;
-VAR tmp;
 foreach (models as model){
-	sqlModelJoin = sqlModelJoin +" LEFT JOIN ( "+ LIB_EWS.getQueryScoreModel(model,matrixInstance) +")"+model.ID+" ON "+model.ID+".SNDG="+AnalysisTable+".SNDG";
+	join = join +" LEFT JOIN ( "+ LIB_EWS.getQueryScoreModel(model,matrixInstance) +")"+model.ID+" ON "+model.ID+".SNDG="+AnalysisTable+".SNDG";
 	tmp = model.ID+".CATEGORICAL_SCORE";
-    columnModel = columnModel +", CAST(CASE WHEN FAST_TRACK = 0 THEN "+LIB_EWS.getSqlDecodeColors(tmp)+" END as VARCHAR(50)) as RESULT_MODULE_0"+modelCount;
-	
+    fields = fields +",CAST(CASE WHEN FAST_TRACK = 0 THEN "+LIB_EWS.getSqlDecodeColors(tmp)+" END as VARCHAR(50)) as RESULT_MODULE_0"+modelCount;
     addelement(modelColumns,"RESULT_MODULE_0"+modelCount);
 	modelCount = modelCount+1;
 	
 }
+while(modelCount<=maxModel){
+	fields = fields +" ,CAST(null as VARCHAR(50)) as RESULT_MODULE_0"+modelCount;
+	modelCount = modelCount + 1;
+}
 
-SQL = "SELECT "+AnalysisTable+".SNDG, "+AnalysisTable+".COUNTRY ";
-tmp = "WS.CATEGORICAL_SCORE";
-SQL = SQL + ","+tmp;
-SQL = SQL + ",cast("+LIB_EWS.getSqlDecodeColors(tmp) +" as VARCHAR(50) ) as  SEMAFORO_APP";
-SQL = SQL + ",CAST(null as VARCHAR(50)) as SEMAFORO_SYSTEM";
-SQL = SQL + ",cast( ( CASE WHEN FT.CATEGORICAL_SCORE = 'NONE' OR FT.CATEGORICAL_SCORE IS NULL THEN 0 ELSE 1 END) as VARCHAR(1) ) as  FAST_TRACK";
+##### RECUPERO LA MATRICE #############
+##NON CONSIDERO IL FAST_TRACK NEL CALCOLO #####
+if(matrixInstance <> NULL ){
+	VAR defaultMatrixTable = "(SELECT cast(null as varchar(16) ) as SNDG, cast(null as varchar(11) ) as CATEGORICAL_SCORE,  cast(null as integer ) as CONTINUOUS_SCORE,cast(null as integer ) as MATRIX_SCORE, cast(null as varchar(255) ) as ADJID )";
+	
+	MATRIX_TABLE_ADJ 		= matrixInstance.ResultTableName;
+	MATRIX_TABLE_NO_ADJ 	= matrixInstance.ResultTableName+"NO_ADJ";
+	
+	configuration 	 	= LIB_EWS.getMatrixConfiguration(matrixInstance,null,typeOfDataToUse);
+	calculateMatrixSQL 	= LIB_AnalysisUnit.getMatrixCalculationQuery(configuration,[]);
+	LIB_DB.DropTableIfExists(MATRIX_TABLE_NO_ADJ,DBCONNECTION);
+	SQLEXECUTE("CREATE MULTISET TABLE "+MATRIX_TABLE_NO_ADJ +" AS  "+ defaultMatrixTable +"  WITH DATA PRIMARY INDEX(SNDG)",DBCONNECTION,NULL,{});
+	SQLEXECUTE("INSERT INTO "+MATRIX_TABLE_NO_ADJ +"  "+ calculateMatrixSQL ,DBCONNECTION,NULL,{});
+	
+	if(analysisUnitInstance.StoreIntermediateResults <> TRUE){
+		calculateMatrixSQL = LIB_AnalysisUnit.calculateMatrix(matrixInstance,null,typeOfDataToUse);
+		
+		LIB_DB.DropTableIfExists(MATRIX_TABLE_ADJ,DBCONNECTION);
+		SQLEXECUTE("CREATE MULTISET TABLE "+MATRIX_TABLE_ADJ +" AS  "+ defaultMatrixTable +"  WITH DATA PRIMARY INDEX(SNDG)",DBCONNECTION,NULL,{});
+		
+		calculateMatrixSQL = TRIM(calculateMatrixSQL);
+		calculateMatrixSQL = SUBSTRING(calculateMatrixSQL, 1 ,LENGTH(calculateMatrixSQL) - 2 );		
+		
+		SQLEXECUTE("INSERT INTO "+MATRIX_TABLE_ADJ +"  "+ calculateMatrixSQL ,DBCONNECTION,NULL,{});
+	}
+		
+	tmp 		= MATRIX_TABLE_ADJ +".CATEGORICAL_SCORE";
+	fields 	= fields +" ,CAST(CASE WHEN FAST_TRACK = 0 THEN "+LIB_EWS.getSqlDecodeColors(tmp) +" END as VARCHAR(50)) as RESULT_FIRST_RISK_MATRIX";
+	
+	tmp 		= MATRIX_TABLE_ADJ +".CATEGORICAL_SCORE";
+	#fields 	= fields +" ,CAST(CASE WHEN FAST_TRACK = 0 THEN "+LIB_EWS.getSqlDecodeColors(tmp) +" END as VARCHAR(50)) as MATRIX_RESULT";
+	fields 	= fields +" ,CAST(CASE WHEN FAST_TRACK = 0 THEN "+LIB_EWS.getSqlDecodeColors(tmp) +" END as VARCHAR(50))as MATRIX_RESULT";
+	
+	join = join +" LEFT JOIN "+MATRIX_TABLE_NO_ADJ +" "+MATRIX_TABLE_NO_ADJ +" ON "+MATRIX_TABLE_NO_ADJ +".SNDG = "+AnalysisTable+".SNDG ";
+	join = join +" LEFT JOIN "+MATRIX_TABLE_ADJ +" "+MATRIX_TABLE_ADJ +" ON "+MATRIX_TABLE_ADJ +".SNDG = "+AnalysisTable+".SNDG ";
+}
+else{
+	fields = fields +" ,CAST(NULL as VARCHAR(50)) as MATRIX_RESULT";
+	fields = fields +" ,CAST(NULL as VARCHAR(50)) as RESULT_FIRST_RISK_MATRIX";
+}
 
+##### RECUPERO ADJ #############
 VAR adjMap=[];
 foreach(adjustments as adj) {
-	SQL = SQL +" ,CAST((CASE when MATRIX.ADJID LIKE '%"+adj.ID+"%' AND FAST_TRACK = 0 then 1 when MATRIX.ADJID NOT LIKE '%"+adj.ID+"%' AND FAST_TRACK = 0 then 0 END )as VARCHAR(50)) as EXCEPTION_"+(adj.OrderPosition+1);
+	fields = fields +" ,CAST((CASE when "+MATRIX_TABLE_ADJ +".ADJID LIKE '%"+adj.ID+"%' AND FAST_TRACK = 0 then 1 when "+MATRIX_TABLE_ADJ +".ADJID NOT LIKE '%"+adj.ID+"%' AND FAST_TRACK = 0 then 0 END )as VARCHAR(50)) as EXCEPTION_"+(adj.OrderPosition+1);
 	put(adjMap,"EXCEPTION_"+(adj.OrderPosition+1),adj);
 	exceptionCount = exceptionCount + 1 ;
 }
 
 while(exceptionCount<=maxException){
-	SQL = SQL +" ,CAST(null as VARCHAR(50)) as EXCEPTION_"+exceptionCount;
+	fields = fields +" ,CAST(null as VARCHAR(50)) as EXCEPTION_"+exceptionCount;
 	exceptionCount = exceptionCount + 1 ;
 }
 
-SQL = SQL +columnModel;
-while(modelCount<=maxModel){
-	SQL = SQL +" ,CAST(null as VARCHAR(50)) as RESULT_MODULE_0"+modelCount;
-	modelCount = modelCount + 1;
-	
-}
-tmp = "MATRIX.CATEGORICAL_SCORE";
-SQL = SQL +" ,CAST(CASE WHEN FAST_TRACK = 0 THEN "+LIB_EWS.getSqlDecodeColors(tmp) +" END as VARCHAR(50)) as RESULT_FIRST_RISK_MATRIX";
-
-VAR detectionRationale;
-detectionRationale = LIB_EWS.getDetectionRationaleValue(fastTrackInstance,'FAST_TRACK',adjMap,modelColumns);
+##### CASE WHEN DETECTION RATIONALE #############
+VAR detectionRationale = LIB_EWS.getDetectionRationaleValue(fastTrackInstance,'FAST_TRACK',adjMap,modelColumns); 
 if(LENGTH(detectionRationale) == 0) then detectionRationale = 'NULL';
-SQL = SQL +" ,CAST("+detectionRationale+" as VARCHAR(200)) as DETECTION_RATIONALE";
+fields = fields +" ,CAST("+detectionRationale+" as VARCHAR(200)) as DETECTION_RATIONALE";
 
+SQL = "SELECT ";
+SQL = SQL + fields;
 SQL = SQL +" FROM "+AnalysisTable +" "+AnalysisTable;
-SQL = SQL +" LEFT JOIN (SELECT * FROM "+workspacePlan.ResultTableName +") ws ON WS.SNDG = "+AnalysisTable+".SNDG ";
-SQL = SQL + sqlModelJoin;
-SQL = SQL +" LEFT JOIN TMP_FT_"+fastTrackId+" FT  ON FT.SNDG="+AnalysisTable+".SNDG ";
-SQL = SQL +" LEFT JOIN "+MATRIX_TABLE +" MATRIX ON MATRIX.SNDG = "+AnalysisTable+".SNDG ";
+SQL = SQL + join;
 SQL = SQL + " WHERE " +LIB_AnalysisUnit.getWorkspaceFilterSql(workspaceId);
-# IF(SIZE(adjustments) > 0 ) then {
-# 	SQL = SQL +" JOIN ("+ calculationQueryWithAdj +") ADJ ON ADJ.SNDG = "+AnalysisTable+".SNDG";
-# }
+
 
 DEBUGMESSAGE(formulaName, "END");
 SAVE_LOG("Info", logActionName, "END");

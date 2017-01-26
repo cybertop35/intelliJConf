@@ -25,6 +25,14 @@ analysisUnit.DESCRIPTION = analysisUnit.DESCRIPTION ;
 UPDATEFORMULA( analysisUnit, "LastUpdateAnalysisUnit" );
 SAVE (analysisUnit);
 analysisUnit = Analysis_Unit[ID= $analysisUnitID];
+
+IF( LIB_EWS.checkAnalysisUnitStatus(analysisUnit) == FALSE)
+{
+	SAVE_LOG("Info", logActionName, "NO workspace plan in production");
+	return;
+}
+
+
 if(analysisUnit.LastUpdateAnalysisUnit > startTime ){
 	SAVE_LOG("Info", logActionName, "Update unit Table: "+analysisUnitID);
 }
