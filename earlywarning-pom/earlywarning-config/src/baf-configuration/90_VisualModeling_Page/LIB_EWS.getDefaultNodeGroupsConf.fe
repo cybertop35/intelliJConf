@@ -11,5 +11,7 @@ addelement(dataPreparation,node);
 node =  [ "name" : "Weighted Model Woe", "ports" : "I/O", "actions" : { ["name" : "Edit", "targetPage" : "weightedModelWoe", "enableApply" : true], ["name" : "Show Data", "targetPage" : "showData"]} ];
 addelement(modeling,node);
 
+node =  [ "name" : "Create Variable",  "ports" : "I/O", "actions" : { ["name" : "Edit", "targetPage" : "createVariableSQL", "enableApply" : true], ["name" : "Show Data", "targetPage" : "showData"]} ];
+addelement(dataPreparation,node);
 
 return nodes;

@@ -1,0 +1,63 @@
+var formulaName = "[CreateVariableSQL_PageLib.runActionLink_onClick] ";
+DEBUGMESSAGE(formulaName, "START");
+
+var user = Param1;
+var routerMap = Param2;
+var symbolTable = Param3;
+
+var eventContext = routerMap["eventContext"];
+
+var allPageLabels = LIB_Label.predictiveApp('VisualModeling');
+
+var inputs = symbolTable['inputs'];
+var visualModelingContext = symbolTable['visualModelingContext'];
+
+var widgets = {};
+var widgetsToRemove = {};
+var notifications = {};
+
+CreateVariableSQL.getNodeSettings(user, routerMap, symbolTable);
+CreateVariableSQL_PageLib.updateColumnInfo(user, routerMap, symbolTable);
+
+var variableType = Utils.SingleSetToElement(LIB_WidgetHelper.dropdown_getSelected(routerMap['widgets']['dropdownType']['value']['items']));
+symbolTable['nodeValue']['variableType'] = variableType['value'];
+var variableDataType = Utils.SingleSetToElement(LIB_WidgetHelper.dropdown_getSelected(routerMap['widgets']['dropdownDataType']['value']['items']));
+symbolTable['nodeValue']['variableDataType'] = variableDataType['value'];
+symbolTable['nodeValue']['code'] = routerMap['widgets']['CreateVariableSQLCodeEditor']['value']['text'];
+
+notifications = CreateVariableSQL_PageLib.checkUserInputs(symbolTable['nodeValue']);
+symbolTable['run'] = false;
+if (is_empty(notifications)){
+    if(not CreateVariableSQL.validateRCode(symbolTable['nodeValue']['code'], symbolTable['nodeValue']['variableColumnName'])) {
+        notifications =  {
+            [ "type" : "error", "title" : allPageLabels['ERROR'], "message" : allPageLabels['CODE_HAS_TO_CONTAIN'] + ' "df$' + symbolTable['nodeValue']['variableColumnName'] + '"', "autoHide" : true]
+        };
+    } else {
+        var rOutput = CreateVariableSQL.executeRcode(symbolTable['nodeValue'], inputs, visualModelingContext);
+        if (rOutput['status'] == 'SUCCESSFUL'){
+            symbolTable['run'] = true;
+            notifications =  {
+                [ "type" : "success", "title" : allPageLabels['SUCCESS'], "message" : allPageLabels["NEW_VARIABLE_CREATED"], "autoHide" : true]
+            };
+        }
+        if (rOutput['status'] == 'EXECUTION_FAILED') {
+            notifications = {
+                [ "type" : "error", "title" : allPageLabels['ERROR'], "message" : allPageLabels["R_EXECUTION_ERROR"], "autoHide" : true]
+            };
+        }
+        if (rOutput['status'] == 'RESULT_RETRIEVAL_FAILED') {
+            notifications = {
+                    [ "type" : "error", "title" : allPageLabels['ERROR'], "message" : "The R program executed correctly, but an error occurred while trying to extract the return values from the execution.", "autoHide" : true]
+            };
+        }
+    }
+}
+
+var widgetsAndNotifications = [
+    'widgets'           : widgets,
+    'widgetsToRemove'   : widgetsToRemove,
+    'notifications'     : notifications
+];
+
+DEBUGMESSAGE(formulaName, "END");
+return widgetsAndNotifications;

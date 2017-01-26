@@ -1,0 +1,56 @@
+VAR formulaName = "[PageHandlers.CreateVariableSQL] ";
+DEBUGMESSAGE(formulaName, "START");
+
+var user = Param1;
+var routerMap = Param2;
+var symbolTable = Param3;
+
+var widgetsAndNotifications;
+var isEventHandled = false;
+
+if(routerMap['widgetId'] == 'visualModelingSaveClick' and not isEventHandled) {
+    if (symbolTable['run'] == TRUE){
+        widgetsAndNotifications = LIB_VMCommons.saveButton_onClick(user, routerMap, symbolTable);
+    } else {
+        var allPageLabels = LIB_Label.predictiveApp('VisualModeling');
+        widgetsAndNotifications = [
+            "widgets" : {},
+            "notifications" : {
+                [ "type" : "error", "title" : allPageLabels['CLICK_RUN_TITLE'], "message" : allPageLabels['CLICK_RUN_MSG'], "autoHide" : true]
+            }
+        ];
+    }
+    isEventHandled = TRUE;
+}
+
+#if(routerMap['widgetId'] == 'runActionButton' and not isEventHandled) {
+#    widgetsAndNotifications = CreateVariableSQL_PageLib.runActionLink_onClick(user, routerMap, symbolTable);
+#    isEventHandled = true;
+#}
+
+if(routerMap['widgetId'] == "newVariableInput" and not isEventHandled) {
+    widgetsAndNotifications = CreateVariableSQL_PageLib.writeButton_onClick(user, routerMap, symbolTable);
+    isEventHandled = true;
+}
+
+if(routerMap['widgetId'] == "searchBox" and not isEventHandled) {
+    widgetsAndNotifications = CreateVariableSQL_PageLib.searchBox_onSearch(user, routerMap, symbolTable);
+    isEventHandled = true;
+}
+
+if(ISLIKE(routerMap['widgetId'], "%_2") and not isEventHandled) {
+    widgetsAndNotifications = CreateVariableSQL_PageLib.variablesTable_onClick(user, routerMap, symbolTable);
+    isEventHandled = true;
+}
+
+if(not isEventHandled) {
+    DEBUGMESSAGE(formulaName, "EVENT NOT HANDLED: THIS ROW SHOULDN'T BE LOGGED");
+    widgetsAndNotifications = [
+        'widgets'           : {},
+        'widgetsToRemove'   : {},
+        'notifications'     : {}
+    ];
+}
+
+DEBUGMESSAGE(formulaName, "END");
+return widgetsAndNotifications;

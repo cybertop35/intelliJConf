@@ -1,0 +1,70 @@
+var formulaName = "[CreateVariableSQL.executeRcode] ";
+DEBUGMESSAGE(formulaName, "START");
+
+var nodeValue = Param1;
+var inputs = Param2;
+var visualModelingContext = Param3;
+
+var rCode = {};
+ADDELEMENT(rCode, '');
+ADDELEMENT(rCode,'library(mlbench)');
+# ADDELEMENT(rCode,'library(FSelector)');
+
+var predictiveDatasourceName = Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
+var databaseInformation = LIB_RHelper.getDatabaseInformation(predictiveDatasourceName);
+var libraries = databaseInformation['libraries'];
+var dbDriver = databaseInformation['dbDriver'];
+var connectionString = databaseInformation['connectionString'];
+
+foreach(libraries as lib){
+    ADDELEMENT(rCode,'library(' + lib + ')');
+}
+ADDELEMENT(rCode, 'drv <- dbDriver("' + dbDriver + '")');
+ADDELEMENT(rCode, 'con <- ' + connectionString);
+
+
+# R DB info configuration
+var nodeTableNameR = nodeValue['nodeTableName'] + "_R";
+LIB_DB.DropTableIfExists(nodeTableNameR, predictiveDatasourceName);
+
+var inputVariables = inputs[0]['variables'];
+var prevNodeTableName = inputs[0]['nodeTableName'];
+
+var sqlQuery = LIB_VMCommons.getSqlToSelectAllColumnForNode(nodeValue, inputs, [], true);
+debugmessage(formulaName + "sqlQuery=", sqlQuery);
+
+ADDELEMENT(rCode,'df <- dbGetQuery(con, "' + sqlQuery + '")');
+
+ADDELEMENT(rCode, nodeValue['code']);
+
+# Write on DB
+ADDELEMENT(rCode, 'keyColumn <-"' + nodeValue['keyColumn'] + '"' );
+if (LIB_RHelper.needToLower(predictiveDatasourceName)){
+    ADDELEMENT(rCode, 'keyColumn <- tolower(keyColumn)' );
+}
+ADDELEMENT(rCode, 'namesToPutInOutput<-c(keyColumn, "' + nodeValue['variableColumnName'] + '")');
+ADDELEMENT(rCode,'outputTable <- df[,namesToPutInOutput]');
+ADDELEMENT(rCode, 'resultTableName<-"' + nodeTableNameR + '"');
+if (LIB_RHelper.needToLower(predictiveDatasourceName)){
+    ADDELEMENT(rCode, "namesToPutInOutput <- tolower(namesToPutInOutput)");
+    ADDELEMENT(rCode, 'resultTableName <- tolower(resultTableName)');
+} else {
+    ADDELEMENT(rCode, "namesToPutInOutput <- toupper(namesToPutInOutput)");
+    ADDELEMENT(rCode, 'resultTableName <- toupper(resultTableName)');
+}
+ADDELEMENT(rCode,'names(outputTable) <- namesToPutInOutput');
+ADDELEMENT(rCode,'outw <- dbWriteTable(con, name=resultTableName, outputTable)');
+
+var codeRowSeparator = "
+";
+var parametersMap = [
+    'sourceCode'    : ARRAY_TO_STRING(rCode, codeRowSeparator), # TODO open issue to repeat it in all R code string concat
+    'inputs'        : [],
+    'outputs'       : {}
+];
+debugmessage(formulaName + "ARRAY_TO_STRING(rCode, codeRowSeparator)=", ARRAY_TO_STRING(rCode, codeRowSeparator));
+
+var rOutput = RENGINE(parametersMap);
+
+DEBUGMESSAGE(formulaName, "END");
+return rOutput;

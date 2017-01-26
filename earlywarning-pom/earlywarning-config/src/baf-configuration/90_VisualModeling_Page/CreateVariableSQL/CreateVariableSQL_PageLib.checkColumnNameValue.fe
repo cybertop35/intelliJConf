@@ -1,0 +1,20 @@
+var formulaName = "[CreateVariableSQL_PageLib.checkColumnNameValue] ";
+DEBUGMESSAGE(formulaName, "START");
+
+# Param1 FEMap
+# Result FEMap
+# Starting from the node value, this formula returns notification list
+
+var nodeValue = Param1;
+
+var allPageLabels = LIB_Label.predictiveApp('VisualModeling');
+
+var notifications = {};
+if (is_empty(nodeValue['variableColumnName'])){
+	notifications = {
+            [ "type" : "warning", "title" : allPageLabels['ERROR'], "message" : allPageLabels["EMPTY_VARIABLE_NAME"], "autoHide" : true]
+    };
+}
+
+DEBUGMESSAGE(formulaName, "END");
+return notifications;

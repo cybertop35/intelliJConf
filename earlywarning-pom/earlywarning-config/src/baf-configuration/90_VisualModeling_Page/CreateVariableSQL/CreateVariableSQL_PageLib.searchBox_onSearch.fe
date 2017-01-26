@@ -1,0 +1,41 @@
+VAR formulaName = "[CreateVariableSQL_PageLib.searchBox_onSearch] ";
+DEBUGMESSAGE(formulaName, "START");
+
+# FEArray widgetList = CreateVariableSQL_PageLib.searchBox_onSearch(FEString user, FEMap routerMap, FEMap symbolTable);
+# Param1:       FEString    user
+# Param2:       FEMap       router map
+# Param3:       FEMap       symbol table map
+# RESULT VALUE: FEArray     an array of widget
+# EFFECTS       -           some symbol table entry will be modified
+
+VAR user = Param1;
+VAR routerMap = Param2;
+VAR eventContext = routerMap["eventContext"];
+VAR symbolTable = Param3;
+
+var widgetList = {};
+var prevVariables = symbolTable['inputs'][0]['variables'];
+
+DEBUGMESSAGE(formulaName + " - eventContext : ", eventContext);
+var searchValue =  eventContext["value"];
+
+var variableList = {};
+if (searchValue <> NULL) {
+    foreach(prevVariables as prevVar){
+        if(CONTAINS(prevVar['columnLabel'], searchValue)){
+            ADDELEMENT(variableList, prevVar);
+        }
+    }
+} else if (IS_EMPTY(searchValue)) {
+    variableList = prevVariables;
+}
+
+var variablesTableValues = CreateVariableSQL.getVariablesTableValues(variableList);
+
+var variablesTable = routerMap['widgets']['variablesTable'];
+variablesTable['value']['ids'] = variablesTableValues['tableIds'];
+variablesTable['value']['values'] = variablesTableValues['tableValues'];
+ADDELEMENT(widgetList, variablesTable);
+
+DEBUGMESSAGE(formulaName, "END");
+RETURN widgetList;
