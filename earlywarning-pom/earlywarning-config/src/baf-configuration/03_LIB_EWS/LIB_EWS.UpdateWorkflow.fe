@@ -75,7 +75,7 @@ LIB_EWS.UpdatePredictiveModel(analysisUnit);
 
 ###############################################################################
 SAVE_LOG("Info", logActionName, "Update worplace: "+analysisUnitID);
-LIB_EWS.UpdateWorkpalceTableAll(wsPlan);
+LIB_EWS.UpdateWorkpalceTable(wsPlan);
 
 ###############################################################################
 analysisUnit.DESCRIPTION = analysisUnit.DESCRIPTION ;

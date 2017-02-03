@@ -1,7 +1,7 @@
-VAR formulaName = "[LIB_EWS.UpdateWorkpalceTableAll] ";
+VAR formulaName = "[LIB_EWS.UpdateWorkpalceTable] ";
 DEBUGMESSAGE(formulaName, "START");
 
-VAR list = Workspace_Plan[Status="Production"];
+VAR list = Param1;
 VAR analysisUnitInstance ;
 VAR fastTrack;
 VAR matrix;

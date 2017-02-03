@@ -114,12 +114,11 @@ if(matrixInstance <> NULL ){
 		SQLEXECUTE("INSERT INTO "+MATRIX_TABLE_ADJ +"  "+ calculateMatrixSQL ,DBCONNECTION,NULL,{});
 	}
 		
-	tmp 		= MATRIX_TABLE_ADJ +".CATEGORICAL_SCORE";
+	tmp 		= MATRIX_TABLE_NO_ADJ +".CATEGORICAL_SCORE";
 	fields 	= fields +" ,CAST(CASE WHEN FAST_TRACK = 0 THEN "+LIB_EWS.getSqlDecodeColors(tmp) +" END as VARCHAR(50)) as RESULT_FIRST_RISK_MATRIX";
 	
 	tmp 		= MATRIX_TABLE_ADJ +".CATEGORICAL_SCORE";
-	#fields 	= fields +" ,CAST(CASE WHEN FAST_TRACK = 0 THEN "+LIB_EWS.getSqlDecodeColors(tmp) +" END as VARCHAR(50)) as MATRIX_RESULT";
-	fields 	= fields +" ,CAST(CASE WHEN FAST_TRACK = 0 THEN "+LIB_EWS.getSqlDecodeColors(tmp) +" END as VARCHAR(50))as MATRIX_RESULT";
+	fields 	= fields +" ,CAST(CASE WHEN FAST_TRACK = 0 THEN "+LIB_EWS.getSqlDecodeColors(tmp) +" END as VARCHAR(50)) as MATRIX_RESULT";
 	
 	join = join +" LEFT JOIN "+MATRIX_TABLE_NO_ADJ +" "+MATRIX_TABLE_NO_ADJ +" ON "+MATRIX_TABLE_NO_ADJ +".SNDG = "+AnalysisTable+".SNDG ";
 	join = join +" LEFT JOIN "+MATRIX_TABLE_ADJ +" "+MATRIX_TABLE_ADJ +" ON "+MATRIX_TABLE_ADJ +".SNDG = "+AnalysisTable+".SNDG ";

@@ -241,13 +241,13 @@ IF(CREATED) THEN {
     
     SQL = "REPLACE VIEW "+T_OUT_VIEW+" AS (
 			SELECT "+T_OUT +".SNDG,"+ARRAY_TO_STRING(array,', ')+"
-            	,REGEXP_REPLACE(detection_rationale, -- sourcestring
+            	,CAST(REGEXP_REPLACE(detection_rationale, -- sourcestring
                 'BR(\d+)', -- regexp
                 'BR_\1', --replacestring
                 1, --startposition
                 0, -- occurrence, 0 = all
                 'i' -- match -> case insensitive
-				) as 	DETECTION_RATIONALE		
+				) AS VARCHAR(200) )as 	DETECTION_RATIONALE		
             ,"+ARRAY_TO_STRING(castFields, ', ')+"
 			FROM "+T_OUT +" "+T_OUT+ " 
 				JOIN " +variablesTableName+ " " + analysisTable +" ON "+ analysisTable+".SNDG_JOIN = "+T_OUT+".SNDG
