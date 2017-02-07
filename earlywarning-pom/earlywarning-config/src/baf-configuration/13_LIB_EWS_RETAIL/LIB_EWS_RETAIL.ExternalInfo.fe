@@ -1,0 +1,27 @@
+VAR formulaName = "[LIB_EWS_RETAIL.ExternalInfo] ";
+DEBUGMESSAGE(formulaName, "START");
+
+# FEDate resultValue = LIB_ISP.getCustomerInfoQueryParts(FEString analysisUnitInstance);
+# RESULT VALUE:
+# EFFECTS       -
+# This is an example of the formula the Client team has to create to insert customer information in the result table.
+# The formula has to have as unique input the Analysis_Unit instance.
+# The formula has to provide as output a map with 3 keys:
+# -fieldList:       an array of field name string (these field will be added to the result table) N.B. Avoid using the Analysis_Unit table field same names.
+# -keyColumn:       a string with the key column (it is used to join the rest of the query)
+# -executableQuery: a string with a query stand alone (it will be inserted in a join clause),
+#                   its result have to have the key column (keyColumn) and the each field in the fieldList
+#                   and obviously it don't have to contains the same field 2 times
+
+VAR analysisUnitInstance = Param1;
+var setup =["CRR_INDICATOR":"IND_02",
+			"HAVE_ERROR_MESSAGE":true,
+			"executableQuery" : "SELECT SNDG, EXPOSURE AS CI_EXPOSURE, SCONFINO AS CI_SCONFINO FROM " + analysisUnitInstance.AnalyticalTable,
+			"fieldList" : {"CI_EXPOSURE", "CI_SCONFINO"},
+			"keyColumn" : "SNDG",
+			"backtestingMonth": 3,
+			"updateOutput": "LIB_EWS_RETAIL.updateOutputTable_RETAIL(Param1);",
+			"updateAnalysisTable": "LIB_EWS_RETAIL.UpdateAnalysisUnit_RETAIL(Param1);"
+		];
+DEBUGMESSAGE(formulaName, "END");
+return setup;

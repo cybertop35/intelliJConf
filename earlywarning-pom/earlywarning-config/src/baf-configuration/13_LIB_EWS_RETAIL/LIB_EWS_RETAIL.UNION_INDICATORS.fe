@@ -1,0 +1,26 @@
+VAR formulaName = "[LIB_EWS_RETAIL.UNION_INDICATORS.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR customerUnit = Param1;
+VAR schema = customerUnit.TeradataSchema;
+
+
+VAR sql = "";
+
+sql = "select 
+		SNDG
+		,null as TARGET
+		,EXPOSURE_K_EURO_CTPY as EXPOSURE
+		,WORKSPACE as SEGMENT
+		,creation_DT as SYSTEM_DATE
+		,'IT' as COUNTRY
+	
+	
+
+	from "+schema+"."+customerUnit.Source_tableName;
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;
