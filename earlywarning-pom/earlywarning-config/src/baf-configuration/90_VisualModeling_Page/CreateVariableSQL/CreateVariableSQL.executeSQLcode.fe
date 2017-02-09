@@ -1,0 +1,21 @@
+var formulaName = "[CreateVariableSQL.executeSQLcode] ";
+DEBUGMESSAGE(formulaName, "START");
+
+var nodeValue = Param1;
+var inputs = Param2;
+var visualModelingContext = Param3;
+
+var predictiveDatasourceName = Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
+Var inputVariables = inputs[0]['variables'];
+var prevNodeTableName = inputs[0]['nodeTableName'];
+VAR variableColumnName = nodeValue['variableColumnName'];
+
+var sqlQuery = "SELECT (" + nodeValue['code'] +") "+variableColumnName+"  FROM " + prevNodeTableName ;
+SQLEXECUTE(sqlQuery, predictiveDatasourceName, null, {});
+debugmessage(formulaName + "sqlQuery=", sqlQuery);
+
+
+VAR rOutput = ['status':'SUCCESSFUL'];
+
+DEBUGMESSAGE(formulaName, "END");
+return rOutput;

@@ -8,10 +8,10 @@ var visualModelingContext = Param3;
 var prevVariables = inputs[0]['variables'];
 var prevNodeTableName = inputs[0]['nodeTableName'];
 
-var workspaceId = visualModelingContext['workspaceId'];
-var analysisUnitId = visualModelingContext['analysisUnitId'];
-var modelId = visualModelingContext['modelId'];
-var sessionId = visualModelingContext['sessionId'];
+var workspaceId 		= visualModelingContext['workspaceId'];
+var analysisUnitId 	= visualModelingContext['analysisUnitId'];
+var modelId 			= visualModelingContext['modelId'];
+var sessionId 		= visualModelingContext['sessionId'];
 
 if(nodeValue == null) {
 	var result = LIB_VMCommons.runEmptyNode("CNVAR", inputs);
@@ -33,23 +33,22 @@ if (updated == false){
         LIB_VMCommons.insertSafeNodeTmpInfo(nodeName, nodeTableName, sessionId, modelId);
     }
 
-    var nodeTableNameR = nodeValue['nodeTableName'] + "_R";
     var variableColumnName = nodeValue['variableColumnName'];
     variables = CLONE(prevVariables);
 
-    var rOutput = CreateVariableSQL.executeRcode(nodeValue, inputs, visualModelingContext);
-
     var predictiveDatasourceName = Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
     LIB_DB.DropTableIfExists(nodeTableName,predictiveDatasourceName);
-    var sqlCreateNodeTable =
-        " CREATE TABLE " + nodeTableName + " AS " +
-        " SELECT t1.*, t2." + variableColumnName +
+    
+	var sqlCreateNodeTable =
+        " CREATE MULTISET TABLE " + nodeTableName + " AS (" +
+        " SELECT t1.*, (" + nodeValue['code'] +")"+ variableColumnName +
         " FROM " +
-        "  " + inputs[0]['nodeTableName'] + " t1" +
-        " LEFT JOIN " + nodeTableNameR    + " t2" +
-        " ON t1." + nodeValue['keyColumn'] + " = t2." + nodeValue['keyColumn'];
-    SQLEXECUTE(sqlCreateNodeTable, predictiveDatasourceName, 0, {});
+        "  " + inputs[0]['nodeTableName'] + " t1 ) WITH DATA PRIMARY INDEX("+nodeValue['keyColumn'] +")";
+    
+	SQLEXECUTE(sqlCreateNodeTable, predictiveDatasourceName, 0, {});
 
+	DEBUGMESSAGE(formulaName +' SQL-->',sqlCreateNodeTable);
+	
     var categoricalValues = {};
     var continuousValues = [];
     var query;
@@ -81,6 +80,8 @@ if (updated == false){
         'continuousValues' : continuousValues
     ];
     ADDELEMENT(variables, newVariableInfoMap);
+	
+	DEBUGMESSAGE(formulaName +' newVariableInfoMap-->',newVariableInfoMap);
 }
 
 # creating output result

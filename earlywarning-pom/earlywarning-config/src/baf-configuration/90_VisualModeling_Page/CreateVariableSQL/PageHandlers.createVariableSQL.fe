@@ -23,13 +23,8 @@ if(routerMap['widgetId'] == 'visualModelingSaveClick' and not isEventHandled) {
     isEventHandled = TRUE;
 }
 
-#if(routerMap['widgetId'] == 'runActionButton' and not isEventHandled) {
-#    widgetsAndNotifications = CreateVariableSQL_PageLib.runActionLink_onClick(user, routerMap, symbolTable);
-#    isEventHandled = true;
-#}
-
-if(routerMap['widgetId'] == "newVariableInput" and not isEventHandled) {
-    widgetsAndNotifications = CreateVariableSQL_PageLib.writeButton_onClick(user, routerMap, symbolTable);
+if(routerMap['widgetId'] == 'runActionButton' and not isEventHandled) {
+    widgetsAndNotifications = CreateVariableSQL_PageLib.runActionLink_onClick(user, routerMap, symbolTable);
     isEventHandled = true;
 }
 
