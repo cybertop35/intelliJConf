@@ -1,4 +1,4 @@
-VAR formulaName = "[LIB_EWS_IT.IND_37_FL_SUPER.fe] ";
+VAR formulaName = "[LIB_EWS_IT.IND_37_SUPER.fe] ";
 DEBUGMESSAGE(formulaName, "START");
 
 VAR sql = "";
@@ -8,12 +8,12 @@ CAST(
 		CASE 
 			WHEN VAL_BR_37_OVERRIDE  = '1' THEN '1'
 			ELSE '0' 
-		END AS CHAR(1)) AS IND_37_FL_SUPER,
+		END AS CHAR(1)) AS IND_37_SUPER,
 		
 		(CASE
 			WHEN VAL_BR_37_OVERRIDE  = '1' THEN ''
 			ELSE ''
-		END ) AS ERROR_MSG_IND_37_FL_SUPER
+		END ) AS ERROR_MSG_IND_37_SUPER
 ";
 
 
