@@ -1,4 +1,9 @@
 bin
 /TutorialScal/*.cache
-/TutorialScal/.classpath
-/TutorialScal/.project
+.classpath
+.project
+.svn
+build
+bin
+target
+.settings
