@@ -1,0 +1,38 @@
+VAR formulaName = "[WeightedModel_PageLib.deleteLink_onClick] ";
+DEBUGMESSAGE(formulaName, "START");
+
+# FEArray widgetList = WeightedModel_PageLib.deleteLink_onClick(user, routerMap, symbolTable);
+# Param1:       FEString    user
+# Param2:       FEMap       router map
+# Param3:       FEMap       symbol table map
+# RESULT VALUE: FEArray     an array of widget
+# EFFECTS       -           some symbol table entry will be modified
+
+# VAR user = "Analyst";
+# VAR routerMap = ;
+# VAR symbolTable = ;
+# VAR widgetList = WeightedModel_PageLib.deleteLink_onClick(user, routerMap, symbolTable);
+
+VAR user = Param1;
+VAR routerMap = Param2;
+VAR symbolTable = Param3;
+
+VAR eventContext = routerMap["eventContext"];
+VAR widgetId = routerMap["widgetId"];
+
+VAR row = SPLIT(widgetId,'_');
+VAR indexRow = NUM(row[1]);
+VAR dataTableValue = routerMap['widgets']['weightedModelTable']['value']['values'];
+REMOVEELEMENT(dataTableValue, indexRow);
+
+var dataTableIds = {};
+VAR i;
+for(i = 0; i < SIZE(dataTableValue)-1; i = i + 1){
+    ADDELEMENT(dataTableIds, i);
+}
+ADDELEMENT(dataTableIds, 'EMPTY_ROW');
+routerMap['widgets']['weightedModelTable']['value']['ids'] = dataTableIds;
+
+VAR widgets = {routerMap['widgets']['weightedModelTable']};
+
+return widgets;

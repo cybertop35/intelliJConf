@@ -1,0 +1,49 @@
+var formulaName = "[PageHandlers.WeightedModelWoe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+var user 		= Param1;
+var routerMap 	= Param2;
+var symbolTable 	= Param3;
+
+var eventContext 	= routerMap["eventContext"];
+var widgetId 	= routerMap["widgetId"];
+var isEventHandled = false;
+var widgets = {};
+var weightedModelRows = null;
+var constantValue = 0;
+var function=null;
+var weightedModel = [];
+
+DEBUGMESSAGE(formulaName+ "widgetId=",widgetId);
+
+if (widgetId == 'visualModelingSaveClick' and not isEventHandled) {
+	DEBUGMESSAGE(formulaName+ "widgetId=","APPLY");
+	weightedModelRows = routerMap["widgets"]["weightedModelTable"]["value"]["values"];
+	constantValue 	= routerMap["widgets"]["inputWidget"]["value"]["inputValue"];
+	function 		= routerMap["widgets"]["dropdown"]["value"]["value"];
+	#function 	= routerMap["widgets"]["dropdown"]["value"]["valueInput"];
+	
+	put(weightedModel,"function",function);
+	put(weightedModel,"constantValue",constantValue);
+	put(weightedModel,"weightedModelRows",weightedModelRows);
+	
+	put(symbolTable,"weightedModel",weightedModel);
+
+	widgets = WeightedModelWoe_PageLib.saveButton_onClick(user, routerMap, symbolTable);
+    isEventHandled = TRUE;
+}
+IF (ISLIKE(widgetId, "%_0") AND NOT isEventHandled) THEN {
+    widgets = WeightedModelWoe_PageLib.dropdownNewRow_onClick(user, routerMap, symbolTable);
+    isEventHandled = TRUE;
+}
+IF (ISLIKE(widgetId, "%_2") AND NOT isEventHandled) THEN {
+    widgets = WeightedModelWoe_PageLib.deleteLink_onClick(user, routerMap, symbolTable);
+    isEventHandled = TRUE;
+}
+
+
+if (not isEventHandled) {
+    DEBUGMESSAGE(formulaName, "EVENT NOT HANDLED: THIS ROW SHOULDN'T BE LOGGED");
+}
+DEBUGMESSAGE(formulaName, "END");
+return widgets;

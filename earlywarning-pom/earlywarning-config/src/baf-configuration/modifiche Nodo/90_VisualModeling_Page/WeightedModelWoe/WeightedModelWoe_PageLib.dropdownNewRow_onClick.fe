@@ -1,0 +1,60 @@
+VAR formulaName = "[WeightedModel_PageLib.dropdownNewRow_onClick] ";
+DEBUGMESSAGE(formulaName, "START");
+
+# FEArray widgetList = WeightedModel_PageLib.dropdownNewRow_onClick(user, routerMap, symbolTable);
+# Param1:       FEString    user
+# Param2:       FEMap       router map
+# Param3:       FEMap       symbol table map
+# RESULT VALUE: FEArray     an array of widget
+# EFFECTS       -           some symbol table entry will be modified
+
+# VAR user = "Analyst";
+# VAR routerMap = ;
+# VAR symbolTable = ;
+# VAR widgetList = WeightedModel_PageLib.dropdownNewRow_onClick(user, routerMap, symbolTable);
+
+
+VAR user = Param1;
+VAR routerMap = Param2;
+VAR symbolTable = Param3;
+
+VAR eventContext = routerMap["eventContext"];
+VAR widgetId = routerMap["widgetId"];
+
+var dataTableValue = routerMap['widgets']['weightedModelTable']['value']['values'];
+var numRows = SIZE(dataTableValue);
+var dataTableIds = {};
+
+VAR row = SPLIT(widgetId,'_');
+VAR indexRow = NUM(row[1]);
+
+var dropdown = routerMap['widgets'][widgetId];
+dropdown['value']['eventType'] = '';
+
+var slider = routerMap['widgets']['weightedModelTable_'+ indexRow + '_1'];
+slider['value']['notEditable'] = false;
+
+var link = routerMap['widgets']['weightedModelTable_'+ indexRow + '_2'];
+link['value']['label'] = 'Delete';
+link['value']['eventType'] = 'refresh';
+link['value']['class'] = 'link-style text-right';
+
+VAR id = 0;
+foreach(dataTableValue as dataRow){
+    ADDELEMENT(dataTableIds, id);
+    id = id + 1;
+}
+
+dataTableValue[numRows-1][0] = dropdown['value'];
+dataTableValue[numRows-1][1] = slider['value'];
+dataTableValue[numRows-1][2] = link['value'];
+
+# add an empty row
+VAR cols = symbolTable['cols'];
+VAR resultMap = WeightedModelWoe.getNewEmptyRow(dataTableValue, dataTableIds, cols);
+dataTableValue = resultMap['weightedModelRows'];
+dataTableIds = resultMap['idsWM'];
+
+VAR widgets = {routerMap['widgets']['weightedModelTable']};
+
+return widgets;

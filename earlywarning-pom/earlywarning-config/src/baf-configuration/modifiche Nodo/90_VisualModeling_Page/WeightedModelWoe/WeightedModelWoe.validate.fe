@@ -1,0 +1,26 @@
+VAR formulaName = "[WeightedModelWoe.validate] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR user = Param1;
+VAR routerMap = Param2;
+VAR symbolTable = Param3;
+
+var validations = NULL;
+
+var weightedModel = symbolTable['weightedModel'];
+
+
+IF (weightedModel == null OR SIZE(weightedModel['weightedModelRows']) == 1){
+	validations = [
+		"widgets" : {},
+		"notifications" : {
+			[ "type" : "warning", "title" : "Invalid input", "message" : "", "autoHide" : true]
+		}
+	];
+} 
+
+
+
+
+DEBUGMESSAGE(formulaName, "END");
+RETURN validations;

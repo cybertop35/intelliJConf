@@ -1,0 +1,88 @@
+VAR formulaName = "[TransformWoe.getVariablesDatasource] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR nodeValue = Param1;
+VAR inputs = Param2;
+VAR continuousVariablesInfo = Param3;
+var thresholds = Param4;
+
+
+#{
+#	{['label': "First A"], ['label': "Richard "], ''},
+#	{['label': "First B"], ['label': "Smith"], ''},
+#	{['label': "First C"], ['label': "Richard Smith"], ''}
+#};
+
+
+
+var variablesDatasource = {};
+var varInfo = [];
+VAR row = {};
+VAR predictiveDatasourceName = Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
+
+var id = null;
+var flag_used = [];
+var abilited= TRUE;
+
+#VAR valImage = [];
+
+foreach(inputs[0]['variables'] as variable){
+	if (
+        (variable['isKeyColumn']==FALSE OR variable['isKeyColumn']==NULL) AND
+        (variable['isHiddenColumn']==FALSE OR variable['isHiddenColumn']==NULL) AND
+        (variable['isSegment']==FALSE OR variable['isSegment']==NULL) AND
+        (variable['isTargetColumn']==FALSE OR variable['isTargetColumn']==NULL) AND
+        (variable['isPossibleTarget']==FALSE OR variable['isPossibleTarget']==NULL) AND
+        (variable['isPartitioningColumn']==FALSE OR variable['isPartitioningColumn']==NULL)
+	){
+		
+		id = variable['id'];
+		flag_used = [];
+		abilited= TRUE;
+	
+
+			#DEBUGMESSAGE('----------------------------', typeof(thresholds));
+			if (thresholds <> null AND CONTAINSKEY(thresholds,id)){
+				#flag_used = 'Used';
+				flag_used = [
+            			'url' : "widgets/assets/icons/tick.png",
+						'width' : "35",
+						'height' : "35"
+						];
+				abilited = FALSE;
+
+		
+			}
+		
+		varInfo = [];
+		row = {};
+		PUT(varInfo, 'label', variable['columnLabel']);
+		ADDELEMENT(row,varInfo);
+		
+		varInfo = [];			
+		PUT(varInfo, 'label', variable['variableType']);
+		ADDELEMENT(row,varInfo);
+		
+		varInfo = [];	
+		#PUT(varInfo, 'value', flag_used);
+		ADDELEMENT(row,flag_used);
+		
+		varInfo = [];			
+		PUT(varInfo, 'value', variable['id']);
+		ADDELEMENT(row,varInfo);
+		
+		varInfo = [];			
+		PUT(varInfo, 'value', variable['id']);
+		put(varInfo, 'disabled', abilited);
+
+		
+		ADDELEMENT(row,varInfo);
+		
+		ADDELEMENT(variablesDatasource, row);
+		DEBUGMESSAGE('-------------------',row);
+    }
+}
+
+
+DEBUGMESSAGE(formulaName, "END");
+return variablesDatasource;

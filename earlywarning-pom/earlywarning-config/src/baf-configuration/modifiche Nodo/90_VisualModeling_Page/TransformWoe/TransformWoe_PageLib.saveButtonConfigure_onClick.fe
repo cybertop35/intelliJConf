@@ -1,0 +1,48 @@
+var formulaName = "[TransformWoe_PageLib.saveButtonConfigure_onClick] ";
+DEBUGMESSAGE(formulaName, "START");
+
+# FEArray widgetsAndNotifications = TransformWoe_PageLib.saveButtonConfigure_onClick(FEString user, FEMap routerMap, FEMap symbolTable);
+# Param1:       FEString    user
+# Param2:       FEMap       router map
+# Param3:       FEMap       symbol table map
+# RESULT VALUE: FEArray     an array of widget
+# EFFECTS       -           some symbol table entry will be modified
+
+# var user = "Analyst";
+# var routerMap = ;
+# var symbolTable = ;
+# var widgetsAndNotifications = TransformWoe_PageLib.saveButtonConfigure_onClick(user, routerMap, symbolTable);
+
+var user 		= Param1;
+var routerMap 	= Param2;
+var symbolTable 	= Param3;
+var eventContext 	= routerMap["eventContext"];
+VAR variableId 	= symbolTable["selectedRow"][3];
+VAR variableType 	= symbolTable["selectedRow"][1];
+variableId		= variableId["value"];
+variableType 	= variableType["label"];
+VAR thresholds;
+
+# DEBUGMESSAGE(formulaName,  routerMap['widgets']["widgetsGridPH"]["value"]["thresholds"]);
+# DEBUGMESSAGE(formulaName, 	symbolTable["thresholds"]);
+
+VAR thresholdsMap = symbolTable["thresholds"];
+IF(thresholdsMap == NULL){
+	thresholdsMap = [];
+}
+
+IF(variableType == "CONTINUOUS" ) {
+	thresholds = routerMap['widgets']["widgetsGridPH"]["value"]["thresholds"];
+	DEBUGMESSAGE('*************thresholds',thresholds);
+}
+IF(variableType == "CATEGORICAL" ) {
+	#DEBUGMESSAGE(formulaName, routerMap['widgets']["widgetsGridPH"]);
+	thresholds = routerMap['widgets']["widgetsGridPH"]["value"]["values"];
+
+}
+
+put(thresholdsMap,variableId,thresholds);
+put(symbolTable,"thresholds",thresholdsMap);
+
+DEBUGMESSAGE(formulaName, "END");
+RETURN {};

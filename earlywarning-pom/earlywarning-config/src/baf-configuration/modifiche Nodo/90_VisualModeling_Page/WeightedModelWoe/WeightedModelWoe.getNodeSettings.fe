@@ -1,0 +1,22 @@
+VAR formulaName = "[WeightedModelWoe.getNodeSettings] ";
+DEBUGMESSAGE(formulaName, "START");
+
+# FENull nullValue = WeightedModelWoe.getNodeSettings(FEMap symbolTable);
+# Param1:       FEMap       the page symbol table
+# RESULT VALUE: FENull      none
+# EFFECTS       -           the symbolTable['nodeValue'] entry will be filled
+# There are no return value and the symbolTable['nodeValue'] entry will be filled
+#  with all node page information
+
+# VAR symbolTable = [];
+# VAR nullValue = WeightedModelWoe.getNodeSettings(symbolTable);
+
+VAR user = Param1;
+VAR routerMap = Param2;
+VAR symbolTable = Param3;
+
+LIB_VMCommons.setNodeInfo(symbolTable, "TRFWM_WOE", NULL);
+PUT(symbolTable['nodeValue'], 'weightedModel',symbolTable['weightedModel']);
+
+DEBUGMESSAGE(formulaName, "END");
+RETURN null;
