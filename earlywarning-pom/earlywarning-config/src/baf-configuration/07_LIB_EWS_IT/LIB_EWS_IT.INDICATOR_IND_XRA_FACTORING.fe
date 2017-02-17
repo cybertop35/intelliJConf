@@ -1,0 +1,22 @@
+VAR formulaName = "[LIB_EWS_IT.INDICATOR_86.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+
+cast(case 
+		WHEN  REGEXP_SIMILAR(FT_FACTORING,'^(((45)?;?)|((46)?;?)|((47)?;?)|((48)?;?)|((58)?;?))*$','i') = 1 THEN 1	
+		ELSE 0
+	END  
+	as char(1)
+	) AS IND_XRA_FACTORING	
+,
+CAST (NULL as VARCHAR(5) ) AS ERROR_MSG_IND_XRA_FACTORING
+";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;
