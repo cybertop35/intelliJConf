@@ -71,7 +71,7 @@ FOREACH ( WORKSPACE_PLAN_LIST as WORKSPACE ){
 		modelSelct= "SELECT   SNDG										AS SNDG_MODEL,
 							SCORE_000023_WM 							AS SCORE_CR_SISTEMA,
 							SCORE_000045_WM 							AS SCORE_CR_ALZO_ZERO,
-							SCORE_000046_WM 							AS SCORE_XRA,
+							XRA_RIEMPIMENTO 							AS SCORE_XRA, 
 							"+axis['xAxis']+" 							AS COLOR_CR_SISTEMA,
 							"+axis['yAxis']+" 							AS COLOR_CR_ALZO_ZERO,
 							CASE 
@@ -82,9 +82,9 @@ FOREACH ( WORKSPACE_PLAN_LIST as WORKSPACE ){
 								ELSE 'S00' 
 							END as COLOR_XRA, 
 							"+LIB_EWS.getSqlDecodeColors("MATRIX_0")+ " AS MATRIX_COLOR_CR,
-							SCORE_000046_WM_WOE							AS SCORE_XRA_WOE, 
+							XRA_RIEMPIMENTO_WOE							AS SCORE_XRA_WOE, 
 							MATRIX_0_WOE 								AS MATRIX_SCORE_CR, 
-							SCORE_000242_WM 							AS SCORE_CR_XRA 
+							SCORE_000988_WM 							AS SCORE_CR_XRA 
 					FROM "+modelTable+"_VM";
 	}
 	else {

@@ -12,7 +12,7 @@ VAR models;
 VAR logActionName	= "UpdatePredictiveModel";
 
 workspace 	= analysisUnit.Workspace_AnalysisUnit.Workspace;
-models 		= workspace.Model_Workspace.Predictive_Model[Topology <> null].ID;
+models 		= workspace.Model_Workspace.Predictive_Model[Topology <> null and VisualModelingStatus = 'Candidate' ].ID;
 
 foreach (models as predictiveModelId ){
 	SAVE_LOG("Info", logActionName, "Start update model: "+predictiveModelId);

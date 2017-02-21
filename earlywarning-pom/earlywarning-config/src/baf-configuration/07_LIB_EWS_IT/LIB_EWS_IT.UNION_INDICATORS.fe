@@ -226,7 +226,7 @@ sql = "select
 	,"+ LIB_EWS_IT.INDICATOR_QUOTA_EXP_GRP2() +"
 	,"+ LIB_EWS_IT.INDICATOR_QUOTA_EXP_GRP3() +"
 	
-	,"+ LIB_EWS_IT.INDICATOR_IND_XRA_FACTORING() +"
+	,"+ LIB_EWS_IT.INDICATOR_276_XRA_FACTORING() +"
 	
 
 	from "+schema+"."+customerUnit.Source_tableName;
