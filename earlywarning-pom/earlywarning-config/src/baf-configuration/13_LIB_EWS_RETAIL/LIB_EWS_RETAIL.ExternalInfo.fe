@@ -20,8 +20,8 @@ var setup =["CRR_INDICATOR":"IND_02",
 			"fieldList" : {"CI_EXPOSURE", "CI_SCONFINO"},
 			"keyColumn" : "SNDG",
 			"backtestingMonth": 3,
-			"updateOutput": "LIB_EWS_RETAIL.updateOutputTable_RETAIL(Param1);",
-			"updateAnalysisTable": "LIB_EWS_RETAIL.UpdateAnalysisUnit_RETAIL(Param1);"
+			"updateOutput": "LIB_EWS_RETAIL.updateOutputTable_IT(Param1);",
+			"updateAnalysisTable": "LIB_EWS_RETAIL.UpdateAnalysisUnit_IT(Param1);"
 		];
 DEBUGMESSAGE(formulaName, "END");
 return setup;

@@ -8,7 +8,7 @@ VAR schema = customerUnit.TeradataSchema;
 VAR sql = "";
 
 sql = "select 
-		COD_SNDG ad SNDG
+		COD_SNDG as SNDG
 		,null as TARGET
 		,NULL as EXPOSURE
 		,'Retail' as SEGMENT
