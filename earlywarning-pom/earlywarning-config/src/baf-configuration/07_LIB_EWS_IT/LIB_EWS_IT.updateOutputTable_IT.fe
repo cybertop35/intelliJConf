@@ -53,6 +53,7 @@ VAR modelID;
 VAR modelSelct ;
 VAR modelTable;
 var axis;
+VAR columnsWoe;
 FOREACH ( WORKSPACE_PLAN_LIST as WORKSPACE ){
 
 	LIB_DB.DropTableIfExists("TMP_OUTWP_"+WORKSPACE.ID,DBCONNECTION);   
@@ -67,24 +68,19 @@ FOREACH ( WORKSPACE_PLAN_LIST as WORKSPACE ){
         model = Predictive_Model[ID=$modelID];
       
         axis = LIB_EWS_IT.getMatrixAxis(model); 
-        
-		modelSelct= "SELECT   SNDG										AS SNDG_MODEL,
-							SCORE_000023_WM 							AS SCORE_CR_SISTEMA,
-							SCORE_000045_WM 							AS SCORE_CR_ALZO_ZERO,
-							SCORE_000046_WM 							AS SCORE_XRA,
-							"+axis['xAxis']+" 							AS COLOR_CR_SISTEMA,
-							"+axis['yAxis']+" 							AS COLOR_CR_ALZO_ZERO,
-							CASE 
-								WHEN SCORE_XRA < -3.175998827 THEN 'S01'
-								WHEN SCORE_XRA >= -3.175998827 and SCORE_XRA < -2.487701243 THEN 'S10'
-								WHEN SCORE_XRA >= -2.487701243 and SCORE_XRA < -1.73345452 THEN 'S20'
-								WHEN SCORE_XRA >= -1.73345452 THEN 'S30'
-								ELSE 'S00' 
-							END as COLOR_XRA, 
-							"+LIB_EWS.getSqlDecodeColors("MATRIX_0")+ " AS MATRIX_COLOR_CR,
-							SCORE_000046_WM_WOE							AS SCORE_XRA_WOE, 
-							MATRIX_0_WOE 								AS MATRIX_SCORE_CR, 
-							SCORE_000242_WM 							AS SCORE_CR_XRA 
+
+		columnsWoe = LIB_EWS.getVMNodeColumnByName(model,'Score Woe');
+		modelSelct =" SELECT SNDG 																					AS SNDG_MODEL,
+					"+ARRAY_TO_STRING(LIB_EWS.getVMNodeColumnByName(model,'CR Sistema')) +" 							AS SCORE_CR_SISTEMA,
+					"+ARRAY_TO_STRING(LIB_EWS.getVMNodeColumnByName(model,'CR alzo zero')) +" 							AS SCORE_CR_ALZO_ZERO,
+					"+ARRAY_TO_STRING(LIB_EWS.getVMNodeColumnByName(model,'Override Score XRA')) +"					AS SCORE_XRA,
+					"+axis['xAxis']+" 																			AS COLOR_CR_SISTEMA,
+					"+axis['yAxis']+" 																			AS COLOR_CR_ALZO_ZERO,
+					"+ARRAY_TO_STRING(LIB_EWS.getVMNodeColumnByName(model,'Color XRA')) +"								AS COLOR_XRA,
+					"+LIB_EWS.getSqlDecodeColors(ARRAY_TO_STRING(LIB_EWS.getVMNodeColumnByName(model,'CR Matrix'))) +"	AS MATRIX_COLOR_CR,
+					"+columnsWoe[0]+"																				AS SCORE_XRA_WOE,
+					"+columnsWoe[1]+"																				AS MATRIX_SCORE_CR,
+					"+ARRAY_TO_STRING(LIB_EWS.getVMNodeColumnByName(model,'Score CR_XRA'))+"							AS SCORE_CR_XRA
 					FROM "+modelTable+"_VM";
 	}
 	else {

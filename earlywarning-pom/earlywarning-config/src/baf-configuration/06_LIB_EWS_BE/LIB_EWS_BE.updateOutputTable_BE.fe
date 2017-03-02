@@ -22,13 +22,18 @@ VAR resultAnalysisUnitsTable= "ANALYSIS_UNITS";
 VAR indicatorsTable = "T_TEMP_BE";
 VAR CURRENT_DATE = PARSESTRING(NOW(),'dd/MM/YYYY');
 
+
+VAR  localSchema = SQLEXECUTE("select database",DBCONNECTION,NULL,{});
+
+localSchema = localSchema[0][0];
+
 foreach(analysisUnitList as unit){
 	
 	if(LIB_DB.isTableExisting(unit.ResultTableName,DBCONNECTION) and LIB_EWS.checkAnalysisUnitStatus(unit) == true) THEN {	
 		resultAnalysisUnits = resultAnalysisUnits + " select "+unit.ResultTableName +".*				
 				from "+unit.ResultTableName +" "+unit.ResultTableName + "
 					 JOIN "+customerUnit.TeradataSchema+ "." +customerUnit.Source_tableName + " "+customerUnit.Source_tableName+ " on " +customerUnit.Source_tableName+".SNDG = "+unit.ResultTableName+".SNDG AND  " +customerUnit.Source_tableName+".COUNTRY = "+unit.ResultTableName+".COUNTRY
-					 JOIN "+unit.AnalyticalTable + " "+ unit.AnalyticalTable+ " on " +unit.AnalyticalTable+".SNDG = "+unit.ResultTableName+".SNDG AND " +unit.AnalyticalTable+".COUNTRY = "+unit.ResultTableName+".COUNTRY
+					 JOIN "+localSchema+"." +unit.AnalyticalTable + " "+ unit.AnalyticalTable+ " on " +unit.AnalyticalTable+".SNDG = "+unit.ResultTableName+".SNDG AND " +unit.AnalyticalTable+".COUNTRY = "+unit.ResultTableName+".COUNTRY
 				WHERE TO_CHAR("+unit.ResultTableName +".creation_date,'dd/MM/YYYY') = '"+CURRENT_DATE+"'
 				and "+customerUnit.Source_tableName+".SYSTEM_DATE = "+unit.AnalyticalTable+".SYSTEM_DATE";
         
