@@ -15,9 +15,9 @@ DEBUGMESSAGE(formulaName, "START");
 
 var user = Param1;
 var routerMap = Param2;
-var eventContext = routerMap["eventContext"];
 var symbolTable = Param3;
 
+var eventContext = routerMap["eventContext"];
 var widgets = {};
 var notifications = {};
 var widgetsAndNotifications = [
