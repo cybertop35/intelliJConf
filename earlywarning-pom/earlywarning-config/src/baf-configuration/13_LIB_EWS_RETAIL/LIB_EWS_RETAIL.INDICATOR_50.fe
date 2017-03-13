@@ -1,0 +1,27 @@
+VAR formulaName = "[LIB_EWS_RETAIL.INDICATOR_50.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+
+CAST(
+	CASE
+		WHEN IMP_SCONF_AUTOR IS NULL THEN NULL
+		WHEN IMP_SCONF_AUTOR >= 1 THEN '0'
+		ELSE '1'
+	END AS CHAR(1)) AS IND_50,
+
+	CASE
+		WHEN IMP_SCONF_AUTOR IS NULL THEN ''
+		WHEN IMP_SCONF_AUTOR >= 1 THEN ''
+		ELSE ''
+END AS ERROR_MSG_IND_50
+
+";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;
