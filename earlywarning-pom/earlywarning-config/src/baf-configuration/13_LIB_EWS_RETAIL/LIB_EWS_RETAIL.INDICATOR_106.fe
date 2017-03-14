@@ -5,7 +5,6 @@ VAR sql = "";
 
 sql = "
 
-NUM_COEF_IMPG_DIR 
 
 CAST(
 	CASE
