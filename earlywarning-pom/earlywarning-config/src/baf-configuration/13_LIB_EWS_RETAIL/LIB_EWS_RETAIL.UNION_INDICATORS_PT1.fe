@@ -47,11 +47,7 @@ select
 	,"+ LIB_EWS_RETAIL.INDICATOR_81() +" 
 	,"+ LIB_EWS_RETAIL.INDICATOR_82() +" 
 	,"+ LIB_EWS_RETAIL.INDICATOR_83() +" 
-	,"+ LIB_EWS_RETAIL.INDICATOR_84() +" 
-	,"+ LIB_EWS_RETAIL.INDICATOR_85() +"
-	,"+ LIB_EWS_RETAIL.INDICATOR_86() +"
-	,"+ LIB_EWS_RETAIL.INDICATOR_87() +"
-
+	
 	from "+schema+"."+customerUnit.Source_tableName;
 
 
