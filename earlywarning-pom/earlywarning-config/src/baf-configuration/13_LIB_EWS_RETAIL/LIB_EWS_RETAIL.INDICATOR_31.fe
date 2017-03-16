@@ -5,11 +5,9 @@ VAR sql = "";
 
 sql = "
 
-case 
-	when FLG_JD_COV_NON_RISP_SAN is null then '0'
-	else FLG_JD_COV_NON_RISP_SAN
-end AS IND_31
-,null AS ERROR_MSG_IND_31
+NVL( CAST(FLG_JD_COV_NON_RISP_SAN AS CHAR(1)) , '0') AS IND_31, 
+NULL AS ERROR_MSG_IND_31
+
 		";
 
 

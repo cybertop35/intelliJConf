@@ -4,8 +4,9 @@ DEBUGMESSAGE(formulaName, "START");
 VAR sql = "";
 
 sql = "
-	FLG_NOPG_AN_RIF AS IND_19
-	,null AS ERROR_MSG_IND_19
+
+NVL( CAST(FLG_NOPG_AN_RIF AS CHAR(1)) , '0') AS IND_19, 
+NULL AS ERROR_MSG_IND_19
 
 ";
 

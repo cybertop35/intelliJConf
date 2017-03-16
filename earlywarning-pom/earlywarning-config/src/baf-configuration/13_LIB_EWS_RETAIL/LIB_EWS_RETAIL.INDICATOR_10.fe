@@ -4,8 +4,10 @@ DEBUGMESSAGE(formulaName, "START");
 VAR sql = "";
 
 sql = "
-FLG_PROTEST AS IND_10
-,null AS ERROR_MSG_IND_10
+
+NVL( CAST(FLG_PROTEST AS CHAR(1)) , '0') AS IND_10, 
+NULL AS ERROR_MSG_IND_10
+
 
 ";
 

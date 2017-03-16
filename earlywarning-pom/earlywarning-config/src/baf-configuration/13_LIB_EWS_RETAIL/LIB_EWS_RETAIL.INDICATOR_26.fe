@@ -4,6 +4,7 @@ DEBUGMESSAGE(formulaName, "START");
 VAR sql = "";
 
 sql = "
+
 	NVL( CAST(FLG_JD_PASTDUE_PUBCRED_EMPL AS CHAR(1)) , '0')
 		AS IND_26,
 		NULL AS ERROR_MSG_IND_26
