@@ -127,7 +127,7 @@ if(widgetId == "buttonSave" AND NOT isEventHandled) THEN {
 		}
     } else if(isCategorical){
 		thresholds = routerMap['widgets']["widgetsGridPH"]["value"]["thresholds"];
-		var reg = "[\"NEW VALUE...\"!@#$%^&*()_+]";
+		var reg = "(?i)[\"NEW VALUE...\"!@#$%^&*()+](?-i).*";
 		var scorefk;
 		var g = {};
 
