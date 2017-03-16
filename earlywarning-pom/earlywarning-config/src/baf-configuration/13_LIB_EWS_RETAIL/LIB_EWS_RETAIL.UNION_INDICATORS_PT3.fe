@@ -24,6 +24,8 @@ sql = "
 	,"+ LIB_EWS_RETAIL.INDICATOR_229() +"
 	,"+ LIB_EWS_RETAIL.INDICATOR_230() +"
 	,"+ LIB_EWS_RETAIL.INDICATOR_231() +"
+	,"+ LIB_EWS_RETAIL.INDICATOR_150() +"
+	,"+ LIB_EWS_RETAIL.INDICATOR_151() +"
 
 	from "+schema+"."+customerUnit.Source_tableName;
 
