@@ -5,56 +5,31 @@ VAR sql = "";
 
 sql = "
 
+-- la media delle 3 somme m0 m1 m2
+-- controllo su tutti i campi null then null
+
 	(greatest(zeroifnull(IMP_SALDO_CC_M0)     , 0)+
 	 greatest(zeroifnull(IMP_VAL_MERC_CD_M0)  , 0)+
 	 greatest(zeroifnull(IMP_SALDO_PCT_M0)    , 0)+
 	 greatest(zeroifnull(IMP_SALDO_GPM_M0)    , 0)+
 	 greatest(zeroifnull(IMP_SALDO_ASSIC_M0)  , 0)) AS SUM_IND_71_M0,
-	
-	CASE 
-		WHEN (SUM_IND_71_M0 = 0) THEN NULL
-		ELSE CAST(SUM_IND_71_M0 /
-			(NVL2(IMP_SALDO_CC_M0,1,0)+
-			NVL2(IMP_VAL_MERC_CD_M0,1,0)+
-			NVL2(IMP_SALDO_PCT_M0,1,0)+
-			NVL2(IMP_SALDO_GPM_M0,1,0)+
-			NVL2(IMP_SALDO_ASSIC_M0,1,0)) AS DECIMAL(30,4))
-	END AS IND_71_M0,
-	 
+		 
 	(greatest(zeroifnull(IMP_SALDO_CC_M1)     , 0)+
 	 greatest(zeroifnull(IMP_VAL_MERC_CD_M1)  , 0)+
 	 greatest(zeroifnull(IMP_SALDO_PCT_M1)    , 0)+
 	 greatest(zeroifnull(IMP_SALDO_GPM_M1)    , 0)+
 	 greatest(zeroifnull(IMP_SALDO_ASSIC_M1)  , 0)) AS SUM_IND_71_M1,
-	
-	CASE 
-		WHEN (SUM_IND_71_M1 = 0) THEN NULL 
-		ELSE CAST(SUM_IND_71_M1 /
-			(NVL2(IMP_SALDO_CC_M1,1,0)+
-			NVL2(IMP_VAL_MERC_CD_M1,1,0)+
-			NVL2(IMP_SALDO_PCT_M1,1,0)+
-			NVL2(IMP_SALDO_GPM_M1,1,0)+
-			NVL2(IMP_SALDO_ASSIC_M1,1,0)) AS DECIMAL(30,4))
-	END AS IND_71_M1,
 
 	(greatest(zeroifnull(IMP_SALDO_CC_M2)     , 0)+
 	 greatest(zeroifnull(IMP_VAL_MERC_CD_M2)  , 0)+
 	 greatest(zeroifnull(IMP_SALDO_PCT_M2)    , 0)+
 	 greatest(zeroifnull(IMP_SALDO_GPM_M2)    , 0)+
 	 greatest(zeroifnull(IMP_SALDO_ASSIC_M2)  , 0)) AS SUM_IND_71_M2,
-	
-	CASE 
-		WHEN (SUM_IND_71_M2 = 0) THEN NULL
-		ELSE CAST(SUM_IND_71_M2 /
-			(NVL2(IMP_SALDO_CC_M2,1,0)+
-			NVL2(IMP_VAL_MERC_CD_M2,1,0)+
-			NVL2(IMP_SALDO_PCT_M2,1,0)+
-			NVL2(IMP_SALDO_GPM_M2,1,0)+
-			NVL2(IMP_SALDO_ASSIC_M2,1,0)) AS DECIMAL(30,4))
-	END AS IND_71_M2,
 
-CAST(
-	(IND_71_M0 + IND_71_M1 + IND_71_M2) AS DECIMAL(30,4)) AS IND_71,
+CAST
+	CASE
+		ELSE (SUM_IND_71_M0 + SUM_IND_71_M1 + SUM_IND_71_M2) / (NVL2(SUM_IND_71_M0,1,0) + NVL2(SUM_IND_71_M1,1,0) + NVL2(SUM_IND_71_M2,1,0)) 
+	END AS DECIMAL(30,4)) AS IND_71,
 
 	CASE
 		WHEN (SUM_IND_71_M0 = 0 OR SUM_IND_71_M1 = 0 OR SUM_IND_71_M2 = 0) THEN 'AFI000_1'

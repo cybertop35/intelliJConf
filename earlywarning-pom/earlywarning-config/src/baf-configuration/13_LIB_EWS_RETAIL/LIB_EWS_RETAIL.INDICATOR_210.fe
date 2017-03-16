@@ -5,6 +5,8 @@ VAR sql = "";
 
 sql = "
 
+-- media delle 3 somme 
+
 			(zeroifnull(IMP_SALDO_CC_M0) 		+
 	 greatest(zeroifnull(IMP_VAL_MERC_CD_M0)  , 0)+
 	 greatest(zeroifnull(IMP_SALDO_PCT_M0)    , 0)+
