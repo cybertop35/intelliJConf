@@ -6,7 +6,7 @@ VAR sql = "";
 sql = "
 
 null as IND_100,
-'' as ERROR_MSG_IND_100
+NULL as ERROR_MSG_IND_100
 
 /*
 CAST(

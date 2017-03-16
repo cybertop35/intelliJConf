@@ -23,5 +23,3 @@ DEBUGMESSAGE(formulaName, sql);
 DEBUGMESSAGE(formulaName, "END");
 
 return sql;
-
---il piu grande fra 150 e variabile
