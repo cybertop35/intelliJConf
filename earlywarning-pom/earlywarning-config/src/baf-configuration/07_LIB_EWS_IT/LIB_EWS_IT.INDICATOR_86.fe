@@ -11,7 +11,7 @@ cast(
 		else ESP_FL_SCONFINO_CTPY
 	end as char(1)) AS IND_86	
 ,
-CASE when ESP_FL_SCONFINO_CTPY is null then 'ESP000_1'
+CASE when ESP_FL_SCONFINO_CTPY is null then 'ESP003_1'
 		else ''
 END AS ERROR_MSG_IND_86
 ";
