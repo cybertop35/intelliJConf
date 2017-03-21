@@ -5,8 +5,6 @@ VAR sql = "";
 
 sql = "
 
--- la media delle 3 somme m0 m1 m2
--- controllo su tutti i campi null then null
 
 	(greatest(zeroifnull(IMP_SALDO_CC_M0)     , 0)+
 	 greatest(zeroifnull(IMP_VAL_MERC_CD_M0)  , 0)+
