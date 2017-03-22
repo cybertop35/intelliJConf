@@ -18,12 +18,54 @@ VAR T_OUT 			= analysisUnitInstance.ResultTableName;
 VAR DBCONNECTION 	= Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
 VAR SQL;
 VAR CREATED = FALSE;
-
+VAR model;
+var modelTable;
+var keyColumn = Utils.SingleSetToElement(analysisUnitInstance.AnalysisUnit_Variable.Variable[IsKeyColumn=true].ColumnName);
 foreach(wp_list as wp){
-		LIB_DB.DropTableIfExists("TMP_OUTWP_"+wp.ID,DBCONNECTION);
-        SQLEXECUTE("CREATE TABLE TMP_OUTWP_"+wp.ID+" AS ( "+  LIB_EWS.getQueryOutputForWorkplace(wp) +" ) WITH DATA PRIMARY INDEX(SNDG)",DBCONNECTION,NULL,{});
+		
+		model = Utils.SingleSetToElement(wp.WorkspacePlan_Matrix.Matrix.Matrix_Model.Model.ID);
         
-		SQL = SQL +" SELECT t.* ,CURRENT_DATE AS CREATION_DATE FROM TMP_OUTWP_"+wp.ID+" t";
+		
+		LIB_DB.DropTableIfExists("TMP_OUTWP_EN_"+wp.ID,DBCONNECTION);
+		LIB_DB.DropTableIfExists("TMP_OUTWP_VM_"+wp.ID,DBCONNECTION);
+		LIB_DB.DropTableIfExists("TMP_OUTWP_"+wp.ID,DBCONNECTION);
+        
+		IF (model <> NULL ){
+			model = Predictive_Model[ID=$model];
+			modelTable = model.ResultTableName;
+			
+			
+						
+			SQLEXECUTE("CREATE TABLE TMP_OUTWP_VM_"+wp.ID+" AS ( 
+					
+					SELECT "+keyColumn+"
+						,"+LIB_EWS.getSqlDecodeColors(Utils.SingleSetToElement(LIB_EWS.getVMNodeColumnByName(model,'Client Mispayment Color')))+" 		AS RESULT_MODULE_01
+						,"+LIB_EWS.getSqlDecodeColors(Utils.SingleSetToElement(LIB_EWS.getVMNodeColumnByName(model,'handing Account Color')))+" 		AS RESULT_MODULE_02
+						,"+LIB_EWS.getSqlDecodeColors(Utils.SingleSetToElement(LIB_EWS.getVMNodeColumnByName(model,'Balance Sheet Color')))+" 			AS RESULT_MODULE_03
+						,"+LIB_EWS.getSqlDecodeColors(Utils.SingleSetToElement(LIB_EWS.getVMNodeColumnByName(model,'Client-handing')))+"			 	AS RESULT_MODULE_04
+						,"+LIB_EWS.getSqlDecodeColors(Utils.SingleSetToElement(LIB_EWS.getVMNodeColumnByName(model,'Client-handing-Balance')))+" 		AS RESULT_MODULE_05
+					
+					FROM "+modelTable+"_VM					
+					
+				) WITH DATA PRIMARY INDEX(SNDG)",DBCONNECTION,NULL,{});
+		
+			  SQLEXECUTE("CREATE TABLE TMP_OUTWP_EN_"+wp.ID+" AS ( "+  
+					LIB_EWS.getQueryOutputForWorkplace(wp) +" 		
+				) WITH DATA PRIMARY INDEX(SNDG)",DBCONNECTION,NULL,{});
+		
+		}
+		
+		SQL = SQL +" SELECT EN."+keyColumn+"
+        					,"+ARRAY_TO_STRING(Utils.getColumnName ("TMP_OUTWP_EN_"+wp.ID,{"SNDG","RESULT_MODULE_01","RESULT_MODULE_02","RESULT_MODULE_03","RESULT_MODULE_04","RESULT_MODULE_05"}) )+"
+						   ,VM.RESULT_MODULE_01
+						   ,VM.RESULT_MODULE_02
+						   ,VM.RESULT_MODULE_03
+						   ,VM.RESULT_MODULE_04
+						   ,VM.RESULT_MODULE_05
+						  ,CURRENT_DATE AS CREATION_DATE 
+					FROM TMP_OUTWP_VM_"+wp.ID+" VM 
+						JOIN  TMP_OUTWP_EN_"+wp.ID+" EN ON EN."+keyColumn+" = VM."+keyColumn+" 
+					";
 		SQL = SQL + " UNION ALL ";
 }
 SQL = SUBSTRING(SQL, 0, LENGTH(SQL) - 10);
