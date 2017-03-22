@@ -5,8 +5,6 @@ VAR sql = "";
 
 sql = "
 
--- media di IMP_ENTR_TOT_M0, m1 m2
-
 	(zeroifnull(IMP_ENT_CORR_M0)+
 	 zeroifnull(IMP_PAG_RAFI_M0)+
 	 zeroifnull(IMP_STIP_PE_M0) +
