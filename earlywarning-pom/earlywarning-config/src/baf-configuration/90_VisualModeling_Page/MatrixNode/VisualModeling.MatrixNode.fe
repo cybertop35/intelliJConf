@@ -1,0 +1,129 @@
+VAR formulaName = "[VisualModeling.MatrixNode] ";
+DEBUGMESSAGE(formulaName, "START");
+
+var nodeValue = Param1;
+var inputs = Param2;
+var visualModelingContext = Param3;
+
+var prevVariables = inputs[0]['variables'];
+var prevNodeTableName = inputs[0]['nodeTableName'];
+
+var workspaceId = visualModelingContext['workspaceId'];
+var analysisUnitId = visualModelingContext['analysisUnitId'];
+var modelId = visualModelingContext['modelId'];
+var sessionId = visualModelingContext['sessionId'];
+
+if (nodeValue == null) {
+	var result = LIB_VMCommons.runEmptyNode("MATRX", inputs);
+	DEBUGMESSAGE(formulaName, "NODE VALUE NULL");
+	DEBUGMESSAGE(formulaName, "END");
+    return result;
+}
+
+var nodeName = nodeValue['nodeName'];
+var nodeTableName = nodeValue['nodeTableName'];
+var nodeStatus = LIB_VMCommons.getNodeStatus(nodeName, sessionId, modelId);
+var updated = nodeStatus['updated'];
+var variables = nodeStatus['variables'];
+DEBUGMESSAGE(formulaName + ' updated : ', updated);
+
+VAR result = [];
+
+if (updated == false) {
+    # only if not yet created
+    if (nodeValue['saved'] == NULL OR nodeValue['saved'] == FALSE) {
+        LIB_VMCommons.insertSafeNodeTmpInfo(nodeName, nodeTableName, sessionId, modelId);
+    }
+
+    var predictiveDatasourceName = Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
+    LIB_DB.DropTableIfExists(nodeTableName, predictiveDatasourceName);
+
+    variables = CLONE(prevVariables);
+
+    # clone table structure
+    LIB_DB.cloneTableStructure(prevNodeTableName, nodeTableName, predictiveDatasourceName, null);
+
+    # add result column
+    var counter = 0;
+    var sqlColumns = NULL;
+    var sqlColumnsWithAlias = NULL;
+    FOREACH(variables as varInp){
+       # IF(ISLIKE(varInp['columnName'],'MATRIX_%')){
+       #     counter = counter + 1;
+       # }
+	   
+	   IF( SIZE(SPLIT(varInp['columnName'],"MATRIX_[0-9]([0-9])?")) == 0){
+			counter = counter + 1;
+		}
+	   
+	   
+        IF (sqlColumns <> NULL) {
+            sqlColumns = sqlColumns + ", ";
+            sqlColumnsWithAlias = sqlColumnsWithAlias + ", ";
+        }
+        sqlColumns = sqlColumns + varInp['columnName'];
+        sqlColumnsWithAlias = sqlColumnsWithAlias + "PT." + varInp['columnName'];
+    }
+    var resultColumnName = 'MATRIX_' + counter;
+    var sqlCreateNewColumn = "ALTER TABLE " + nodeTableName + " ADD " + resultColumnName + " " + LIB_DB.getDBRelatedStringType(['datasourceName' : predictiveDatasourceName]);
+    DEBUGMESSAGE(formulaName + ' VM.query : ', sqlCreateNewColumn);
+    SQLEXECUTE(sqlCreateNewColumn, predictiveDatasourceName, null, {});
+
+    # insert data
+    var symbolTable = [
+        'sessionId'                 : sessionId,
+        'data'                      : 'backtesting',
+        'analysisUnitId'            : analysisUnitId,
+        'workspaceId'               : workspaceId,
+        'matrixId'                  : NULL,
+        'fastTrackId'               : NULL,
+        'bktestAnalyticalTable'     : prevNodeTableName,
+        'analyticalTable'           : prevNodeTableName,
+        'inputVariables'            : prevVariables,
+        'matrixConfiguration'       : MatrixNode.updateMatrixConfiguration(nodeValue['matrixConfiguration'], prevNodeTableName),
+        'adjustmentsConfiguration'  : MatrixNode.updateAdjustmentsConfiguration(nodeValue['adjustmentsConfiguration']),
+        'matrixCellColors'          : nodeValue['matrixCellColors'],
+        'selectedAdjustmentMode'    : nodeValue['selectedAdjustmentMode']
+    ];
+    var matrixCalcConf = Matrix.getMatrixCalculationConf(symbolTable);
+    var adjustmentsCalcConf = Matrix.getAdjustmentCalculationConf(symbolTable);
+    var calculationQueryWithAdj = LIB_AnalysisUnit.getMatrixAndAdjCalcQuery(adjustmentsCalcConf, matrixCalcConf, symbolTable['selectedAdjustmentMode']);
+    var resultTable = "(" + calculationQueryWithAdj + ")";
+    VAR query = " insert into " + nodeTableName
+                +
+                " "
+                +
+                " SELECT PT.*, CATEGORICAL_SCORE FROM " + prevNodeTableName +" PT LEFT JOIN " + resultTable + " RT ON PT." + matrixCalcConf['keyColumn'] + " = RT." + matrixCalcConf['keyColumn'];
+    DEBUGMESSAGE(formulaName + ' VM.query : ', query);
+    SQLEXECUTE(query, predictiveDatasourceName, null, {});
+
+    # add variable
+    VAR nameIndex = SPLIT(resultColumnName, '_');
+    VAR resultColumnLabel = 'Matrix Column ' + PARSESTRING(NUM(nameIndex[1]) + 1);
+    var dataVar = [];
+    PUT(dataVar, 'id', resultColumnName);
+    PUT(dataVar, 'columnName', resultColumnName);
+    PUT(dataVar, 'columnLabel', resultColumnLabel);
+    PUT(dataVar, 'dataType', 'STRING');
+    PUT(dataVar, 'variableType', 'CATEGORICAL');
+    PUT(dataVar, 'isHiddenColumn', false);
+    PUT(dataVar, 'isKeyColumn', false);
+    PUT(dataVar, 'isTargetColumn', false);
+    PUT(dataVar, 'isSegment', false);
+    PUT(dataVar, 'isPartitioningColumn', false);
+    PUT(dataVar, 'isEmptyContinuousVariable', false);
+    PUT(dataVar, 'categoricalValues', Categorical_Score[IsFastTrackCategory=TRUE AND ID <> 'NONE'].ID ORDER BY [OrderPosition]);
+    PUT(dataVar, 'continuousValues', []);
+    ADDELEMENT(variables, dataVar);
+
+    LIB_VMCommons.setNodeStatus(nodeName, ['updated': true, 'variables': variables], sessionId, modelId);
+}
+
+result = [
+    'nodeName'      : nodeName,
+    'nodeTableName' : nodeTableName,
+    'variables'     : variables
+];
+
+DEBUGMESSAGE(formulaName, "END");
+return result;

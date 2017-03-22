@@ -29,8 +29,15 @@ localSchema = localSchema[0][0];
 
 foreach(analysisUnitList as unit){
 	
-	if(LIB_DB.isTableExisting(unit.ResultTableName,DBCONNECTION) and LIB_EWS.checkAnalysisUnitStatus(unit) == true) THEN {	
-		resultAnalysisUnits = resultAnalysisUnits + " select "+unit.ResultTableName +".*				
+	if(LIB_DB.isTableExisting(unit.ResultTableName,DBCONNECTION) and LIB_EWS.checkAnalysisUnitStatus(unit) == true) THEN {
+		
+		if(columns == null)
+			columns = ARRAY_TO_STRING( Utils.getColumnName(unit.ResultTableName,{"SNDG","COUNTRY"})   );
+		
+		resultAnalysisUnits = resultAnalysisUnits + 
+				" select "+unit.ResultTableName+".SNDG
+						,"+unit.ResultTableName+".COUNTRY
+						,"+columns +"			
 				from "+unit.ResultTableName +" "+unit.ResultTableName + "
 					 JOIN "+customerUnit.TeradataSchema+ "." +customerUnit.Source_tableName + " "+customerUnit.Source_tableName+ " on " +customerUnit.Source_tableName+".SNDG = "+unit.ResultTableName+".SNDG AND  " +customerUnit.Source_tableName+".COUNTRY = "+unit.ResultTableName+".COUNTRY
 					 JOIN "+localSchema+"." +unit.AnalyticalTable + " "+ unit.AnalyticalTable+ " on " +unit.AnalyticalTable+".SNDG = "+unit.ResultTableName+".SNDG AND " +unit.AnalyticalTable+".COUNTRY = "+unit.ResultTableName+".COUNTRY
@@ -39,12 +46,14 @@ foreach(analysisUnitList as unit){
         
 		resultAnalysisUnits = resultAnalysisUnits + " UNION ALL ";	
 		
-		columns = indicatorsTable+".*,"+ ARRAY_TO_STRING( Utils.getColumnName(unit.ResultTableName,{"SNDG","COUNTRY"})   );
+
+		
 		BR_LIST = CONCAT(BR_LIST,unit.Subset_AnalysisUnit.Business_Rule);
 	}
 
 }
 resultAnalysisUnits = SUBSTRING(resultAnalysisUnits, 0, LENGTH(resultAnalysisUnits) - 10);
+columns = columns +","+indicatorsTable+".*" ;
 
 ###############ESTRAGGO BR###################
 BR_LIST = DISTINCT(BR_LIST);
