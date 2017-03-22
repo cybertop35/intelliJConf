@@ -14,16 +14,38 @@
 	CASE WHEN IMP_ACC_REV_M0 IS NOT NULL OR
 			 IMP_ACC_REV_M1 IS NOT NULL OR
 			 IMP_ACC_REV_M2 IS NOT NULL THEN 
-				((CAST((zeroifnull(IMP_ACC_REV_M0) + zeroifnull(IMP_ACC_REV_M1) + zeroifnull(IMP_ACC_REV_M2)) AS DECIMAL(10,4)))/
-				(NVL2(IMP_ACC_REV_M0,1,0)+NVL2(IMP_ACC_REV_M1,1,0)+NVL2(IMP_ACC_REV_M2,1,0)))
+				(	CAST((	
+						(
+							zeroifnull(IMP_ACC_REV_M0) + 
+							zeroifnull(IMP_ACC_REV_M1) + 
+							zeroifnull(IMP_ACC_REV_M2)
+						) 
+							/
+						(
+							NVL2(IMP_ACC_REV_M0,1,0) +
+							NVL2(IMP_ACC_REV_M1,1,0) +
+							NVL2(IMP_ACC_REV_M2,1,0)
+						)
+					) AS DECIMAL(30,4)))
 			 ELSE NULL
 	END AS NUM_DEN_IND_222,
 
 	CASE WHEN IMP_UTIL_REV_M0 IS NOT NULL OR
 			 IMP_UTIL_REV_M1 IS NOT NULL OR
 			 IMP_UTIL_REV_M2 IS NOT NULL THEN 
-				((CAST((zeroifnull(IMP_UTIL_REV_M0) + zeroifnull(IMP_UTIL_REV_M1) + zeroifnull(IMP_UTIL_REV_M2)) AS DECIMAL(10,4)))/
-				(NVL2(IMP_UTIL_REV_M0,1,0)+NVL2(IMP_UTIL_REV_M1,1,0)+NVL2(IMP_UTIL_REV_M2,1,0)))
+				(	CAST((
+						(
+							zeroifnull(IMP_UTIL_REV_M0) + 
+							zeroifnull(IMP_UTIL_REV_M1) + 
+							zeroifnull(IMP_UTIL_REV_M2)
+						)
+							/
+						(
+							NVL2(IMP_UTIL_REV_M0,1,0) +
+							NVL2(IMP_UTIL_REV_M1,1,0) +
+							NVL2(IMP_UTIL_REV_M2,1,0)
+						)
+					) AS DECIMAL(30,4)))
 			 ELSE NULL
 	END AS DEN_DEN_IND_222,
 
@@ -40,7 +62,7 @@ CAST(
 		WHEN(NUM_IND_222 <0 AND DEN_IND_222 = 0) THEN NULL		
 		WHEN(DEN_IND_222 < 0) THEN NULL		
 		ELSE (NUM_IND_222/DEN_IND_222)
-	END AS DECIMAL(10,4)) AS IND_222,
+	END AS DECIMAL(18,4)) AS IND_222,
 		
 	CASE		
 		WHEN NUM_DEN_IND_222 IS NULL AND DEN_DEN_IND_222 IS NULL		THEN 'CRZER000_21'
