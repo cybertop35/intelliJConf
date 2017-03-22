@@ -22,18 +22,18 @@ CAST(CASE
 
 			ELSE
 			(
-				cast(zeroifnull(INFLOWS_ACCOUNT_M0 ) as decimal(18,6)) + 
-				cast(zeroifnull(INFLOWS_ACCOUNT_M1 ) as decimal(18,6)) +
-				cast(zeroifnull(INFLOWS_ACCOUNT_M2 ) as decimal(18,6)) +
-				cast(zeroifnull(INFLOWS_ACCOUNT_M3 ) as decimal(18,6)) +
-				cast(zeroifnull(INFLOWS_ACCOUNT_M4 ) as decimal(18,6)) +
-				cast(zeroifnull(INFLOWS_ACCOUNT_M5 ) as decimal(18,6)) +
-				cast(zeroifnull(INFLOWS_ACCOUNT_M6 ) as decimal(18,6)) +
-				cast(zeroifnull(INFLOWS_ACCOUNT_M7 ) as decimal(18,6)) +
-				cast(zeroifnull(INFLOWS_ACCOUNT_M8 ) as decimal(18,6)) +
-				cast(zeroifnull(INFLOWS_ACCOUNT_M9 ) as decimal(18,6)) +
-				cast(zeroifnull(INFLOWS_ACCOUNT_M10) as decimal(18,6)) +
-				cast(zeroifnull(INFLOWS_ACCOUNT_M11) as decimal(18,6)) 
+				cast(zeroifnull(INFLOWS_ACCOUNT_M0 ) as decimal(20,6)) + 
+				cast(zeroifnull(INFLOWS_ACCOUNT_M1 ) as decimal(20,6)) +
+				cast(zeroifnull(INFLOWS_ACCOUNT_M2 ) as decimal(20,6)) +
+				cast(zeroifnull(INFLOWS_ACCOUNT_M3 ) as decimal(20,6)) +
+				cast(zeroifnull(INFLOWS_ACCOUNT_M4 ) as decimal(20,6)) +
+				cast(zeroifnull(INFLOWS_ACCOUNT_M5 ) as decimal(20,6)) +
+				cast(zeroifnull(INFLOWS_ACCOUNT_M6 ) as decimal(20,6)) +
+				cast(zeroifnull(INFLOWS_ACCOUNT_M7 ) as decimal(20,6)) +
+				cast(zeroifnull(INFLOWS_ACCOUNT_M8 ) as decimal(20,6)) +
+				cast(zeroifnull(INFLOWS_ACCOUNT_M9 ) as decimal(20,6)) +
+				cast(zeroifnull(INFLOWS_ACCOUNT_M10) as decimal(20,6)) +
+				cast(zeroifnull(INFLOWS_ACCOUNT_M11) as decimal(20,6)) 
 	) 
 		/ 
 	(

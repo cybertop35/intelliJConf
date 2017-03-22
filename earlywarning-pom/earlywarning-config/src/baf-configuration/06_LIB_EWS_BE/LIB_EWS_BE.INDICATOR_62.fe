@@ -20,18 +20,18 @@ CAST(CASE
 		 ACCOUNT_BALANCE_M11 IS NULL THEN MISSING_VAL_IND_13
 	ELSE
 	(
-		cast(zeroifnull(ACCOUNT_BALANCE_M0 ) as decimal(18,6)) + 
-		cast(zeroifnull(ACCOUNT_BALANCE_M1 ) as decimal(18,6)) +
-		cast(zeroifnull(ACCOUNT_BALANCE_M2 ) as decimal(18,6)) +
-		cast(zeroifnull(ACCOUNT_BALANCE_M3 ) as decimal(18,6)) +
-		cast(zeroifnull(ACCOUNT_BALANCE_M4 ) as decimal(18,6)) +
-		cast(zeroifnull(ACCOUNT_BALANCE_M5 ) as decimal(18,6)) +
-		cast(zeroifnull(ACCOUNT_BALANCE_M6 ) as decimal(18,6)) +
-		cast(zeroifnull(ACCOUNT_BALANCE_M7 ) as decimal(18,6)) +
-		cast(zeroifnull(ACCOUNT_BALANCE_M8 ) as decimal(18,6)) +
-		cast(zeroifnull(ACCOUNT_BALANCE_M9 ) as decimal(18,6)) +
-		cast(zeroifnull(ACCOUNT_BALANCE_M10) as decimal(18,6)) +
-		cast(zeroifnull(ACCOUNT_BALANCE_M11) as decimal(18,6)) 
+		cast(zeroifnull(ACCOUNT_BALANCE_M0 ) as decimal(20,6)) + 
+		cast(zeroifnull(ACCOUNT_BALANCE_M1 ) as decimal(20,6)) +
+		cast(zeroifnull(ACCOUNT_BALANCE_M2 ) as decimal(20,6)) +
+		cast(zeroifnull(ACCOUNT_BALANCE_M3 ) as decimal(20,6)) +
+		cast(zeroifnull(ACCOUNT_BALANCE_M4 ) as decimal(20,6)) +
+		cast(zeroifnull(ACCOUNT_BALANCE_M5 ) as decimal(20,6)) +
+		cast(zeroifnull(ACCOUNT_BALANCE_M6 ) as decimal(20,6)) +
+		cast(zeroifnull(ACCOUNT_BALANCE_M7 ) as decimal(20,6)) +
+		cast(zeroifnull(ACCOUNT_BALANCE_M8 ) as decimal(20,6)) +
+		cast(zeroifnull(ACCOUNT_BALANCE_M9 ) as decimal(20,6)) +
+		cast(zeroifnull(ACCOUNT_BALANCE_M10) as decimal(20,6)) +
+		cast(zeroifnull(ACCOUNT_BALANCE_M11) as decimal(20,6)) 
 	) 
 		/ 
 	(
