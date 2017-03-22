@@ -87,20 +87,7 @@ if (updated == false){
 	PUT(dataVar, 'columnName', 	columName + "_WM");
 	PUT(dataVar, 'columnLabel',	columName + " New (WM Woe)");
 	
-	if (function =='EXP'){
-		statement = statement +"
-					CAST ( CASE 
-							WHEN "+EXPRESSION+" >=700 THEN EXP(700)
-							WHEN "+EXPRESSION+" <=700 THEN EXP(-700)
-							ELSE EXP("+EXPRESSION+")
-							END
-						AS DECIMAL (30,12)	
-						) as	" +dataVar['columnName']
-			
-	
-	}
-	else
-		statement = statement + "CAST( "+function+"( "+constantValue + " + (" +EXPRESSION +" ) ) AS DECIMAL(30,12)) as " +dataVar['columnName'] ;
+	statement = statement + "CAST( "+function+"( "+constantValue + " + (" +EXPRESSION +" ) ) AS DECIMAL(36,12)) as " +dataVar['columnName'] ;
 	
     # create result table
     var query = "CREATE TABLE " + nodeTableName + " AS ( SELECT " + statement + "  FROM " + prevNodeTableName +") WITH DATA PRIMARY INDEX(SNDG)";
