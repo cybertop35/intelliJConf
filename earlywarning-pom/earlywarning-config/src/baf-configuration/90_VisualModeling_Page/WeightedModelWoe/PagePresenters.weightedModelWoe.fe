@@ -24,12 +24,16 @@ var functionItems			= {['label' 	: 'Exp'			, 'value' : 'EXP'	,'selected':FALSE],
 						   ['label'	: 'Log'			, 'value' : 'LOG'	,'selected':FALSE]
 						  };
 
+var variablesInfo = NULL;#LIB_VMCommons.getVariablesInfo(inputs[0]['nodeTableName'], inputs[0]['variables']);
+var cols = WeightedModelWoe.getVariablesDatasource(inputs);
+						  
 if(nodeValue <> null){
 	weightedModel = nodeValue["weightedModel"];
 }
-DEBUGMESSAGE(formulaName+"weightedModel:",weightedModel);
+
 if(weightedModel <> NULL){
-	weightedModelRows 	= weightedModel["weightedModelRows"];
+	#debugmessage("old ----- ", weightedModel["weightedModelRows"]);
+	weightedModelRows 	= WeightedModelWoe.updateVariables(inputs,weightedModel["weightedModelRows"]);	
 	constantValue 		= weightedModel["constantValue"];
 	if(weightedModel["function"] <> NULL ) {
 		foreach(functionItems as item){
@@ -40,8 +44,7 @@ if(weightedModel <> NULL){
 	}
 }
 
-var variablesInfo = NULL;#LIB_VMCommons.getVariablesInfo(inputs[0]['nodeTableName'], inputs[0]['variables']);
-var cols = WeightedModelWoe.getVariablesDatasource(nodeValue, inputs, variablesInfo);
+
 
 # data table column headers
 VAR columns = {
@@ -61,8 +64,6 @@ if(weightedModelRows == null) {
 	weightedModelRows = resultMap['weightedModelRows'];
 	idsWM = resultMap['idsWM'];
 }
-
-DEBUGMESSAGE(formulaName+" idsWM:",idsWM);
 
 ########################################
 var outputStaticLabel =
