@@ -1,0 +1,17 @@
+VAR formulaName = "[LIB_EWS_RETAIL.INDICATOR_101.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+
+cast(null as decimal(30,12)) as IND_101,
+NULL as ERROR_MSG_IND_101
+
+
+";
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql; 
