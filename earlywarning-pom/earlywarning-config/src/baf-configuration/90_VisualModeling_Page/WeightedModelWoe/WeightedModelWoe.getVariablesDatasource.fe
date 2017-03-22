@@ -1,9 +1,8 @@
 VAR formulaName = "[WeightedModelWoe.getVariablesDatasource] ";
 DEBUGMESSAGE(formulaName, "START");
 
-VAR nodeValue = Param1;
-VAR inputs = Param2;
-VAR continuousVariablesInfo = Param3;
+VAR inputs = Param1;
+
 
 #{
 #	{['label': "First A"], ['label': "Richard "], ''},
