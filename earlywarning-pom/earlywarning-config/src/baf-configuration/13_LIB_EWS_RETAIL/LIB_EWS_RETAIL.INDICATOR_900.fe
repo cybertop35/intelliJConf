@@ -5,10 +5,7 @@ VAR sql = "";
 
 sql = "
 
-cast(null as varchar(50)) as IND_900,
-NULL as ERROR_MSG_IND_900
 
-/*
 CAST(
 	CASE
 		WHEN PRODUCT_MIX IS NULL THEN NULL
@@ -19,7 +16,7 @@ CASE
 	WHEN PRODUCT_MIX IS NULL THEN 'E0001'
 	ELSE ''
 END AS ERROR_MSG_IND_900
-*/
+
 ";
 
 
