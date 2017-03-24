@@ -14,7 +14,7 @@ VAR sql;
 VAR sqlUnion;
 VAR modulesName = {};
 var modules = {};
-var result = [];
+var result = []; 
 
 
 foreach (workspacePlanList as plan){

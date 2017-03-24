@@ -3,8 +3,6 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR customerUnit = Param1;
 VAR schema = customerUnit.TeradataSchema;
-
-
 VAR sql = "";
 
 sql = "
@@ -42,16 +40,9 @@ select
 ,"+ LIB_EWS_RETAIL.INDICATOR_51 () +"
 ,"+ LIB_EWS_RETAIL.INDICATOR_52 () +"
 ,"+ LIB_EWS_RETAIL.INDICATOR_53 () +"
-,"+ LIB_EWS_RETAIL.INDICATOR_60 () +"
-,"+ LIB_EWS_RETAIL.INDICATOR_61 () +"
-,"+ LIB_EWS_RETAIL.INDICATOR_62 () +"
-,"+ LIB_EWS_RETAIL.INDICATOR_63 () +"
-,"+ LIB_EWS_RETAIL.INDICATOR_64 () +"
-,"+ LIB_EWS_RETAIL.INDICATOR_70 () +"
-,"+ LIB_EWS_RETAIL.INDICATOR_71 () +"
+
 	
 	from "+schema+"."+customerUnit.Source_tableName;
-
 
 DEBUGMESSAGE(formulaName, sql);
 DEBUGMESSAGE(formulaName, "END");
