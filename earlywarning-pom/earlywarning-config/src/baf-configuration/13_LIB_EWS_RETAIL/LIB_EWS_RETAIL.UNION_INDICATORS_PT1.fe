@@ -9,8 +9,8 @@ sql = "
 select 
 		COD_SNDG as SNDG
 		,null as TARGET
-		,NULL as EXPOSURE
-		,'Retail' as SEGMENT
+		,IMP_UTILIZZO as EXPOSURE
+		,COD_WORKSPACE as SEGMENT
 		,creation_DT as SYSTEM_DATE
 		,'IT' as COUNTRY
  
