@@ -5,12 +5,19 @@ VAR sql = "";
 
 sql = "
 
-
-	(greatest(zeroifnull(IMP_SALDO_CC_M0)     , 0)+
-	 greatest(zeroifnull(IMP_VAL_MERC_CD_M0)  , 0)+
-	 greatest(zeroifnull(IMP_SALDO_PCT_M0)    , 0)+
-	 greatest(zeroifnull(IMP_SALDO_GPM_M0)    , 0)+
-	 greatest(zeroifnull(IMP_SALDO_ASSIC_M0)  , 0)) AS SUM_IND_71_M0,
+CASE
+	WHEN IMP_SALDO_CC_M0 IS NULL AND
+	     IMP_VAL_MERC_CD_M0 IS NULL AND
+	     IMP_SALDO_PCT_M0 IS NULL AND
+	     IMP_SALDO_GPM_M0 IS NULL AND
+	     IMP_SALDO_ASSIC_M0 IS NULL THEN NULL
+	ELSE 		 
+		(greatest(zeroifnull(IMP_SALDO_CC_M0)     , 0)+
+		greatest(zeroifnull(IMP_VAL_MERC_CD_M0)  , 0)+
+		greatest(zeroifnull(IMP_SALDO_PCT_M0)    , 0)+
+		greatest(zeroifnull(IMP_SALDO_GPM_M0)    , 0)+
+		greatest(zeroifnull(IMP_SALDO_ASSIC_M0)  , 0))
+END 	AS SUM_IND_71_M0,
 		 
 	(greatest(zeroifnull(IMP_SALDO_CC_M1)     , 0)+
 	 greatest(zeroifnull(IMP_VAL_MERC_CD_M1)  , 0)+
@@ -41,7 +48,8 @@ CASE
 	     IMP_SALDO_PCT_M2 IS NULL AND
           IMP_SALDO_GPM_M2 IS NULL AND
 		IMP_SALDO_ASSIC_M2 IS NULL THEN NULL
-		ELSE (SUM_IND_71_M0 + SUM_IND_71_M1 + SUM_IND_71_M2) / (NVL2(SUM_IND_71_M0,1,0) + NVL2(SUM_IND_71_M1,1,0) + NVL2(SUM_IND_71_M2,1,0)) 
+		
+		ELSE (zeroifnull(SUM_IND_71_M0) + SUM_IND_71_M1 + SUM_IND_71_M2) / (NVL2(SUM_IND_71_M0,1,0) + NVL2(SUM_IND_71_M1,1,0) + NVL2(SUM_IND_71_M2,1,0)) 
 	END AS DECIMAL(18,4)) AS IND_71,
 
 	CASE
