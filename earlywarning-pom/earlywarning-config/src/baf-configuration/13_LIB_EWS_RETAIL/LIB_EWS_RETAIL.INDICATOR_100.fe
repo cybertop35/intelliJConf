@@ -5,8 +5,8 @@ VAR sql = "";
 
 sql = "
 
-null as IND_100,
-NULL as ERROR_MSG_IND_100
+cast(null as char(3)) as IND_100,
+cast(NULL as varchar(20)) as ERROR_MSG_IND_100
 
 /*
 CAST(
