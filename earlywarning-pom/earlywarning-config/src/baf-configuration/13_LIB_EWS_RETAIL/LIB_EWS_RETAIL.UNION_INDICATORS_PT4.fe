@@ -3,16 +3,23 @@ DEBUGMESSAGE(formulaName, "START");
 
 VAR customerUnit = Param1;
 VAR schema = customerUnit.TeradataSchema;
-
-
 VAR sql = "";
 
-sql = "	
-	select 
+sql = "select 
 		COD_SNDG as SNDG_PT4
 
+,"+ LIB_EWS_RETAIL.INDICATOR_225() +"
+,"+ LIB_EWS_RETAIL.INDICATOR_226() +"
+,"+ LIB_EWS_RETAIL.INDICATOR_227() +"
+,"+ LIB_EWS_RETAIL.INDICATOR_228() +"
+,"+ LIB_EWS_RETAIL.INDICATOR_229() +"
+,"+ LIB_EWS_RETAIL.INDICATOR_230() +"
+,"+ LIB_EWS_RETAIL.INDICATOR_231() +"
+,"+ LIB_EWS_RETAIL.INDICATOR_101() +"
+,"+ LIB_EWS_RETAIL.INDICATOR_102() +"
+,"+ LIB_EWS_RETAIL.INDICATOR_103() +"
+,"+ LIB_EWS_RETAIL.INDICATOR_104() +"
 ,"+ LIB_EWS_RETAIL.INDICATOR_105() +"
-,"+ LIB_EWS_RETAIL.INDICATOR_106() +"
 ,"+ LIB_EWS_RETAIL.INDICATOR_106() +"
 ,"+ LIB_EWS_RETAIL.INDICATOR_107() +"
 ,"+ LIB_EWS_RETAIL.INDICATOR_108() +"
@@ -29,13 +36,7 @@ sql = "
 
 	from "+schema+"."+customerUnit.Source_tableName;
 
-
 DEBUGMESSAGE(formulaName, sql);
 DEBUGMESSAGE(formulaName, "END");
 
 return sql;
-
-
-
-
-
