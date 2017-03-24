@@ -37,6 +37,7 @@ sql = "select
 		,"+ LIB_EWS_RETAIL.INDICATOR_116() +"
 		,"+ LIB_EWS_RETAIL.INDICATOR_117() +"
 		,"+ LIB_EWS_RETAIL.INDICATOR_150() +"
+		,"+ LIB_EWS_RETAIL.INDICATOR_151() +"
 		
 	from "+schema+"."+customerUnit.Source_tableName;
 
