@@ -6,7 +6,7 @@ VAR sql = "";
 sql = "
 
 cast(null as decimal(18,6)) as IND_103,
-NULL as ERROR_MSG_IND_103
+CAST(NULL AS VARCHAR(20) as ERROR_MSG_IND_103)
 
 
 ";
