@@ -6,7 +6,7 @@ VAR sql = "";
 sql = "
 
 cast(null as char(1)) as IND_102,
-NULL as ERROR_MSG_IND_102
+CAST(NULL AS VARCHAR(20)) as ERROR_MSG_IND_102
 
 
 ";

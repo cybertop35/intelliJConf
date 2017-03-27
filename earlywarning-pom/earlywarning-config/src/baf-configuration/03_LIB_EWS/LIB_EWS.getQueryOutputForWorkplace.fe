@@ -75,6 +75,8 @@ IF(fastTrackId <> NULL) {
 	fields 	= fields + ",cast( ( CASE WHEN FT.CATEGORICAL_SCORE = 'NONE' OR FT.CATEGORICAL_SCORE IS NULL THEN 0 ELSE 1 END) as VARCHAR(1) ) as  FAST_TRACK";
 	join 	= join +" LEFT JOIN "+tableFT+" FT  ON FT.SNDG="+AnalysisTable+".SNDG ";
 }
+else
+	fields 	= fields + ",CAST(NULL as varchar(1)) as FAST_TRACK";
 
 ##### RECUPERO I MODELLI #####################
 foreach (models as model){

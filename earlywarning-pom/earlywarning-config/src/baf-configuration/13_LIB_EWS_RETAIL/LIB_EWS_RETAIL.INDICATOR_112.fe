@@ -5,8 +5,8 @@ VAR sql = "";
 
 sql = "
 
-cast(null as char(1)) as IND_112,
-NULL as ERROR_MSG_IND_112
+cast(null as decimal(18,12)) as IND_112,
+CAST(NULL AS VARCHAR(20)) as ERROR_MSG_IND_112
 
 
 ";
