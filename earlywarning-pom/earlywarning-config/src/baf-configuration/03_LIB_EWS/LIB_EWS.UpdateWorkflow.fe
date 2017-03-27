@@ -20,17 +20,18 @@ SAVE(workspace);
 wsPlan 	= analysisUnit.Workspace_AnalysisUnit.Workspace.Workspace_Plan[Status="Production"];
 SAVE_LOG("Info", logActionName, "Update workspace plan status: "+analysisUnitID);
 
+
+IF( LIB_EWS.checkAnalysisUnitStatus(analysisUnit) == FALSE)
+{
+	SAVE_LOG("Warn", logActionName, "NO workspace plan in production");
+	return;
+}
+
 ###############################################################################
 analysisUnit.DESCRIPTION = analysisUnit.DESCRIPTION ;
 UPDATEFORMULA( analysisUnit, "LastUpdateAnalysisUnit" );
 SAVE (analysisUnit);
 analysisUnit = Analysis_Unit[ID= $analysisUnitID];
-
-IF( LIB_EWS.checkAnalysisUnitStatus(analysisUnit) == FALSE)
-{
-	SAVE_LOG("Info", logActionName, "NO workspace plan in production");
-	return;
-}
 
 
 if(analysisUnit.LastUpdateAnalysisUnit > startTime ){
@@ -38,7 +39,7 @@ if(analysisUnit.LastUpdateAnalysisUnit > startTime ){
 }
 else{
 	SAVE_LOG("Error", logActionName, "Update unit Table: "+analysisUnitID);
-	return 1/0;
+	return ;
 }
 
 ###############################################################################
@@ -78,6 +79,7 @@ SAVE_LOG("Info", logActionName, "Update worplace: "+analysisUnitID);
 LIB_EWS.UpdateWorkpalceTable(wsPlan);
 
 ###############################################################################
+SAVE_LOG("Info", logActionName, "Generate output table");
 analysisUnit.DESCRIPTION = analysisUnit.DESCRIPTION ;
 UPDATEFORMULA( analysisUnit, "LastUpdateOutput" );
 SAVE (analysisUnit);
@@ -89,7 +91,7 @@ if(analysisUnit.LastUpdateOutput > startTime ){
 else{
 	DEBUGMESSAGE(logActionName+"ELSE ",analysisUnit.LastUpdateOutput);
 	SAVE_LOG("Error", logActionName, "Update output table: "+analysisUnitID);
-	return 1/0;
+	return ;
 }
 
 SAVE_LOG("Info", logActionName, "End update workflow: "+analysisUnitID);
