@@ -81,7 +81,7 @@ foreach (BR_LIST as b){
 IF(LIB_DB.isTableExisting(indicatorsTable,DBCONNECTION)) THEN{
     SQLEXECUTE("DROP TABLE "+ indicatorsTable,DBCONNECTION,NULL,{});
 }
-SQLEXECUTE("CREATE TABLE " +indicatorsTable+ " as ("+LIB_EWS_BE.UNION_INDICATORS(customerUnit)+") WITH DATA",DBCONNECTION,null,{});
+SQLEXECUTE("diagnostic noviewfold on for session; "+"CREATE TABLE " +indicatorsTable+ " as ("+LIB_EWS_BE.UNION_INDICATORS(customerUnit)+") WITH DATA",DBCONNECTION,null,{});
 
 SQL = "SELECT  "+columns+" 
 	  FROM "+indicatorsTable+" "+indicatorsTable+"
