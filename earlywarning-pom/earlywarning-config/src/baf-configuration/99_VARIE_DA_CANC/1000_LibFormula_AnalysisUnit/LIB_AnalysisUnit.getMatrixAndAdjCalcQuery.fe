@@ -9,7 +9,7 @@ if(selectedAdjustmentMode=='linked') {
     DEBUGMESSAGE(formulaName, "END");
     return LIB_AnalysisUnit.getMatrixAndAdjCalcQueryLinked(adjConfiguration, cellsConfiguration);
 }
-var matrixCalculationQuery = "(" + LIB_AnalysisUnit.getMatrixCalculationQuery(cellsConfiguration, null) + ")";
+var matrixCalculationQuery = "" + LIB_AnalysisUnit.getMatrixCalculationQuery(cellsConfiguration, null) + "";
 
 var sourceTable = cellsConfiguration['sourceTable'];
 var keyColumn = cellsConfiguration['keyColumn'];

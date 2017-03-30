@@ -72,6 +72,7 @@ else{
 }
 ###############################################################################
 SAVE_LOG("Info", logActionName, "Update predictive Model: "+analysisUnitID);
+LIB_EWS.UpdateVMTable(analysisUnit);
 LIB_EWS.UpdatePredictiveModel(analysisUnit);
 
 ###############################################################################
