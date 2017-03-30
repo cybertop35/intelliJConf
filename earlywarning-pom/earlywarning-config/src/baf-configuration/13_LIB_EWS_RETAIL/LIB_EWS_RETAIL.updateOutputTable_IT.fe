@@ -137,6 +137,8 @@ addelement(castFields,"CAST(null as VARCHAR(50)) as WARNING_APP ");
 addelement(castFields,"CAST( TMP.SEMAFORO_APP as VARCHAR(50)) as COLOR_APP ");
 addelement(castFields,"COLOR_APP as COLOR_SYSTEM");
 addelement(castFields,"CURRENT_DATE AS CREATION_DATE");
+#Aggiungo i sottomoduli
+addelement(castFields,LIB_EWS_RETAIL.getSingleModules());
 
 VAR SQL_CALCOLO;
 SQL_CALCOLO = "SELECT "+ARRAY_TO_STRING(castFields);
