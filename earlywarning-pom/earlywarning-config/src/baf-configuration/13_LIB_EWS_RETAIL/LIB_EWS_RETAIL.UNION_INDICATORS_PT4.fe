@@ -34,10 +34,10 @@ sql = "select
 		,"+ LIB_EWS_RETAIL.INDICATOR_112() +"
 		,"+ LIB_EWS_RETAIL.INDICATOR_113() +"
 		,"+ LIB_EWS_RETAIL.INDICATOR_115() +"
-		,"+ LIB_EWS_RETAIL.INDICATOR_116() +"
-		,"+ LIB_EWS_RETAIL.INDICATOR_117() +"
 		,"+ LIB_EWS_RETAIL.INDICATOR_150() +"
 		,"+ LIB_EWS_RETAIL.INDICATOR_151() +"
+		,"+ LIB_EWS_RETAIL.INDICATOR_116() +"
+		,"+ LIB_EWS_RETAIL.INDICATOR_117() +"
 		
 	from "+schema+"."+customerUnit.Source_tableName;
 
