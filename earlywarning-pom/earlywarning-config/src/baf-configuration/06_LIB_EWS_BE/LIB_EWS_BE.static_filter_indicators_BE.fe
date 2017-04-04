@@ -15,7 +15,7 @@ CASE
 	WHEN COUNTRY = 'ALEX' AND SEGMENT = 'SME Retail' THEN 90 
 	WHEN COUNTRY = 'CIB' AND SEGMENT IN ('Large Corporate - Corporate','SME Corporate') THEN 90 
 	WHEN COUNTRY = 'CIB' AND SEGMENT = 'Small Business - SME Retail' THEN  90  
-	WHEN COUNTRY = 'ISPRO' AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 90 
+	WHEN COUNTRY = 'ISPRO'  AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 90 
 END AS VAL_MAX_IND_1, 
 
 CASE  
@@ -54,7 +54,7 @@ END AS MISSING_VAL_IND_7,
 CASE  
 	WHEN COUNTRY = 'ALEX' AND SEGMENT IN ('CORPORATE','SME Corporate') THEN 0.0015264 
 	WHEN COUNTRY = 'ALEX' AND SEGMENT = 'SME Retail' THEN 0.0240039 
-	WHEN COUNTRY = 'ISPRO' AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 0.0065846 
+	WHEN COUNTRY = 'ISPRO'  AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 0.0065846 
 END AS VAL_MAX_IND_7, 
 
 CASE  
@@ -78,7 +78,7 @@ END AS MISSING_VAL_IND_9,
 CASE  
 	WHEN COUNTRY = 'CIB' AND SEGMENT IN ('Large Corporate - Corporate','SME Corporate') THEN 4.6343120 
 	WHEN COUNTRY = 'CIB' AND SEGMENT = 'Small Business - SME Retail' THEN 7.055777 
-	WHEN COUNTRY = 'ISPRO' AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 1.530906 
+	WHEN COUNTRY = 'ISPRO'  AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 1.530906 
 END AS VAL_MAX_IND_9, 
 CASE  
 	WHEN COUNTRY = 'CIB' AND SEGMENT IN ('Large Corporate - Corporate','SME Corporate') THEN -0.8240759 
@@ -122,7 +122,7 @@ CASE
 	WHEN COUNTRY = 'BIR' AND SEGMENT = 'SME Retail' THEN 626614.20 
 	WHEN COUNTRY = 'CIB' AND SEGMENT IN ('Large Corporate - Corporate','SME Corporate') THEN 99400000 
 	WHEN COUNTRY = 'CIB' AND SEGMENT = 'Small Business - SME Retail' THEN 19200000.00 
-	WHEN COUNTRY = 'ISPRO' AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 815891.3 
+	WHEN COUNTRY = 'ISPRO'  AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 815891.3 
 END AS VAL_MAX_IND_13, 
 CASE  
 	WHEN COUNTRY = 'BIB' AND SEGMENT = 'CORPORATE' THEN 48.1689 
@@ -228,7 +228,7 @@ END AS MISSING_VAL_IND_35,
 CASE  
 	WHEN COUNTRY = 'CIB' AND SEGMENT IN ('Large Corporate - Corporate','SME Corporate') THEN 6.159763 
 	WHEN COUNTRY = 'CIB' AND SEGMENT = 'Small Business - SME Retail' THEN 7.00 
-	WHEN COUNTRY = 'ISPRO' AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 13.62589 
+	WHEN COUNTRY = 'ISPRO'  AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 13.62589 
 END AS VAL_MAX_IND_35, 
 CASE  
 	WHEN COUNTRY = 'CIB' AND SEGMENT IN ('Large Corporate - Corporate','SME Corporate') THEN -2.773906 
@@ -309,7 +309,7 @@ CASE
 	WHEN COUNTRY = 'ALEX' AND SEGMENT = 'SME Retail' THEN 26893.81 
 	WHEN COUNTRY = 'CIB' AND SEGMENT IN ('Large Corporate - Corporate','SME Corporate') THEN 2839891 
 	WHEN COUNTRY = 'CIB' AND SEGMENT = 'Small Business - SME Retail' THEN 547835.6 
-	WHEN COUNTRY = 'ISPRO' AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 71467.85 
+	WHEN COUNTRY = 'ISPRO'  AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 71467.85 
 END AS VAL_MAX_IND_44, 
 CASE  
 	WHEN COUNTRY = 'ISPRO' AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 0 
@@ -389,7 +389,7 @@ CASE
 	WHEN COUNTRY = 'ALEX' AND SEGMENT = 'SME Retail' THEN 1.012411 
 	WHEN COUNTRY = 'CIB' AND SEGMENT IN ('Large Corporate - Corporate','SME Corporate') THEN 14201 
 	WHEN COUNTRY = 'CIB' AND SEGMENT = 'Small Business - SME Retail' THEN 53745.87 
-	WHEN COUNTRY = 'ISPRO' AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 1.716868 
+	WHEN COUNTRY = 'ISPRO'  AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 1.716868 
 END AS VAL_MAX_IND_56, 
 CASE  
 	WHEN COUNTRY = 'ALEX' AND SEGMENT IN ('CORPORATE','SME Corporate') THEN 0.000994 
@@ -429,7 +429,7 @@ CASE
 	WHEN COUNTRY = 'BIR' AND SEGMENT = 'SME Retail' THEN 4254531.00 
 	WHEN COUNTRY = 'CIB' AND SEGMENT IN ('Large Corporate - Corporate','SME Corporate') THEN 2280000000 
 	WHEN COUNTRY = 'CIB' AND SEGMENT = 'Small Business - SME Retail' THEN 32800000 
-	WHEN COUNTRY = 'ISPRO' AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 1190491 
+	WHEN COUNTRY = 'ISPRO'  AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 1190491 
 END AS VAL_MAX_IND_60, 
 CASE  
 	WHEN COUNTRY = 'KOPER' AND SEGMENT = 'SMALL/MICRO' THEN 898.9567 
@@ -603,7 +603,7 @@ END AS MISSING_VAL_IND_69,
 CASE  
 	WHEN COUNTRY = 'CIB' AND SEGMENT IN ('Large Corporate - Corporate','SME Corporate') THEN 79.50398 
 	WHEN COUNTRY = 'CIB' AND SEGMENT = 'Small Business - SME Retail' THEN 60.98551 
-	WHEN COUNTRY = 'ISPRO' AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 16.28526 
+	WHEN COUNTRY = 'ISPRO'  AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 16.28526 
 END AS VAL_MAX_IND_69, 
 CASE  
 	WHEN COUNTRY = 'CIB' AND SEGMENT IN ('Large Corporate - Corporate','SME Corporate') THEN -0.9848943 
@@ -646,7 +646,7 @@ END AS MISSING_VAL_IND_72,
 CASE  
 	WHEN COUNTRY = 'CIB' AND SEGMENT IN ('Large Corporate - Corporate','SME Corporate') THEN 49.92105 
 	WHEN COUNTRY = 'CIB' AND SEGMENT = 'Small Business - SME Retail' THEN  152.5782  
-	WHEN COUNTRY = 'ISPRO' AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 54.85353 
+	WHEN COUNTRY = 'ISPRO'  AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 54.85353 
 END AS VAL_MAX_IND_72, 
 CASE  
 	WHEN COUNTRY = 'ISPRO' AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 0.2773052 
@@ -659,7 +659,7 @@ CASE
 END AS MISSING_VAL_IND_73, 
 CASE  
 	WHEN COUNTRY = 'CIB' AND SEGMENT = 'Small Business - SME Retail' THEN 3.321014 
-	WHEN COUNTRY = 'ISPRO' AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 11.5086 
+	WHEN COUNTRY = 'ISPRO'  AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 11.5086 
 END AS VAL_MAX_IND_73, 
 CASE  
 	WHEN COUNTRY = 'ISPRO' AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN -1 
@@ -748,7 +748,7 @@ END AS MISSING_VAL_IND_80,
 CASE  
 	WHEN COUNTRY = 'CIB' AND SEGMENT IN ('Large Corporate - Corporate','SME Corporate') THEN 1053.803 
 	WHEN COUNTRY = 'CIB' AND SEGMENT = 'Small Business - SME Retail' THEN 624.4211 
-	WHEN COUNTRY = 'ISPRO' AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 221.0669000 
+	WHEN COUNTRY = 'ISPRO'  AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 221.0669000 
 END AS VAL_MAX_IND_80, 
 CASE  
 	WHEN COUNTRY = 'ISPRO' AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 0.3618942 
@@ -931,17 +931,12 @@ CASE
 	WHEN COUNTRY = 'BIB' AND SEGMENT= 'RETAIL'  THEN 32091.178 
 	WHEN COUNTRY = 'KOPER' AND SEGMENT= 'CORPORATE'  THEN 3176191 
 	WHEN COUNTRY = 'KOPER' AND SEGMENT= 'SMALL/MICRO'  THEN 38238 
-	WHEN COUNTRY = 'CIB' AND SEGMENT IN ('Large Corporate - Corporate','SME Corporate')  THEN 903000.0
-	WHEN COUNTRY = 'CIB' AND SEGMENT= 'Small Business - SME Retail'  THEN 61100000 
 	WHEN COUNTRY = 'ISPRO' THEN 0.1120528 
 END AS MISSING_VAL_IND_94, 
 CASE  
-	WHEN COUNTRY = 'CIB' AND SEGMENT IN ('Large Corporate - Corporate','SME Corporate') THEN 125000000000 
-	WHEN COUNTRY = 'CIB' AND SEGMENT = 'Small Business - SME Retail' THEN  3820000000  
-	WHEN COUNTRY = 'ISPRO' AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 30600000 
+	WHEN COUNTRY = 'ISPRO'  AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 30600000 
 END AS VAL_MAX_IND_94, 
 CASE  
-	WHEN COUNTRY = 'CIB' AND SEGMENT IN ('Large Corporate - Corporate','SME Corporate') THEN 1784717 
 	WHEN COUNTRY = 'ISPRO' AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN -1309813 
 END AS VAL_MIN_IND_94,
 
@@ -954,7 +949,7 @@ END AS MISSING_VAL_IND_95,
 CASE  
 	WHEN COUNTRY = 'CIB' AND SEGMENT IN ('Large Corporate - Corporate','SME Corporate') THEN 3.465448 
 	WHEN COUNTRY = 'CIB' AND SEGMENT = 'Small Business - SME Retail' THEN  3.401049  
-	WHEN COUNTRY = 'ISPRO' AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 22.32425 
+	WHEN COUNTRY = 'ISPRO'  AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 22.32425 
 END AS VAL_MAX_IND_95, 
 CASE  
 	WHEN COUNTRY = 'CIB' AND SEGMENT IN ('Large Corporate - Corporate','SME Corporate') THEN -0.7903088 
@@ -1398,7 +1393,7 @@ END AS MISSING_VAL_IND_132,
 CASE  
 	WHEN COUNTRY = 'CIB' AND SEGMENT IN ('Large Corporate - Corporate','SME Corporate') THEN 5.547648 
 	WHEN COUNTRY = 'CIB' AND SEGMENT = 'Small Business - SME Retail' THEN 10.36736 
-	WHEN COUNTRY = 'ISPRO' AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 9.795337 
+	WHEN COUNTRY = 'ISPRO'  AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 9.795337 
 END AS VAL_MAX_IND_132, 
 CASE  
 	WHEN COUNTRY = 'CIB' AND SEGMENT = 'Small Business - SME Retail' THEN -0.9145911 
