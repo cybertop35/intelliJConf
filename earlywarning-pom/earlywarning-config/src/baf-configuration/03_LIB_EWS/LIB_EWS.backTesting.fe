@@ -82,9 +82,11 @@ IF (length(backTestingHistoryView) <> 0) {
 ##################################
 VAR month;
 VAR currentMonth;
+VAR currentYear;
 currentMonth = GETMONTH(NOW());
+currentYear = GETYEAR(NOW());
 
-SQL = "SELECT MAX( EXTRACT (MONTH FROM HISTORY_DATE)) from "+backTestingHistoryTable;
+SQL = "SELECT MAX( EXTRACT (MONTH FROM HISTORY_DATE)) from "+backTestingHistoryTable +" WHERE EXTRACT (YEAR FROM HISTORY_DATE) = "+currentYear;
 month = SQLEXECUTE(SQL,JDBC_NAME,0,{});
 
 if(SIZE(month) > 0 ) {
