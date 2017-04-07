@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	
+	<modelVersion>4.0.0</modelVersion>
+	
+    <parent>
+        <groupId>com.i4c.framework.enterprise</groupId>
+        <artifactId>fwk-enterprise-root</artifactId>
+        <version>8.2.1</version>
+        <relativePath />
+    </parent>
+	
+    <properties>
+        <aaap.version>${project.parent.version}</aaap.version>
+        <aaap.catalog.version>8.1.5.1</aaap.catalog.version>
+        <aaap.energy.version>8.2.1.0-DEL-SNAPSHOT</aaap.energy.version>
+    </properties>
+
+    <groupId>com.i4c.antares.enterprise</groupId>
+    <artifactId>forcaster-ATM-ear</artifactId>
+    <version>${aaap.energy.version}</version>
+    <name>${project.artifactId} (${project.version})</name>
+    <packaging>ear</packaging>
+
+	
+	<dependencies>
+        <dependency><version>${aaap.version}</version><groupId>com.i4c.antares.java</groupId><type>jar</type><artifactId>antares-common-java</artifactId></dependency>
+        <dependency><version>${aaap.version}</version><groupId>com.i4c.antares.ejb</groupId><type>ejb</type><artifactId>antares-core-ejb</artifactId></dependency>
+        <dependency><version>${aaap.version}</version><groupId>com.i4c.antares.ejb</groupId><type>ejb</type><artifactId>engine-forecaster-ejb</artifactId></dependency>
+                
+        <dependency><version>${aaap.catalog.version}</version><groupId>com.i4c.antares.java</groupId><type>jar</type><artifactId>commons-app-java</artifactId></dependency>
+        <dependency><version>${aaap.catalog.version}</version><groupId>com.i4c.antares.ejb</groupId><type>ejb</type><artifactId>commons-app-ejb</artifactId></dependency>
+        <dependency><version>${aaap.catalog.version}</version><groupId>com.i4c.antares.ejb</groupId><type>ejb</type><artifactId>commons-forecaster-ejb</artifactId></dependency>
+        
+<!--         <dependency><version>${aaap.energy.version}</version><groupId>com.i4c.antares.ejb</groupId><type>ejb</type><artifactId>energy-base-ejb</artifactId></dependency>
+        <dependency><version>${aaap.energy.version}</version><groupId>com.i4c.antares.ejb</groupId><type>ejb</type><artifactId>network-ejb</artifactId></dependency>
+        <dependency><version>${aaap.energy.version}</version><groupId>com.i4c.antares.ejb</groupId><type>ejb</type><artifactId>forecaster-power-ejb</artifactId></dependency>
+        <dependency><version>${aaap.energy.version}</version><groupId>com.i4c.antares.ejb</groupId><type>ejb</type><artifactId>forecaster-gas-ejb</artifactId></dependency>-->
+		
+		<dependency><version>${aaap.energy.version}</version><groupId>com.i4c.antares.ejb</groupId><type>ejb</type><artifactId>forcaster-ATM-app</artifactId></dependency>
+        <dependency><version>${aaap.energy.version}</version><groupId>com.i4c.antares.web</groupId><type>war</type><artifactId>forcaster-ATM-web</artifactId></dependency>
+        <dependency><version>${aaap.energy.version}</version><groupId>com.i4c.antares.web</groupId><type>pom</type><artifactId>forcaster-ATM-web</artifactId></dependency> 
+		
+    </dependencies>
+	
+	
+	    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-ear-plugin</artifactId>
+                <configuration>
+                    <displayName>${project.name}</displayName>
+                    <finalName>forcaster-ATM-${project.version}</finalName>
+                    <modules>
+                        
+                        <ejbModule><groupId>com.i4c.antares.ejb</groupId><artifactId>antares-core-ejb</artifactId></ejbModule>                        
+                        <ejbModule><groupId>com.i4c.antares.ejb</groupId><artifactId>engine-forecaster-ejb</artifactId></ejbModule>
+                        <ejbModule><groupId>com.i4c.antares.ejb</groupId><artifactId>commons-app-ejb</artifactId></ejbModule>
+                        <ejbModule><groupId>com.i4c.antares.ejb</groupId><artifactId>commons-forecaster-ejb</artifactId></ejbModule>
+                   <!--      <ejbModule><groupId>com.i4c.antares.ejb</groupId><artifactId>energy-base-ejb</artifactId></ejbModule>                        
+                        <ejbModule><groupId>com.i4c.antares.ejb</groupId><artifactId>network-ejb</artifactId></ejbModule> 
+                        <ejbModule><groupId>com.i4c.antares.ejb</groupId><artifactId>forecaster-power-ejb</artifactId></ejbModule>  
+                        <ejbModule><groupId>com.i4c.antares.ejb</groupId><artifactId>forecaster-gas-ejb</artifactId></ejbModule>  
+ -->
+
+                        <webModule><groupId>com.i4c.antares.web</groupId><artifactId>forcaster-ATM-web</artifactId><contextRoot>/$${legacyContextRoot}</contextRoot></webModule>
+                    </modules>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>ConfigurationChecker</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>                     
+                            <skip>${skipTests}</skip>  
+                            <classpathScope>test</classpathScope>
+                            <mainClass>com.i4c.configcheck.CheckerSuite</mainClass>
+                            <arguments>
+                                <argument>-path</argument>
+                                <argument>${project.build.outputDirectory}</argument>
+                                <!--
+                                <argument>-debugDir</argument>
+                                <argument>-debugFile</argument>
+                                <argument>-showNotUsed</argument>
+                                -->
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>           
+        </plugins>
+    </build>
+
+	
+</project>

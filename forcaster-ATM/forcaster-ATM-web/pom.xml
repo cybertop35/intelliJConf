@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+     
+    <parent>
+        <groupId>com.i4c.framework.web</groupId>		
+		<artifactId>fwk-delivery-web-root</artifactId>
+        <version>8.2.1</version>
+        <relativePath/>
+    </parent>
+
+    <properties>
+        <aaap.version>${project.parent.version}</aaap.version>
+        <aaap.catalog.version>8.1.5.1</aaap.catalog.version>
+        <aaap.energy.version>8.2.1.0-DEL-SNAPSHOT</aaap.energy.version>
+    </properties>
+
+    <groupId>com.i4c.antares.web</groupId>
+    <artifactId>forcaster-ATM-web</artifactId>
+    <version>${aaap.energy.version}</version>
+    <packaging>war</packaging>
+    <name>${project.artifactId} (${project.version})</name>    
+
+
+    <dependencies>
+        <dependency><groupId>com.i4c.antares.web</groupId><type>war</type><version>${aaap.version}</version><artifactId>antares-web</artifactId><scope>provided</scope></dependency>
+        <dependency><groupId>com.i4c.antares.web</groupId><type>pom</type><version>${aaap.version}</version><artifactId>antares-web</artifactId></dependency>
+        <dependency><groupId>com.i4c.antares.web</groupId><type>war</type><version>${aaap.version}</version><artifactId>engine-forecaster-web</artifactId><scope>provided</scope></dependency>
+        <dependency><groupId>com.i4c.antares.web</groupId><type>pom</type><version>${aaap.version}</version><artifactId>engine-forecaster-web</artifactId></dependency>
+        <!-- <dependency><groupId>com.i4c.antares.web</groupId><type>war</type><version>${aaap.version}</version><artifactId>engine-dataquality-web</artifactId><scope>provided</scope></dependency>
+        <dependency><groupId>com.i4c.antares.web</groupId><type>pom</type><version>${aaap.version}</version><artifactId>engine-dataquality-web</artifactId></dependency> -->
+        
+    </dependencies>
+          
+    <build>
+    <plugins>
+        <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-war-plugin</artifactId>
+            <configuration>
+                <overlays>
+                    <overlay><groupId>com.i4c.antares.web</groupId><artifactId>antares-web</artifactId></overlay>
+                    <overlay><groupId>com.i4c.antares.web</groupId><artifactId>engine-forecaster-web</artifactId></overlay>
+                    <!-- <overlay><groupId>com.i4c.antares.web</groupId><artifactId>engine-dataquality-web</artifactId></overlay> -->
+                </overlays>
+            </configuration>
+        </plugin>
+    </plugins>
+    </build>
+</project>

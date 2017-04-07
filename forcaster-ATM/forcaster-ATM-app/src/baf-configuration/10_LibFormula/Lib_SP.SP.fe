@@ -1,0 +1,34 @@
+# --------------------------------------------------------- #
+#  Dati di test per NiSource:								#
+#  															#
+#  VAR mktareas = Dp.[ID, DESCRIPTION];						#
+#  VAR mktarea = Dp[ID="33"];								#
+#  VAR inizio = '3/11/2015';								#
+#  VAR fine = '9/11/2015';									#
+#  VAR Param1 = mktarea.AsIsDemand{$inizio, $fine};			#
+#  VAR Param2 = mktarea.AccentureForeAuto{$inizio, $fine};  #
+# --------------------------------------------------------- #
+
+
+
+# Calcola il KPI A-MAPE
+
+VAR actual = Param1;
+
+VAR forecast = Param2;
+
+VAR mappaKPI = KpiLibrary.multiKpi(actual, forecast);
+
+VAR actualMape = GET(mappaKPI, "A-MAPE");
+
+RETURN actualMape;
+
+
+
+
+
+
+
+# --------------------------------------------------------------------------------- #
+#  Versione Originale: /commons-forecaster-ejb/baf-configurations/70_LibFormula_SP  #
+# --------------------------------------------------------------------------------- #
