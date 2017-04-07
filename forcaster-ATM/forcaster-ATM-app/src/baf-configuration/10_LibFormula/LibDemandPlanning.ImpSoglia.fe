@@ -1,0 +1,6 @@
+# Erogato medio giornaliero*coefficienti +contingency
+VAR punto=Param1;
+VAR erogatoMedio=punto.IMP_EMG; # Erogato medio giornaliero
+VAR coefficienti=punto.NUM_COEFFICIENTE_GIORNO; # coefficienti
+VAR contingency=punto.IMP_CONTINGENCY;
+RETURN erogatoMedio*(coefficienti+contingency);

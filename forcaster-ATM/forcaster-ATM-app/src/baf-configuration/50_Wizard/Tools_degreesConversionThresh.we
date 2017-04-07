@@ -1,0 +1,216 @@
+# Tools_degreesConversionThresh
+
+STEP("input", "${title}") {
+
+    VAR WIZARD_STYLE = "
+        .dBlock {display:block;}
+        .dTable { display: table; }
+        .dTableRow { display: table-row; }
+        .dTableCell { display: table-cell; }
+        /* background */
+        .bggray { background-color: #F6F6F6; }
+        /* text effects */
+        .msgRedBold{ color: #AC2524; font-weight:bold; }
+        .msgGreenBold{ color: #00CC00; font-weight:bold; }
+        /* horizontal align */
+        .oaLeft { text-align: left; }
+        .oaCenter { text-align: center; }
+        .oaRight { text-align: right; }
+        /* vertical align */
+        .vaTop { vertical-align: top; }
+        .vaMiddle { vertical-align: middle; }
+        .vaBottom { vertical-align: bottom; }
+        /* margins */
+        .m0 { margin: 0px; }
+        .m03top { margin-top: 0.3cm; }
+        .m03bottom { margin-bottom: 0.3cm; }
+        .m05top { margin-top: 0.5cm; }
+        .mAuto { margin: auto; }
+        .m15emleft { margin-left: 15em; };
+        /* paddings */
+        .p0 { paddig: 0px; }
+        .p01 { padding: 0.1cm; }
+        .p03bottom { padding-bottom: 0.3cm; }
+        .p01top { padding-top: 0.1cm; }
+        .p02top { padding-top: 0.2cm; }
+        .p03top { padding-top: 0.3cm; }
+        .p05top { padding-top: 0.5cm; }
+        .p03left { padding-left: 0.3cm; }
+        .p05left { padding-left: 0.5cm; }
+        /* min width */
+        .w03min { min-width: 0.3cm; }
+        .w99perc { width: 99%; }
+        .w100perc { width: 100%; }
+        /* hide component */
+        .hide { display: none; }
+        "
+        + CoreLibrary.getTextboxDefaultStyleClass("realTextboxStyleClass", 100)
+        + " "
+        + CoreLibrary.getDefaultCss();
+    
+    # unique UoM
+    VAR UOM_CELSIUS = "°C";
+    VAR UOM_COOLING = "GCO";
+    VAR UOM_HEATING = "GG";
+    
+    VAR hundredC = 100<$UOM_CELSIUS>;
+    VAR oneC     =   1<$UOM_CELSIUS>;
+    
+    # nomenclatura var query:
+    # QP   => Query Part, incompleta e non eseguibile
+    # Q    => Query completa e pronta all'uso a meno dei parametri
+    
+    VAR QP_WITH_UOM_COOL = "with uom as ( select * from fwm_01_udm where long_name in ( '" + UOM_CELSIUS + "', '" + UOM_COOLING + "' ) )";
+
+    VAR Q_UPDATE_THRES_COOL = "update fwm_05_factor_number_value set value = ?
+        where cod_conversion_factor in ( " + QP_WITH_UOM_COOL + "
+          select v.cod_conversion_factor
+          from fwm_02_matrix_conversion cnv
+          join fwm_05_factor_number_value v
+            on cnv.cod_conversion_factor = v.cod_conversion_factor
+          where 1=1
+            and cnv.cod_udm_da in (select cod_udm from uom)
+            and cnv.cod_udm_a in (select cod_udm from uom)
+        )
+    ";
+
+    VAR QP_WITH_UOM_HEAT = "with uom as ( select * from fwm_01_udm where long_name in ( '" + UOM_CELSIUS + "', '" + UOM_HEATING + "' ) )";
+
+    VAR Q_UPDATE_THRES_HEAT = "update fwm_05_factor_number_value set value = ?
+        where cod_conversion_factor in ( " + QP_WITH_UOM_HEAT + "
+          select v.cod_conversion_factor
+          from fwm_02_matrix_conversion cnv
+          join fwm_05_factor_number_value v
+            on cnv.cod_conversion_factor = v.cod_conversion_factor
+          where 1=1
+            and cnv.cod_udm_da in (select cod_udm from uom)
+            and cnv.cod_udm_a in (select cod_udm from uom)
+        )
+    ";
+    # END OF CONSTANTS = = = = = = = = = = = = = = = = = = = = = = = = =
+    
+    VAR heatingThresh;
+    heatingThresh = oneC<$UOM_HEATING>/1<$UOM_HEATING> + 1;
+    DEBUGMESSAGE("heatingThresh = ", heatingThresh);
+
+    VAR coolingThresh;
+    coolingThresh = hundredC/1<$UOM_CELSIUS> - hundredC<$UOM_COOLING>/1<$UOM_COOLING>;
+    DEBUGMESSAGE("coolingThresh = ", coolingThresh);
+
+    VAR cfgError = FALSE;
+   
+    # soglia heating
+    SHOWMESSAGE([
+        "id"         : "heatingThresh"
+        , "key"      : ""
+        , "variable" : "${heatingThresh}" + ":"
+    ]);
+    textBox([
+        "id"                  : "heatingThreshVal"
+        , "primitiveType"     : "REAL"
+        , "variable"          : "heatingThresh"
+        , "key"               : ""
+        , "required"          : TRUE
+        , "textboxStyleClass" : "realTextboxStyleClass"
+    ]);
+    
+    # soglia cooling
+    SHOWMESSAGE([
+        "id"         : "coolingThresh"
+        , "key"      : ""
+        , "variable" : "${coolingThresh}" + ":"
+    ]);	
+    textBox([
+        "id"                  : "coolingThreshVal"
+        , "primitiveType"     : "REAL"
+        , "variable"          : "coolingThresh"
+        , "key"               : ""
+        , "required"          : TRUE
+        , "textboxStyleClass" : "realTextboxStyleClass"
+    ]);
+    
+    # messaggio info prossimo step
+    SHOWMESSAGE([
+        "id"                : "msgOnNext"
+        , "key"             : ""
+        , "variable"        : "${msgOnNext}"
+        , "labelStyleClass" : "defaultTitleStyle"
+        , "messageStyle"    : "color:blue; font-style:italic;"
+    ]);
+    
+    VAR allRight;
+    
+    VALIDATION: {
+        if (cfgError) THEN {
+            return "${msgConfigurationError}";
+        }
+        return NULL;
+    }
+    
+    
+    ON_NEXT: {   
+        allRight = FALSE;
+        VAR resUpdHeat = SQLEXECUTE(Q_UPDATE_THRES_HEAT, null, { heatingThresh });
+        DEBUGMESSAGE("result update HEAT = ", resUpdHeat);
+        VAR resUpdCool = SQLEXECUTE(Q_UPDATE_THRES_COOL, null, { coolingThresh });
+        DEBUGMESSAGE("result update COOL = ", resUpdCool);
+
+        # clear UoM cache
+        INVOKE("com.i4c.antares.ejb.EntityFacadeLocal", "clearUdmConversionCache", NULL, "EntityFacadeBean", "ace");
+        allRight = TRUE;
+    }
+    
+    ON_ERRORS:{
+        SHOWMESSAGE([
+            "id"                : "entityTypeLbl",
+            "key"               : "",
+            "variable"          : "${msgEndKo}",
+            "messageStyleClass" : "msgRedBold"
+        ]);
+    }
+    
+    STYLE: { WIZARD_STYLE; }
+    
+    LAYOUT: {
+        DIV ("dTable") {
+            DIV ("dTableRow") {
+                DIV ("dTableCell vaMiddle") { "heatingThresh"; }
+                DIV ("dTableCell vaMiddle p03left") { "heatingThreshVal"; }
+            }
+            DIV ("dTableRow m03top") {
+                DIV ("dTableCell vaMiddle") { "coolingThresh"; }
+                DIV ("dTableCell vaMiddle p03left") { "coolingThreshVal"; }
+            }
+        }
+        DIV ("dTable m05top") {
+            DIV ("dTableRow") {
+                DIV ("dTableCell p01top") { "msgOnNext"; }
+            }
+        }
+    }
+    
+}
+
+# ======================================================================
+
+STEP("input", "${title}") DISABLED PREVIOUS CANCEL {
+
+    if (allRight) THEN {
+        SHOWMESSAGE([
+            "id"                : "entityTypeLbl",
+            "key"               : "",
+            "variable"          : "${msgEndOk}",
+            "messageStyleClass" : "msgGreenBold"
+        ]);
+    } else {
+        SHOWMESSAGE([
+            "id"                : "entityTypeLbl",
+            "key"               : "",
+            "variable"          : "${msgEndKo}",
+            "messageStyleClass" : "msgRedBold"
+        ]);
+    }
+    
+    STYLE: { WIZARD_STYLE; }
+    
+}

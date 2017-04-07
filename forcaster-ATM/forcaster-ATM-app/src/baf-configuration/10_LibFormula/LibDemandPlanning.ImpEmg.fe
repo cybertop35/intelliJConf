@@ -1,0 +1,60 @@
+# Se è disponibile l'erogato per gli utlimi 30 giorni, allora si calcola la media degli ultimi 30 giorni 
+# di erogato considerando solo i giorni con livello di servizio superiore o uguale al 90% 
+#(se nei 30 giorni precedenti ci sono 4 giorni con livello di servizio <90%,si fa la media sui 26 giorni rimanenti).
+# Se l'erogato è anche disponibile a partire dall'inizio di due anni precedenti, allora è uguale al massimo tra:
+#- il valore calcolato precedentemente e
+#- la media dell'erogato di 31 giorni dell'anno precedente attorno alla data di riferimento considerando solo i giorni con livello di servizio superiore o uguale al 90%
+# Altrimenti 1000
+
+VAR punto=Param1;
+VAR erogato=punto.IMP_TOT_PRELEVATO;
+VAR livelloServizio=punto.PRC_LIVELLO_SERVIZIO;
+VAR livelloOber90=TS("DAILY",""); # 1 > 90 & 0 < 90; 
+VAR result=TS("DAILY","EUR");
+FOREACHDATE(livelloServizio AS dateServizio){
+	IF(VALUE(livelloServizio,dateServizio)>=0.9){
+		SETVALUE(livelloOber90,dateServizio,1);
+	}ELSE{
+		SETVALUE(livelloOber90,dateServizio,0);
+	}
+}
+
+VAR tsLast30Days;
+VAR last30days;
+VAr erogatoLast30Days;
+VAr erogatoLastYear;
+VAR valuesErogato;
+VAR totLast30Day;
+VAR totLastYear;
+VAR lastYearDate;
+VAR startDateLastYear;
+VAR endDateLastYear;
+FOREACHDATE(erogato AS dateErogato){
+	totLast30Day=NULL;
+	totLastYear=NULL;
+	last30days=DATESUM(dateErogato,-30,"DAILY");
+	erogatoLast30Days=punto.IMP_TOT_PRELEVATO{$last30days,$dateErogato};
+ #   valuesErogato=VALUES(erogatoLast30Days);
+	IF(VALUE(erogato,last30days)<>NULL){
+   		erogatoLast30Days=erogatoLast30Days*livelloOber90; 
+       	totLast30Day=SUMTS(erogatoLast30Days,last30days,dateErogato);
+    }
+	lastYearDate=DATESUM(dateErogato,-1,"YEARLY");
+	startDateLastYear=DATESUM(lastYearDate,-15,"DAILY");
+	endDateLastYear=DATESUM(lastYearDate,15,"DAILY");
+	erogatoLastYear=punto.IMP_TOT_PRELEVATO{$startDateLastYear,$endDateLastYear};
+#	valuesErogato=VALUES(erogatoLast30Days);
+	IF(VALUE(erogato,startDateLastYear)<>NULL){
+		erogatoLastYear=erogatoLastYear*livelloOber90;
+		totLastYear=SUMTS(erogatoLastYear,startDateLastYear,endDateLastYear);
+	}
+	IF(totLast30Day==NULL AND totLastYear==NULL){
+		SETVALUE(result,dateErogato,1000<EUR>);
+	}ELSE{
+		SETVALUE(result,dateErogato,MAX(totLast30Day,totLastYear));
+	}
+}
+
+return result;
+
+

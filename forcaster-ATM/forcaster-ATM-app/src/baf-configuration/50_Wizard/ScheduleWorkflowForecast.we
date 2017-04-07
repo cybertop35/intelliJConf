@@ -1,0 +1,47 @@
+STEP("input", "${stepTitle}"){
+	VAR idAggregato=this.ID;
+	VAR fileAnagrafica;
+	VAR fileMultiple;
+	var folderAnagrafica=GETFILEPROPERTY("import.folder.anagrafica");
+	var folderMultipleTs=GETFILEPROPERTY("import.folder.multipleTs");
+	
+	FILEUPLOAD([
+        "key" : "${fileAnagraficaUpload}",
+        "variable" : "fileAnagrafica",
+		"acceptedTypes" : {"xls","xlsx"},   
+        "stagingDirectoryProperty" : folderAnagrafica
+    ]);
+	
+	FILEUPLOAD([
+        "key" : "${fileMultipleUpload}",
+        "variable" : "fileMultiple",
+		"acceptedTypes" : {"xls","xlsx"},   
+        "stagingDirectoryProperty" : folderMultipleTs
+    ]);
+	
+	VAR taskName = "[Core] ExecuteWorkflowOverrideParameters";
+	VAR taskExecutionName = "${taskExecName}" + PARSESTRING(NOW(), "dd-MM-yyyy HH:mm");
+	VAR taskExecutionDescr = taskExecutionName;
+	
+	
+	
+	VAR taskParams;
+	VAR parametersOverride;
+	VAR workflowName="Workflow_PuntiDiprelievo";
+	VAR theUser=USER();
+	ON_NEXT : {
+
+        parametersOverride = [ "Step 1" : ["entityTypeName":"PuntoDiPrelievo"],
+							"Step 4" : ["idAggregate":idAggregato],
+							"Step 5" : ["idAggregate":idAggregato],
+							"Step 6" : ["idAggregate":idAggregato],
+							"Step 4" : ["aggregateInstanceCharId":idAggregato]
+		];
+        taskParams = {workflowName, parametersOverride, theUser};
+	}
+
+}
+
+
+
+STEP("custom", "com.i4c.antares.wizardeditor.custom.ScheduleTaskStep", "selectScheduleType"){}
