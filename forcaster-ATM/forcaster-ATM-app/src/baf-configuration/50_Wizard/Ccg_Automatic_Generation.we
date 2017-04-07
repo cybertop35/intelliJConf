@@ -1,0 +1,75 @@
+#Ccg_Automatic_Generation
+STEP("input",""){
+	VAR nextYear = GETYEAR(TODAY())+1;
+    VAR startDate = DATE(1,1,nextYear);
+    TEXTBOX([
+        "primitiveType" : "DATE",
+        "variable": "startDate",
+        "key" : "${startDate}",
+        "required" : TRUE
+    ]);
+     
+    VAR endDate = DATE(31,12,nextYear);
+    TEXTBOX([
+        "primitiveType" : "DATE",
+        "variable": "endDate",
+        "key" : "${endDate}",
+        "required" : TRUE
+    ]);
+    
+    REFRESH_BUTTON(["key":"${generate}","id" : "Generate"]);
+	
+    
+    if(refreshingComponent == "Generate"){
+    	endDate = DATESUM(endDate, 23 , "HOURLY");
+    	DEBUGMESSAGE("Generating Ccgs for interval "+PARSESTRING(startDate)+" - "+PARSESTRING(endDate));
+        VAR intervalTs = TIMESERIES(startDate, endDate, 0.0, 'HOURLY', NULL);
+        VAR fissa = TIMESERIES(startDate, endDate, 0.0, 'HOURLY', NULL);
+        VAR f1 = TIMESERIES(startDate, endDate, 0.0, 'HOURLY', NULL);
+        VAR f2 = TIMESERIES(startDate, endDate, 0.0, 'HOURLY', NULL);
+        VAR f3 = TIMESERIES(startDate, endDate, 0.0, 'HOURLY', NULL);
+        VAR pk = TIMESERIES(startDate, endDate, 0.0, 'HOURLY', NULL);
+        VAR opk = TIMESERIES(startDate, endDate, 0.0, 'HOURLY', NULL);
+        
+        PARALLEL_EVAL("
+                        VAR ccgMap = EnergyBaseLibrary.getCcgValuesOfTime(ParamD);
+                        SETVALUE(Param1, ParamD, ccgMap['FISSA']);
+                        SETVALUE(Param1, ParamD, ccgMap['F1']);
+                        SETVALUE(Param2, ParamD, ccgMap['F2']);
+                        SETVALUE(Param3, ParamD, ccgMap['F3']);
+                        SETVALUE(Param4, ParamD, ccgMap['PEAK']);
+                        SETVALUE(Param5, ParamD, ccgMap['OFFPEAK']);
+                        "
+                        ,{f1, f2, f3, pk, opk}, intervalTs);
+        
+        DEBUGMESSAGE("Start saving series...");
+        
+        VAR ccg = Ccg[ID="FISSA"];
+        ccg.Classification = COMPOSITION({ccg.Classification, fissa});
+        SAVE(ccg);
+        
+        ccg = Ccg[ID="F1"];
+        ccg.Classification = COMPOSITION({ccg.Classification, f1});
+        SAVE(ccg);
+        
+        ccg = Ccg[ID="F2"];
+        ccg.Classification = COMPOSITION({ccg.Classification, f2});
+        SAVE(ccg);
+        
+        ccg = Ccg[ID="F3"];
+        ccg.Classification = COMPOSITION({ccg.Classification, f3});
+        SAVE(ccg);
+        
+        ccg = Ccg[ID="OFFPEAK"];
+        ccg.Classification = COMPOSITION({ccg.Classification, opk});
+        SAVE(ccg);
+        
+        ccg = Ccg[ID="PEAK"];
+        ccg.Classification = COMPOSITION({ccg.Classification, pk});
+        SAVE(ccg);
+        
+        SHOWMESSAGE(["key": "${done}", "labelStyle":"color:green;"]);
+    
+    	DEBUGMESSAGE("Ccgs generation ended.");
+    } 
+}

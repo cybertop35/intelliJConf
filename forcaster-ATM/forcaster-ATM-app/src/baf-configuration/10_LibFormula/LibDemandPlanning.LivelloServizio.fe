@@ -1,0 +1,10 @@
+# NUM_MINUTI_PUNTO_ATTIVO/(minuti nel giorno)
+VAR punto=Param1;
+VAR minutiAttivo=punto.NUM_MINUTI_PUNTO_ATTIVO;
+VAR start=STARTDATE(minutiAttivo);
+VAR end=ENDDATE(minutiAttivo);
+end=DATESUM(end,1,"DAILY");
+VAR onesHourly=ONES(start,end,"HOURLY","");
+VAR onesMin=onesHourly*60;
+VAR dailyMinut=CHGT(onesMin, 'DAILY', 'SUM', null );
+RETURN minutiAttivo/dailyMinut;
