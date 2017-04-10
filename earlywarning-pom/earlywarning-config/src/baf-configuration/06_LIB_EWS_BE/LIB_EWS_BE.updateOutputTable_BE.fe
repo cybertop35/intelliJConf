@@ -16,6 +16,7 @@ VAR NOME_COLONNA = NULL;
 VAR CREATED = FALSE;
 VAR columns;
 VAR SQL;
+VAR brColumns ;
 VAR resultAnalysisUnits;
 VAR BR_LIST = {};
 VAR resultAnalysisUnitsTable= "ANALYSIS_UNITS";
@@ -24,16 +25,17 @@ VAR CURRENT_DATE = PARSESTRING(NOW(),'dd/MM/YYYY');
 
 
 VAR  localSchema = SQLEXECUTE("select database",DBCONNECTION,NULL,{});
-
 localSchema = localSchema[0][0];
+
+#CALCOLO LE BR
+
 
 foreach(analysisUnitList as unit){
 	
 	if(LIB_DB.isTableExisting(unit.ResultTableName,DBCONNECTION) and LIB_EWS.checkAnalysisUnitStatus(unit) == true) THEN {
-		
-		if(columns == null)
-			columns = ARRAY_TO_STRING( Utils.getColumnName(unit.ResultTableName,{"SNDG","COUNTRY"})   );
-		
+		brColumns = LIB_EWS.getBRFieldName(unit);
+		columns = ARRAY_TO_STRING( Utils.getColumnName(unit.ResultTableName,CONCAT({"SNDG","COUNTRY"},KEYSET(brColumns))  ) );
+
 		resultAnalysisUnits = resultAnalysisUnits + 
 				" select "+unit.ResultTableName+".SNDG
 						,"+unit.ResultTableName+".COUNTRY
@@ -45,38 +47,12 @@ foreach(analysisUnitList as unit){
 				and "+customerUnit.Source_tableName+".SYSTEM_DATE = "+unit.AnalyticalTable+".SYSTEM_DATE";
         
 		resultAnalysisUnits = resultAnalysisUnits + " UNION ALL ";	
-		
 
-		
-		BR_LIST = CONCAT(BR_LIST,unit.Subset_AnalysisUnit.Business_Rule);
 	}
 
 }
 resultAnalysisUnits = SUBSTRING(resultAnalysisUnits, 0, LENGTH(resultAnalysisUnits) - 10);
 columns = columns +","+indicatorsTable+".*" ;
-
-###############ESTRAGGO BR###################
-BR_LIST = DISTINCT(BR_LIST);
-
-foreach (BR_LIST as b){
-	INDEX = INDEXOF(b.NAME,'_');
-	
-	if(INDEX < 0){
-		INDEX = INDEXOF(b.NAME,'-');
-	}
-	
-    if(INDEX < 0){
-    	brName = b.ID;
-    }
-    else {
-		brName = SUBSTRING(b.NAME,2,INDEX-2);
-    }
-	NOME_COLONNA = "BR0000"+brName;
-    IF ( CONTAINS(columns,NOME_COLONNA) == FALSE)
-		columns = columns +" ,(CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END ) as "+  NOME_COLONNA ;
-
-}
- 
 
 IF(LIB_DB.isTableExisting(indicatorsTable,DBCONNECTION)) THEN{
     SQLEXECUTE("DROP TABLE "+ indicatorsTable,DBCONNECTION,NULL,{});
