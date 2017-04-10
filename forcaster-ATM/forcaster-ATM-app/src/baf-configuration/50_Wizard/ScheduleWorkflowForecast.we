@@ -8,14 +8,14 @@ STEP("input", "${stepTitle}"){
 	FILEUPLOAD([
         "key" : "${fileAnagraficaUpload}",
         "variable" : "fileAnagrafica",
-		"acceptedTypes" : {"xls","xlsx"},   
+		"acceptedTypes" : {"xls"},   
         "stagingDirectoryProperty" : folderAnagrafica
     ]);
 	
 	FILEUPLOAD([
         "key" : "${fileMultipleUpload}",
         "variable" : "fileMultiple",
-		"acceptedTypes" : {"xls","xlsx"},   
+		"acceptedTypes" : {"xls"},   
         "stagingDirectoryProperty" : folderMultipleTs
     ]);
 	
