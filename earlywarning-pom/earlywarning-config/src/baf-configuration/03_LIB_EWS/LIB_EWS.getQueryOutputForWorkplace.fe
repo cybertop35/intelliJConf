@@ -164,6 +164,13 @@ VAR detectionRationale = LIB_EWS.getDetectionRationaleValue(fastTrackInstance,'F
 if(LENGTH(detectionRationale) == 0) then detectionRationale = 'NULL';
 fields = fields +" ,CAST("+detectionRationale+" as VARCHAR(200)) as DETECTION_RATIONALE";
 
+#CALCOLO LE BR
+VAR brColumns = LIB_EWS.getBRFieldName(analysisUnitInstance);
+foreach(KEYSET(brColumns) as key){
+	fields = fields + "," + brColumns[key] +" as "+ key;
+}
+
+
 SQL = "SELECT ";
 SQL = SQL + fields;
 SQL = SQL +" FROM "+AnalysisTable +" "+AnalysisTable;
