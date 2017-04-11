@@ -102,26 +102,26 @@ foreach (VARIABLES as v){
 	}
 }
 
-VAR brName;
-VAR INDEX ;
-var skip = {};
-foreach (BR_LIST as b){
-	INDEX = INDEXOF(b.NAME,'_');
-	
-	if(INDEX < 0){
-		INDEX = INDEXOF(b.NAME,'-');
-	}
-	
-    if(INDEX < 0){
-    	brName = b.ID;
-    }
-    else {
-		brName = SUBSTRING(b.NAME,2,INDEX-2);
-    }
-	NOME_COLONNA = "BR0000"+brName;
-	addelement(castFields,"(CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END ) as "+  NOME_COLONNA) ;
+#VAR brName;
+#VAR INDEX ;
+#var skip = {};
+#foreach (BR_LIST as b){
+#	INDEX = INDEXOF(b.NAME,'_');
+#	
+#	if(INDEX < 0){
+#		INDEX = INDEXOF(b.NAME,'-');
+#	}
+#	
+#    if(INDEX < 0){
+#    	brName = b.ID;
+#    }
+#    else {
+#		brName = SUBSTRING(b.NAME,2,INDEX-2);
+#    }
+#	NOME_COLONNA = "BR0000"+brName;
+#	addelement(castFields,"(CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END ) as "+  NOME_COLONNA) ;
 
-}
+#}
 
 VAR modules = LIB_EWS_RETAIL.getAllModulesElaboration(analysisUnitInstance);
 
