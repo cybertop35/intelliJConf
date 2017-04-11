@@ -56,12 +56,47 @@ foreach(wp_list as wp){
 		}
 		
 		SQL = SQL +" SELECT EN."+keyColumn+"
-        					,"+ARRAY_TO_STRING(Utils.getColumnName ("TMP_OUTWP_EN_"+wp.ID,{"SNDG","RESULT_MODULE_01","RESULT_MODULE_02","RESULT_MODULE_03","RESULT_MODULE_04","RESULT_MODULE_05"}) )+"
+        					,"+ARRAY_TO_STRING(Utils.getColumnName ("TMP_OUTWP_EN_"+wp.ID,{"SNDG","DETECTION_RATIONALE","RESULT_MODULE_01","RESULT_MODULE_02","RESULT_MODULE_03","RESULT_MODULE_04","RESULT_MODULE_05"}) )+"
 						   ,VM.RESULT_MODULE_01
 						   ,VM.RESULT_MODULE_02
 						   ,VM.RESULT_MODULE_03
 						   ,VM.RESULT_MODULE_04
 						   ,VM.RESULT_MODULE_05
+						   
+						   ,CAST(REGEXP_REPLACE(EN.detection_rationale, 
+								'(DS\d{1,};)', -- regexp
+								'', --replacestring
+								1, --startposition
+								0, -- occurrence, 0 = all
+								'i' -- match -> case insensitive
+								) ||
+								CASE
+									WHEN FAST_TRACK = '1' THEN ''
+									WHEN VM.RESULT_MODULE_01 = 'S30' THEN 'DS01;'
+									WHEN VM.RESULT_MODULE_01 = 'S20' THEN 'DS02;'
+									WHEN VM.RESULT_MODULE_01 = 'S10' THEN 'DS03;'
+									ELSE ''
+								END
+								||
+								CASE
+									WHEN FAST_TRACK = '1' THEN ''
+									WHEN VM.RESULT_MODULE_02 = 'S30' THEN 'DS04;'
+									WHEN VM.RESULT_MODULE_02 = 'S20' THEN 'DS05;'
+									WHEN VM.RESULT_MODULE_02 = 'S10' THEN 'DS06;'
+									ELSE ''
+								END
+								||
+								CASE
+									WHEN FAST_TRACK = '1' THEN ''
+									WHEN VM.RESULT_MODULE_03 = 'S30' THEN 'DS07;'
+									WHEN VM.RESULT_MODULE_03 = 'S20' THEN 'DS08;'
+									WHEN VM.RESULT_MODULE_03 = 'S10' THEN 'DS09;'
+									ELSE ''
+								END
+								
+								AS VARCHAR(200) )as 	DETECTION_RATIONALE
+								
+								
 						  ,CURRENT_DATE AS CREATION_DATE 
 					FROM TMP_OUTWP_VM_"+wp.ID+" VM 
 						JOIN  TMP_OUTWP_EN_"+wp.ID+" EN ON EN."+keyColumn+" = VM."+keyColumn+" 
