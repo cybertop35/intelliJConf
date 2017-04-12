@@ -145,7 +145,8 @@ PUT(mappaKpis, "URMSE", ROUND(urmse, 4)*1<$uom> );
 # forecasterLib
 PUT(mappaKpis, "MAXPE", ROUND(arrayKpis[1]*100, 2) );
 # mio calcolo in R
-PUT(mappaKpis, "MINPE", ROUND(arrayOtherKpis[0]*100, 2) );
+
+# PUT(mappaKpis, "MINPE", ROUND(arrayOtherKpis[0]*100, 2) );
 # forecasterLib
 PUT(mappaKpis, "A-MPE", ROUND(arrayKpis[2]*100, 2) );
 PUT(mappaKpis, "F-MPE", ROUND(arrayKpis[3]*100, 2) );
@@ -170,10 +171,10 @@ PUT(mappaKpis, "WMAE", ROUND(arrayKpis[18], 4)*1<$uom> );
 # mio calcolo in FQL
 PUT(mappaKpis, "RSQUARE", ROUND(rsquare*100, 2) );
 # mio calcolo in R
-PUT(mappaKpis, "NSE", ROUND(arrayOtherKpis[1], 4) );
-PUT(mappaKpis, "IQR-A-APE", ROUND(arrayOtherKpis[2], 2) );
-PUT(mappaKpis, "RSR", ROUND(arrayOtherKpis[4], 4) );
-PUT(mappaKpis, "PBIAS", ROUND(arrayOtherKpis[3], 2) );
+# PUT(mappaKpis, "NSE", ROUND(arrayOtherKpis[1], 4) );
+# PUT(mappaKpis, "IQR-A-APE", ROUND(arrayOtherKpis[2], 2) );
+# PUT(mappaKpis, "RSR", ROUND(arrayOtherKpis[4], 4) );
+# PUT(mappaKpis, "PBIAS", ROUND(arrayOtherKpis[3], 2) );
 
 return mappaKpis;
 
