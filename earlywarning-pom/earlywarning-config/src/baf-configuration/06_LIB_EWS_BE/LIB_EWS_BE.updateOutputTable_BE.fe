@@ -34,8 +34,9 @@ foreach(analysisUnitList as unit){
 	
 	if(LIB_DB.isTableExisting(unit.ResultTableName,DBCONNECTION) and LIB_EWS.checkAnalysisUnitStatus(unit) == true) THEN {
 		brColumns = LIB_EWS.getBRFieldName(unit);
-		columns = ARRAY_TO_STRING( Utils.getColumnName(unit.ResultTableName,CONCAT({"SNDG","COUNTRY"},KEYSET(brColumns))  ) );
-
+        if(columns == null){
+			columns = ARRAY_TO_STRING( Utils.getColumnName(unit.ResultTableName,CONCAT({"SNDG","COUNTRY"},KEYSET(brColumns))   ));
+		}
 		resultAnalysisUnits = resultAnalysisUnits + 
 				" select "+unit.ResultTableName+".SNDG
 						,"+unit.ResultTableName+".COUNTRY
@@ -62,7 +63,6 @@ SQLEXECUTE("diagnostic noviewfold on for session; "+"CREATE TABLE " +indicatorsT
 SQL = "SELECT  "+columns+" 
 	  FROM "+indicatorsTable+" "+indicatorsTable+"
 		JOIN ("+resultAnalysisUnits+")"+resultAnalysisUnitsTable+" ON "+indicatorsTable+".SNDG = "+resultAnalysisUnitsTable+".SNDG and "+indicatorsTable+".COUNTRY = "+resultAnalysisUnitsTable+".COUNTRY";
-
 
 
 IF(LIB_DB.isTableExisting(T_OUT_TMP,DBCONNECTION)) THEN{
