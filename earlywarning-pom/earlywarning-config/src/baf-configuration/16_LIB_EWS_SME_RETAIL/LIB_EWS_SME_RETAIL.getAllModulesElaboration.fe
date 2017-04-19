@@ -1,0 +1,127 @@
+DEBUGMESSAGE("LIB_EWS_SME_RETAIL.getAllModulesElaboration"," START");
+
+VAR analysisUnitInstance = Param1 ;
+VAR workspacePlanList = analysisUnitInstance.Workspace_AnalysisUnit.Workspace.Workspace_Plan[Status="Production"];
+
+var matrixInstance;
+var adjConfiguration = {} 	;
+var adjMap = [];
+var expressionSQLQuery;
+var name;
+var index;
+var color;
+VAR sql;
+VAR sqlUnion;
+VAR modulesName = {};
+var modules = {};
+var result = []; 
+
+
+foreach (workspacePlanList as plan){
+	
+	matrixInstance = plan.WorkspacePlan_Matrix.Matrix;
+	adjConfiguration = {};
+    adjMap = [];
+    
+    sql = "";
+    
+	if(matrixInstance <> null ){
+		
+        foreach(matrixInstance.Adjustment ORDER BY [OrderPosition] as adj){
+		   	index = 0;    
+			expressionSQLQuery = LIB_BRJson.getSQLquery(TEXTFILETOSTRING(adj.ExpressionQuery));
+			name = (UPCASE(adj.NAME));
+			
+            index  = INDEXOF(name,'ROSSO');
+			color = "RED";
+			
+			if(index == null OR index <= 0){
+				index  = INDEXOF(name,'ARANCIONE');
+				color = "ORANGE";
+			}
+			if(index == null OR index <= 0){
+				index  = INDEXOF(name,'VERDE');
+				color = "GREEN";
+			}
+			if(index == null OR index <= 0){
+				index  = INDEXOF(name,'VERDINO');
+				color = "LIGHT_GREEN";       
+			}
+			if(index == null OR index <= 0){
+				index  = INDEXOF(name,'GIALLO');
+				color = "LIGHT_GREEN";       
+			}
+			if(index == null OR index <= 0){
+				index  = INDEXOF(name,'BLU SCURO');
+				color = "DARK_BLUE";       
+			}            
+			if(index == null OR index <= 0){
+				index  = INDEXOF(name,'BLU CHIARO');
+				color = "LIGHT_BLUE";       
+			}
+						
+			IF(index > 0){
+				name = SUBSTRING(name,0 ,index) ;
+				index = INDEXOF(name,':')+1;
+				name = SUBSTRING(name,index,length(name) -  index);
+				name = REPLACESTRING(STRINGTRIM(name),' ' ,'_');
+				
+				adjConfiguration = adjMap[name];
+				
+				if (adjConfiguration == null) adjConfiguration = {};
+				
+				ADDELEMENT(adjConfiguration, ['sql':expressionSQLQuery,'color':color,'workspaceId':plan.Workspace.ID]);
+				put(adjMap,name,adjConfiguration);
+               
+               if(not CONTAINSVALUE(modulesName,name))
+               	addelement(modulesName,name);
+                
+			}   
+		}
+
+		addelement(modules,adjMap);
+	}     
+}
+ var workspaceId;
+
+	foreach(modules as module){
+		sql =  " SELECT sndg as ID";
+		workspaceId= "";
+        foreach(modulesName as key){
+				
+			adjConfiguration = module[key];
+			
+			if(LENGTH(sql) > 0)
+				sql = sql+",";
+                
+            if(adjConfiguration == null)
+             	sql = sql + " CAST(NULL AS VARCHAR(10)) as "+key;
+			else { 	
+                sql = sql + "CASE ";
+                foreach(adjConfiguration as conf){
+                	if(conf['sql'] <> null){
+                    sql = sql+ " WHEN " + conf['sql']+" THEN "+ LIB_EWS.getSqlDecodeColors("'"+conf['color']+"'")+"";
+                    workspaceId = conf['workspaceId'];
+                    }
+                }
+				sql = sql + " ELSE 'S00' ";
+                sql = sql+ " END AS "+key;
+            }
+		}
+       	sql = sql + " FROM "+analysisUnitInstance.AnalyticalTable;
+		sql = sql + " WHERE "+LIB_AnalysisUnit.getWorkspaceFilterSql(workspaceId);
+    
+    
+    if(LENGTH(sqlUnion) > 0)
+		sqlUnion = sqlUnion+" UNION ALL ";
+    
+    sqlUnion = sqlUnion+"  " + sql;
+ }
+
+ PUT(result,'query',sqlUnion);
+ PUT(result,'keyColumn','ID');
+ PUT(result,'columns',modulesName);
+ 
+ DEBUGMESSAGE("LIB_EWS_IT.getAllModulesElaboration"," END");
+ 
+ return result;

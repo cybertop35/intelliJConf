@@ -1,0 +1,23 @@
+VAR formulaName = "[LIB_SME_RETAIL.UNION_INDICATORS_PT2.fe]";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR customerUnit = Param1;
+VAR schema = customerUnit.TeradataSchema;
+VAR sql = "";
+
+sql = "	select
+		COD_SNDG AS SNDG_PT2
+
+		,"+ LIB_EWS_SME_RETAIL.INDICATOR_60() +"
+		,"+ LIB_EWS_SME_RETAIL.INDICATOR_61() +"
+		,"+ LIB_EWS_SME_RETAIL.INDICATOR_62() +"
+		,"+ LIB_EWS_SME_RETAIL.INDICATOR_63() +"
+		,"+ LIB_EWS_SME_RETAIL.INDICATOR_64() +"		
+		,"+ LIB_EWS_SME_RETAIL.INDICATOR_900() +"
+
+	from "+schema+"."+customerUnit.Source_tableName;
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;
