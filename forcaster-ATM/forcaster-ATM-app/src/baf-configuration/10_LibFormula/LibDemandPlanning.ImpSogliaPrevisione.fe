@@ -4,7 +4,7 @@ VAR rolling=punto.NUM_GG_RICARICA_2;
 VAR prevMonte=punto.IMP_TOT_PRELEVATO_Mix;
 VAR valueRoll;
 VAR startDateInt;
-VAR result=TS("DAILY","");
+VAR result=TS("DAILY","EUR");
 VAR valueSum;
 FOREACHDATE(rolling AS dateRolling){
 	valueRoll=VALUE(rolling,dateRolling)*(-1);
