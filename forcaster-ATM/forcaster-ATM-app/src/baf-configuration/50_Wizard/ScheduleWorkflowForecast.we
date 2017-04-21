@@ -35,7 +35,8 @@ STEP("input", "${stepTitle}"){
 							"Step 4" : ["idAggregate":idAggregato],
 							"Step 5" : ["idAggregate":idAggregato],
 							"Step 6" : ["idAggregate":idAggregato],
-							"Step 4" : ["aggregateInstanceCharId":idAggregato]
+							"Step 8" : ["aggregateInstanceCharId":idAggregato],
+							"Step 12" : ["Aggregate ID":idAggregato]
 		];
         taskParams = {workflowName, parametersOverride, theUser};
 	}
