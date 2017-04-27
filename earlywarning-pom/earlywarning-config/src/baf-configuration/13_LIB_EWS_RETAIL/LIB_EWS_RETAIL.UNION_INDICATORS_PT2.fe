@@ -12,8 +12,9 @@ sql = "	select
 		,"+ LIB_EWS_RETAIL.INDICATOR_61() +"
 		,"+ LIB_EWS_RETAIL.INDICATOR_62() +"
 		,"+ LIB_EWS_RETAIL.INDICATOR_63() +"
-		,"+ LIB_EWS_RETAIL.INDICATOR_64() +"		
-		,"+ LIB_EWS_RETAIL.INDICATOR_900() +"
+		,"+ LIB_EWS_RETAIL.INDICATOR_64() +"
+		,"+ LIB_EWS_RETAIL.INDICATOR_900() +"		
+
 
 	from "+schema+"."+customerUnit.Source_tableName;
 
