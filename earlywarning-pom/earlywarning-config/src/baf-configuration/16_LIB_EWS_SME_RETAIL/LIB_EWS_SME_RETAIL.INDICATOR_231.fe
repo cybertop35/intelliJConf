@@ -6,30 +6,30 @@ VAR sql = "";
 sql = "
 
 (zeroifnull(IMP_ENT_CORR_M0) + 
- zeroifnull(IMP_PAG_RAFI_M0) + 
+ zeroifnull(IMP_PAG_RAFI_M0 *(-1)) + 
  zeroifnull(IMP_STIP_PE_M0)  + 
- zeroifnull(IMP_PAG_CART_M0) + 
+ zeroifnull(IMP_PAG_CART_M0 *(-1)) + 
  zeroifnull(IMP_ENTR_TOT_M0) +
- zeroifnull(IMP_USC_CORR_M0) +
- zeroifnull(IMP_USC_TOT_M0)  +
+ zeroifnull(IMP_USC_CORR_M0 *(-1)) +
+ zeroifnull(IMP_USC_TOT_M0  *(-1))  +
  zeroifnull(IMP_STIP_GIR_M0)) AS SUM_IND_231_M0,
  
  (zeroifnull(IMP_ENT_CORR_M1) + 
-  zeroifnull(IMP_PAG_RAFI_M1) + 
+  zeroifnull(IMP_PAG_RAFI_M1 *(-1)) + 
   zeroifnull(IMP_STIP_PE_M1)  + 
-  zeroifnull(IMP_PAG_CART_M1) + 
+  zeroifnull(IMP_PAG_CART_M1 *(-1)) + 
   zeroifnull(IMP_ENTR_TOT_M1) +
-  zeroifnull(IMP_USC_CORR_M1) +
-  zeroifnull(IMP_USC_TOT_M1)  +
+  zeroifnull(IMP_USC_CORR_M1 *(-1)) +
+  zeroifnull(IMP_USC_TOT_M1  *(-1))  +
   zeroifnull(IMP_STIP_GIR_M1)) AS SUM_IND_231_M1,
   
  (zeroifnull(IMP_ENT_CORR_M2) + 
-  zeroifnull(IMP_PAG_RAFI_M2) + 
+  zeroifnull(IMP_PAG_RAFI_M2 *(-1)) + 
   zeroifnull(IMP_STIP_PE_M2)  + 
-  zeroifnull(IMP_PAG_CART_M2) + 
+  zeroifnull(IMP_PAG_CART_M2 *(-1)) + 
   zeroifnull(IMP_ENTR_TOT_M2) +
-  zeroifnull(IMP_USC_CORR_M2) +
-  zeroifnull(IMP_USC_TOT_M2)  +
+  zeroifnull(IMP_USC_CORR_M2 *(-1)) +
+  zeroifnull(IMP_USC_TOT_M2  *(-1))  +
   zeroifnull(IMP_STIP_GIR_M2)) AS SUM_IND_231_M2,
  
 CASE 
