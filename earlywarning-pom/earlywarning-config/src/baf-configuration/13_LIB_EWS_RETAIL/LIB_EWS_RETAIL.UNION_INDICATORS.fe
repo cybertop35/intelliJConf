@@ -95,6 +95,7 @@ sql = "select
 	,"+ LIB_EWS_RETAIL.INDICATOR_229() +"
 	,"+ LIB_EWS_RETAIL.INDICATOR_230() +"
 	,"+ LIB_EWS_RETAIL.INDICATOR_231() +"
+	,"+ LIB_EWS_RETAIL.INDICATOR_900() +"
 
 	from "+schema+"."+customerUnit.Source_tableName;
 

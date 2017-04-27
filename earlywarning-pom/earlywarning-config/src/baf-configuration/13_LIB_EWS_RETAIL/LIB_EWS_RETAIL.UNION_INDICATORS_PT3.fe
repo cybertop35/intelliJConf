@@ -8,6 +8,8 @@ VAR sql = "";
 sql = "select 
 		COD_SNDG as SNDG_PT3
 
+		,"+ LIB_EWS_RETAIL.INDICATOR_61() +"
+		,"+ LIB_EWS_RETAIL.INDICATOR_900() +"
 		,"+ LIB_EWS_RETAIL.INDICATOR_80() +"
 		,"+ LIB_EWS_RETAIL.INDICATOR_81() +"
 		,"+ LIB_EWS_RETAIL.INDICATOR_82() +"
@@ -38,8 +40,7 @@ sql = "select
 		,"+ LIB_EWS_RETAIL.INDICATOR_217() +"
 		,"+ LIB_EWS_RETAIL.INDICATOR_218() +"
 		,"+ LIB_EWS_RETAIL.INDICATOR_219() +"
-		,"+ LIB_EWS_RETAIL.INDICATOR_70() +"
-		,"+ LIB_EWS_RETAIL.INDICATOR_71() +"
+
 
 	from "+schema+"."+customerUnit.Source_tableName;
 
