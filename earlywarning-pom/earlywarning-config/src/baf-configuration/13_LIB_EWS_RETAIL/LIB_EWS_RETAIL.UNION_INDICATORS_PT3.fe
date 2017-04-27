@@ -40,6 +40,8 @@ sql = "select
 		,"+ LIB_EWS_RETAIL.INDICATOR_217() +"
 		,"+ LIB_EWS_RETAIL.INDICATOR_218() +"
 		,"+ LIB_EWS_RETAIL.INDICATOR_219() +"
+		,"+ LIB_EWS_RETAIL.INDICATOR_70() +"
+		,"+ LIB_EWS_RETAIL.INDICATOR_71() +"
 
 
 	from "+schema+"."+customerUnit.Source_tableName;
