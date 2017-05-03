@@ -14,10 +14,8 @@ DEBUGMESSAGE(formulaName, "START");
 #                   and obviously it don't have to contains the same field 2 times
 
 VAR analysisUnitInstance = Param1;
-var setup =["CRR_INDICATOR":"IND_02",
+var setup =[ "CRR_EXPRESSION":"IND_02 = 1",
 			"HAVE_ERROR_MESSAGE":true,
-			"executableQuery" : "SELECT SNDG, EXPOSURE AS CI_EXPOSURE, SCONFINO AS CI_SCONFINO FROM " + analysisUnitInstance.AnalyticalTable,
-			"fieldList" : {"CI_EXPOSURE", "CI_SCONFINO"},
 			"keyColumn" : "SNDG",
 			"backtestingMonth": 3,
 			"updateOutput": "LIB_EWS_IT.updateOutputTable_IT(Param1);",
