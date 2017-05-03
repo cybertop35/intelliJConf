@@ -25,7 +25,7 @@ VAR externalInfoFormula 	= analysisUnit.CustomerInfoFormula;
 VAR JDBC_NAME 				= Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
 
 VAR SETUP = EVAL(externalInfoFormula, {analysisUnit});
-VAR CRR_COLUMN_NAME = SETUP["CRR_INDICATOR"];
+VAR CRR_EXPRESSION = SETUP["CRR_EXPRESSION"];
 VAR backtestingMonth = SETUP["backtestingMonth"];
 
 
@@ -70,7 +70,7 @@ SQL ="REPLACE view "+backTestingHistoryView+" as
 			) CRR ON h.sndg =crr.sndg
 		where EXTRACT (YEAR FROM H.HISTORY_DATE) = EXTRACT (YEAR  FROM ADD_MONTHS( CURRENT_DATE,-"+backtestingMonth+")) 
 			and EXTRACT (MONTH FROM H.HISTORY_DATE) = EXTRACT (MONTH FROM ADD_MONTHS( CURRENT_DATE,-"+backtestingMonth+"))
-			and "+CRR_COLUMN_NAME+" <> 1" ;
+			and  NOT ("+CRR_EXPRESSION+")" ;
   
 IF (length(backTestingHistoryView) <> 0) {
 	SQLEXECUTE(SQL,JDBC_NAME,0,{});
@@ -107,7 +107,7 @@ IF (((currentMonth - month) == 2) OR month == null){
 SQL = "INSERT INTO "+backTestingCRRTable+" 
 		SELECT SNDG,CURRENT_DATE as HISTORY_DATE 
 		FROM "+analysisUnitTable +" 
-		where "+CRR_COLUMN_NAME+"=1 
+		where "+CRR_EXPRESSION+" 
 			and sndg not in (select sndg from  "+backTestingCRRTable+" 
 								where EXTRACT (YEAR FROM Load_date) = EXTRACT (YEAR FROM CURRENT_DATE) 
 								  and EXTRACT (MONTH FROM Load_date) = EXTRACT (MONTH FROM CURRENT_DATE)  
