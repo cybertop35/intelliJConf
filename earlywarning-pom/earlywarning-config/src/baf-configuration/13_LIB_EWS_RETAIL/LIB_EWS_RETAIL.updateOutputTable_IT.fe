@@ -69,6 +69,7 @@ FOREACH ( WORKSPACE_PLAN_LIST as ws ){
 							,"+(Utils.SingleSetToElement(LIB_EWS.getVMNodeColumnByName(model,'Score CRAFI WOE')))+" 			as SCORE_CRAFI
 							,"+(Utils.SingleSetToElement(LIB_EWS.getVMNodeColumnByName(model,'BILFAM_SISTIP WOE')))+"		as SCORE_BILFAM_SISTIP			
 							,"+(Utils.SingleSetToElement(LIB_EWS.getVMNodeColumnByName(model,'BILFAM_NOSTIP WOE')))+"		as SCORE_BILFAM_NOSTIP
+							,"+(Utils.SingleSetToElement(LIB_EWS.getVMNodeColumnByName(model,'SCORE_BILFAM WOE')))+"			as SCORE_BILFAM
 							,"+(Utils.SingleSetToElement(LIB_EWS.getVMNodeColumnByName(model,'SCORE_XRA_CRAFI_BILFAM')))+"	as SCORE_STATISTICO
 
 							

@@ -31,7 +31,7 @@ foreach (nodes as node){
         }        
         
         IF(node['name'] == 'Create Variable SQL'){
-        	addelement (columnName, node['value']['variableLabelName']);
+        	addelement (columnName, node['value']['variableColumnName']);
 			break;
         }
     	
