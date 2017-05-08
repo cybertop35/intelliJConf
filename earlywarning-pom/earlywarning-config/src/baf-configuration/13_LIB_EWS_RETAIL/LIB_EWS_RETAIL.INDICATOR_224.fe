@@ -31,7 +31,7 @@ sql = "
 						NVL2(IMP_UTIL_CASSA_M1,1,0) +
 						NVL2(IMP_UTIL_CASSA_M2,1,0)
 					)
-				) AS DECIMAL(30,4)))
+				) AS DECIMAL(30,6)))
 		ELSE NULL
 	END AS NUM_DEN_IND_224,
 
@@ -50,7 +50,7 @@ sql = "
 						NVL2(IMP_ACC_CASSA_M1,1,0) +
 						NVL2(IMP_ACC_CASSA_M2,1,0)
 					)
-				) AS DECIMAL(30,4)))
+				) AS DECIMAL(30,6)))
 		ELSE NULL
 	END AS DEN_DEN_IND_224,
 
