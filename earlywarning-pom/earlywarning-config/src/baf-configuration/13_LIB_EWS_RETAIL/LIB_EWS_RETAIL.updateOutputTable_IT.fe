@@ -106,7 +106,7 @@ foreach (VARIABLES as v){
 		addelement(castFields," ("+analysisTable+"."+v.ColumnName+" ) as "+ v.ColumnName);
 
         if(HAVE_ERROR_MESSAGE) {
-			addelement(castFields,"CAST ("+analysisTable+".ERROR_MSG_"+v.ColumnName+" as VARCHAR(200)  ) as ERROR_MSG_" +v.ColumnName);
+			addelement(castFields,"CAST ("+analysisTable+".ERROR_MSG_"+v.ColumnName+" as VARCHAR(100)  ) as ERROR_MSG_" +v.ColumnName);
         }
 	}
 }
