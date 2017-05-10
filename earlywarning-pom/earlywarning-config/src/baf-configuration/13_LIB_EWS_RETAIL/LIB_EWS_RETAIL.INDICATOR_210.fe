@@ -12,7 +12,7 @@ CASE
 	     IMP_SALDO_GPM_M0 IS NULL AND
 	     IMP_SALDO_ASSIC_M0 IS NULL THEN NULL
 	ELSE 		 
-		(greatest(zeroifnull(IMP_SALDO_CC_M0)     , 0)+
+		(zeroifnull(IMP_SALDO_CC_M0)+
 		greatest(zeroifnull(IMP_VAL_MERC_CD_M0)  , 0)+
 		greatest(zeroifnull(IMP_SALDO_PCT_M0)    , 0)+
 		greatest(zeroifnull(IMP_SALDO_GPM_M0)    , 0)+
