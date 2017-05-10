@@ -1,3 +1,4 @@
+
 VAR formulaName = "[LIB_EWS_RETAIL.INDICATOR_51.fe] ";
 DEBUGMESSAGE(formulaName, "START");
 

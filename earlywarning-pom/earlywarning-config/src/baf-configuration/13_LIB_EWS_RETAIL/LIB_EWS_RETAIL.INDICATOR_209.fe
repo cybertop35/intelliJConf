@@ -13,7 +13,7 @@ CAST(
 		WHEN (NUM_IND_209 IS NULL OR DEN_IND_209 IS NULL) THEN NULL
 		when IMP_UTILIZZO_TOT = 0 then null
 		when NUM_IND_209 < 0 or den_IND_209 < 0 then null
-		ELSE CAST ((cast(NUM_IND_209 as decimal(30,4)) / cast(DEN_IND_209 as decimal(30,4))) AS DECIMAL(30,4))
+		ELSE CAST ((cast(NUM_IND_209 as DECIMAL(30,6)) / cast(DEN_IND_209 as DECIMAL(30,6))) AS DECIMAL(30,6))
 	END AS DECIMAL(18,6)) AS IND_209,
 
 CASE	
