@@ -33,3 +33,6 @@ select 'S30' as nome, count(*) as conteggio from tewsa0w.output_web_be where SEM
 select 'S20' as nome, count(*) as conteggio from tewsa0w.output_web_be where SEMAFORO_APP = 'S20' and country = 'XXX' union
 select 'S10' as nome, count(*) as conteggio from tewsa0w.output_web_be where SEMAFORO_APP = 'S10' and country = 'XXX' union
 select 'S01' as nome, count(*) as conteggio from tewsa0w.output_web_be where SEMAFORO_APP = 'S01' and country = 'XXX'
+
+----------------CONTEGGIO PER SEGMENTO --------------------------------------------
+select segment, count(*) as conteggio from sewsa0w.output_web_BE where COUNTRY = 'CIB' GROUP BY SEGMENT
