@@ -12,7 +12,21 @@ CASE
                     AND TOTAL_SUPPLIERS_Y1 IS NOT NULL
                 )   THEN CAST(
 
-                    (CAST(TOTAL_SUPPLIERS_Y1 AS DECIMAL(20,6)) / CAST((CAST((zeroifnull(ACCOUNT_PAYABLES_Y1)+zeroifnull(ACCOUNT_PAYABLES_Y2)) AS DECIMAL(20,6)) / (nvl2(ACCOUNT_PAYABLES_Y1,1,0)+nvl2(ACCOUNT_PAYABLES_Y2,1,0))) AS DECIMAL(20,6))-1) AS DECIMAL(20,6)) 
+                    (
+
+                    CAST(TOTAL_SUPPLIERS_Y1 AS DECIMAL(20,6)) 
+
+                    / 
+
+                    CAST(
+                        (CAST
+
+                            ((zeroifnull(ACCOUNT_PAYABLES_Y1)+zeroifnull(ACCOUNT_PAYABLES_Y2)) AS DECIMAL(20,6)) 
+                                / 
+                            (nvl2(ACCOUNT_PAYABLES_Y1,1,0)+nvl2(ACCOUNT_PAYABLES_Y2,1,0))) AS DECIMAL(20,6))
+
+
+                    ) -1  AS DECIMAL(20,6)) 
                 WHEN (TOTAL_SUPPLIERS_Y1 IS NULL) THEN NULL
                 WHEN ((ACCOUNT_PAYABLES_Y1+ACCOUNT_PAYABLES_Y2) = 0) THEN NULL
                 WHEN ((ACCOUNT_PAYABLES_Y1+ACCOUNT_PAYABLES_Y2) IS NULL) THEN NULL
