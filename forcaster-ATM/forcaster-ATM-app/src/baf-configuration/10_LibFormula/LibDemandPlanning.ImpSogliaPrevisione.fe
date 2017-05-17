@@ -1,4 +1,4 @@
-# TODO: Previsione a monte sommata su una finestra rolling ampia quanto NUM_GG_RICARICA_2
+# TODO: Previsione a monte sommata su una finestra rolling ampia quanto NUM_GG_RICARICA_2 A010100158
 VAR punto=Param1;
 VAR rolling=punto.NUM_GG_RICARICA_2;
 VAR prevMonte=COMPOSITION({punto.IMP_TOT_PRELEVATO_Mix,punto.IMP_TOT_PREL_RIPROP_Mix});
