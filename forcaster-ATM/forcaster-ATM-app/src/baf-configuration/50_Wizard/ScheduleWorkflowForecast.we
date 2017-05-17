@@ -38,8 +38,8 @@ STEP("input", "${stepTitle}"){
 		"primitiveType" : "STRING",
 		"values" : idAggregatoList
 	]);
-	VAR stimaDate=TODAY();
-	TEXTBOX([ "primitiveType" : "DATE", "variable": "stimaDate", "key" : "${Stima}", "required" : true ]);
+	VAR stimaDate;
+	TEXTBOX([ "primitiveType" : "DATE", "variable": "stimaDate", "key" : "${Stima}", "required" : false ]);
 	VAR offset=0;
 	TEXTBOX([ "primitiveType" : "INTEGER", "variable": "offset", "key" : "${offset}", "required" : true ]);
 	VAR forecastLength=10;
@@ -82,6 +82,8 @@ STEP("input", "${stepTitle}"){
 		IF(versione=="Completo"){
 			 workflowName="Workflow_PuntiDiprelievo";
 			parametersOverride = [ "Step 1" : ["entityTypeName":"PuntoDiPrelievo"],
+								"Step 3 PRC_LIVELLO_SERVIZIO" : ["instanceAggrId":prelevatoValLe],
+								"Step 3 PRC_AVAILABILITY" : ["instanceAggrId":prelevatoValLe],
 								"Step 4 Stima a monte per il prelevato" : ["idAggregate":prelevatoMonte,"Evaluation date":stimaDate],
 								"Step 4 Stima a valle  per il prelevato" : ["idAggregate":prelevatoValLe,"Evaluation date":stimaDate],
 								"Step 4 Stima a valle  per il versamento" : ["idAggregate":versatoValLe,"Evaluation date":stimaDate],
@@ -95,7 +97,7 @@ STEP("input", "${stepTitle}"){
 										   "offset":offset,
 										   "forecastLength":forecastLength],
 								"Step 7" : ["aggregateInstanceCharId":prelevatoMonte],
-								"Step 12" : ["Aggregate ID":prelevatoMonte,
+								"Step 12" : ["Aggregate ID":prelevatoValLe,
 											"startDate":exportStartDate,
 											"endDate":exportEndDate]
 			];
@@ -103,6 +105,8 @@ STEP("input", "${stepTitle}"){
 			taskExecutionName=taskExecutionName+" l";
 			workflowName="Workflow_PuntiDiprelievo_light";
 			parametersOverride = [ "Step 1" : ["entityTypeName":"PuntoDiPrelievo"],
+								"Step 4" : ["instanceAggrId":prelevatoValLe],
+								"Step 5" : ["instanceAggrId":prelevatoValLe],
 								"Step 7" : ["idAggregate":prelevatoValLe,"Evaluation date":stimaDate],
 								"Step 8" : ["idAggregate":versatoValLe,"Evaluation date":stimaDate],
 								"Step 9" : ["idAggregate":versatoValLe,
@@ -111,7 +115,7 @@ STEP("input", "${stepTitle}"){
 								"Step 10" : ["idAggregate":prelevatoValLe,
 										   "offset":offset,
 										   "forecastLength":forecastLength],
-								"Step 13" : ["Aggregate ID":prelevatoMonte,
+								"Step 13" : ["Aggregate ID":prelevatoValLe,
 											"startDate":exportStartDate,
 											"endDate":exportEndDate]
 			];

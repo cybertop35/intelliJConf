@@ -241,12 +241,12 @@ public class ExportPuntoPrelievoTimeseriesBean implements ExportPuntoPrelievoTim
 	}
 
 	private void createHeader(Row row, List<ExportPuntoPrelievoDTO> attributeToExport) {
-		org.apache.poi.ss.usermodel.Cell cellID = row.createCell(0);
+		Cell cellID = row.createCell(0);
 		cellID.setCellValue("ID");
-		org.apache.poi.ss.usermodel.Cell cellRemi = row.createCell(1);
+		Cell cellRemi = row.createCell(1);
 	    cellRemi.setCellValue("Date");
 	    for(ExportPuntoPrelievoDTO attribute:attributeToExport){
-	    	org.apache.poi.ss.usermodel.Cell cellTipoEnerg = row.createCell(attribute.getNumColumn());
+	    	Cell cellTipoEnerg = row.createCell(attribute.getNumColumn());
 	  	    cellTipoEnerg.setCellValue(attribute.getLabelColumn());	
 	    	
 	    }

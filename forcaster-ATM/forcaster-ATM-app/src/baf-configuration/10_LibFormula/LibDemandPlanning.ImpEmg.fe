@@ -4,7 +4,7 @@
 # Se l'erogato è anche disponibile a partire dall'inizio di due anni precedenti, allora è uguale al massimo tra:
 #- il valore calcolato precedentemente e
 #- la media dell'erogato di 31 giorni dell'anno precedente attorno alla data di riferimento considerando solo i giorni con livello di servizio superiore o uguale al 90%
-# Altrimenti 1000
+# Altrimenti 1000 A010100293
 
 VAR punto=Param1;
 VAR erogato=punto.IMP_TOT_PRELEVATO;
@@ -18,7 +18,7 @@ FOREACHDATE(livelloServizio AS dateServizio){
 		SETVALUE(livelloOber90,dateServizio,0);
 	}
 }
-
+var erogatoYearly=CHGT( erogato, 'YEARLY', 'SUM',null );
 VAR tsLast30Days;
 VAR last30days;
 VAr erogatoLast30Days;
@@ -29,6 +29,9 @@ VAR totLastYear;
 VAR lastYearDate;
 VAR startDateLastYear;
 VAR endDateLastYear;
+VAR dates;
+VAR totAnno_1;
+VAR totAnno_2;
 FOREACHDATE(erogato AS dateErogato){
 	totLast30Day=NULL;
 	totLastYear=NULL;
@@ -37,7 +40,11 @@ FOREACHDATE(erogato AS dateErogato){
  #   valuesErogato=VALUES(erogatoLast30Days);
 	IF(VALUE(erogato,last30days)<>NULL){
    		erogatoLast30Days=erogatoLast30Days*livelloOber90; 
-       	totLast30Day=SUMTS(erogatoLast30Days,last30days,dateErogato);
+		erogatoLast30Days=erogatoLast30Days{$last30days,$dateErogato};
+		dates=DATES(erogatoLast30Days);
+		IF(SIZE(dates)>0){
+			totLast30Day=SUMTS(erogatoLast30Days,last30days,dateErogato)/SIZE(dates);
+		}
     }
 	lastYearDate=DATESUM(dateErogato,-1,"YEARLY");
 	startDateLastYear=DATESUM(lastYearDate,-15,"DAILY");
@@ -46,7 +53,16 @@ FOREACHDATE(erogato AS dateErogato){
 #	valuesErogato=VALUES(erogatoLast30Days);
 	IF(VALUE(erogato,startDateLastYear)<>NULL){
 		erogatoLastYear=erogatoLastYear*livelloOber90;
-		totLastYear=SUMTS(erogatoLastYear,startDateLastYear,endDateLastYear);
+		erogatoLastYear=erogatoLastYear{$last30days,$dateErogato};
+		dates=DATES(erogatoLastYear);
+		IF(SIZE(dates)>0){
+			totLastYear=SUMTS(erogatoLastYear,startDateLastYear,endDateLastYear)/SIZE(dates);
+			totAnno_1=VALUE(erogatoYearly,DATESUM(dateErogato,-1,"YEARLY"));
+			totAnno_2=VALUE(erogatoYearly,DATESUM(dateErogato,-2,"YEARLY"));
+			IF(totAnno_2<>0){
+				totLastYear=(totAnno_1/totAnno_2)*totLastYear;
+			}
+		}
 	}
 	IF(totLast30Day==NULL AND totLastYear==NULL){
 		SETVALUE(result,dateErogato,1000<EUR>);
