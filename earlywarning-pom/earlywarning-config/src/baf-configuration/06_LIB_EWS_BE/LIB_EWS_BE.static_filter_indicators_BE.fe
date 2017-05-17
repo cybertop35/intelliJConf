@@ -993,13 +993,20 @@ CASE
 	WHEN COUNTRY = 'KOPER' AND SEGMENT= 'CORPORATE'  THEN 3176191 
 	WHEN COUNTRY = 'KOPER' AND SEGMENT= 'SMALL/MICRO'  THEN 38238 
 	WHEN COUNTRY = 'ISPRO' THEN 0.1120528 
-	WHEN COUNTRY = 'ISBA' THEN 68900000 
+	WHEN COUNTRY = 'ISBA' THEN 68900000
+	WHEN COUNTRY = 'CIB' AND REGULAMENTARY_SEGMENT IN ('Large Corporate - Corporate','SME Corporate')  THEN cast(903000000 as decimal(30,12)) 
+	WHEN COUNTRY = 'CIB' AND REGULAMENTARY_SEGMENT= 'Small Business - SME Retail'  THEN 61100000
 END AS MISSING_VAL_IND_94, 
+
 CASE  
 	WHEN COUNTRY = 'ISPRO'  AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN 30600000 
+	WHEN COUNTRY = 'CIB' AND REGULAMENTARY_SEGMENT IN ('Large Corporate - Corporate','SME Corporate')  THEN cast(125000000000 as decimal(30,12))
+	WHEN COUNTRY = 'CIB' AND REGULAMENTARY_SEGMENT= 'Small Business - SME Retail'  THEN 3820000000
 END AS VAL_MAX_IND_94, 
+
 CASE  
 	WHEN COUNTRY = 'ISPRO' AND SEGMENT IN ('Corporate', 'SME Corporate', 'SME Corporate RED (Real Estate Development)', 'Corporate RED (Real Estate Development)', 'SME Retail', 'SME Retail RED (Real Estate Development)') THEN -1309813 
+	WHEN COUNTRY = 'CIB' AND SEGMENT IN ('Large Corporate - Corporate','SME Corporate')  THEN 1784717
 END AS VAL_MIN_IND_94,
 
 CASE  
