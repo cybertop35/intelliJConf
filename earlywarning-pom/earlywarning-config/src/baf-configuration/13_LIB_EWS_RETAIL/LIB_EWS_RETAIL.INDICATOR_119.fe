@@ -5,17 +5,14 @@ VAR sql = "";
 
 sql = "
 
-cast(null as char(1)) as IND_119,
-CAST(NULL AS VARCHAR(20)) as ERROR_MSG_IND_119
 
-/*
 NVL( CAST(FLG_JD_IRIS_SOC_ISP AS CHAR(1)) , '0') AS IND_119, 
 
 CASE
 	WHEN FLG_IRIS_GRA_NON_ESC IS NULL THEN 'SGR000_1' 
 	ELSE '' 
 END as ERROR_MSG_IND_119
-*/
+
 
 ";
 
