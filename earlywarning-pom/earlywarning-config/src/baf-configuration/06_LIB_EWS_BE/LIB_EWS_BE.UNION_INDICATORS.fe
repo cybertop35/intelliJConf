@@ -110,6 +110,8 @@ sql = "SELECT SNDG as SNDG_TMP1
     	,COUNTRY as COUNTRY_TMP3
 		  ,"+ LIB_EWS_BE.INDICATOR_61() +"
 		,"+ LIB_EWS_BE.INDICATOR_62() +"
+		,"+ LIB_EWS_BE.INDICATOR_80() +"     
+        ,"+ LIB_EWS_BE.INDICATOR_81() +"
     
 		from "+schema+"."+customerUnit.Source_tableName +" "+customerUnit.Source_tableName+"
 		JOIN "+ tableNameStatic+" "+ tableNameStatic +" ON "+tableNameStatic+".SNDG_STATIC ="+customerUnit.Source_tableName+".SNDG
@@ -144,8 +146,6 @@ sql = "SELECT SNDG as SNDG_TMP1
 		,"+ LIB_EWS_BE.INDICATOR_77() +"
 		,"+ LIB_EWS_BE.INDICATOR_78() +"
 		,"+ LIB_EWS_BE.INDICATOR_79() +"
-		,"+ LIB_EWS_BE.INDICATOR_80() +"     
-        ,"+ LIB_EWS_BE.INDICATOR_81() +"
 		,"+ LIB_EWS_BE.INDICATOR_82() +"
 		,"+ LIB_EWS_BE.INDICATOR_83() +"
 		,"+ LIB_EWS_BE.INDICATOR_84() +"
