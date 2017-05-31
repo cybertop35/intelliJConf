@@ -16,18 +16,17 @@ IF(LIB_DB.isTableExisting(tableNameStatic,DBCONNECTION)) THEN{
 	SQLEXECUTE("DROP TABLE "+ tableNameStatic,DBCONNECTION,NULL,{});
 }
 
-SQLEXECUTE("diagnostic noviewfold on for session; "+"CREATE TABLE " +tableNameStatic+ " as ("+sql+") WITH DATA PRIMARY INDEX(SNDG_STATIC)",DBCONNECTION,null,{});
+SQLEXECUTE("diagnostic noviewfold on for session; "+"CREATE TABLE " +tableNameStatic+ " as ("+sql+") WITH DATA",DBCONNECTION,null,{});
 
 sql = "SELECT SNDG as SNDG_TMP1
 		,COUNTRY as COUNTRY_TMP1
-		,"+ LIB_EWS_BE.INDICATOR_1() +"
+        ,"+ LIB_EWS_BE.INDICATOR_1() +"
 		,"+ LIB_EWS_BE.INDICATOR_2() +"
 		,"+ LIB_EWS_BE.INDICATOR_3() +"
 		,"+ LIB_EWS_BE.INDICATOR_4() +"
 		,"+ LIB_EWS_BE.INDICATOR_5() +"
 		,"+ LIB_EWS_BE.INDICATOR_6() +"
 		,"+ LIB_EWS_BE.INDICATOR_7() +"
-		,"+ LIB_EWS_BE.INDICATOR_8() +"
 		,"+ LIB_EWS_BE.INDICATOR_9() +"
 		,"+ LIB_EWS_BE.INDICATOR_10() +"
 		,"+ LIB_EWS_BE.INDICATOR_11() +"
@@ -50,6 +49,7 @@ sql = "SELECT SNDG as SNDG_TMP1
 		,"+ LIB_EWS_BE.INDICATOR_28() +"
 		,"+ LIB_EWS_BE.INDICATOR_29() +"
 		,"+ LIB_EWS_BE.INDICATOR_30() +"
+		
 		,"+ LIB_EWS_BE.INDICATOR_31() +"
 		,"+ LIB_EWS_BE.INDICATOR_32() +"
 		,"+ LIB_EWS_BE.INDICATOR_33() +"
@@ -79,7 +79,7 @@ sql = "SELECT SNDG as SNDG_TMP1
 		SQLEXECUTE("DROP TABLE "+ tableNameTMP1,DBCONNECTION,NULL,{});
 	}
 	
-	SQLEXECUTE("diagnostic noviewfold on for session; "+"CREATE TABLE " +tableNameTMP1+ " as ("+sql+") WITH DATA PRIMARY INDEX(SNDG_TMP1)",DBCONNECTION,null,{});
+	SQLEXECUTE("diagnostic noviewfold on for session; "+"CREATE TABLE " +tableNameTMP1+ " as ("+sql+") WITH DATA",DBCONNECTION,null,{});
 	
 	
 	sql = "SELECT SNDG as SNDG_TMP2
@@ -93,6 +93,7 @@ sql = "SELECT SNDG as SNDG_TMP1
 		,"+ LIB_EWS_BE.INDICATOR_57() +"
 		,"+ LIB_EWS_BE.INDICATOR_58() +"
 		,"+ LIB_EWS_BE.INDICATOR_60() +"
+	    ,"+ LIB_EWS_BE.INDICATOR_8() +"  
 		
 		from "+schema+"."+customerUnit.Source_tableName +" "+customerUnit.Source_tableName+"
 		JOIN "+ tableNameStatic+" "+ tableNameStatic +" ON "+tableNameStatic+".SNDG_STATIC ="+customerUnit.Source_tableName+".SNDG
@@ -103,16 +104,17 @@ sql = "SELECT SNDG as SNDG_TMP1
 		SQLEXECUTE("DROP TABLE "+ tableNameTMP2,DBCONNECTION,NULL,{});
 	}
 	
-	SQLEXECUTE("diagnostic noviewfold on for session; "+"CREATE TABLE " +tableNameTMP2+ " as ("+sql+") WITH DATA PRIMARY INDEX(SNDG_TMP2)",DBCONNECTION,null,{});
+	SQLEXECUTE("diagnostic noviewfold on for session; "+"CREATE TABLE " +tableNameTMP2+ " as ("+sql+") WITH DATA",DBCONNECTION,null,{});
 	
 	##############################
 	sql = "SELECT SNDG as SNDG_TMP3
     	,COUNTRY as COUNTRY_TMP3
 		  ,"+ LIB_EWS_BE.INDICATOR_61() +"
 		,"+ LIB_EWS_BE.INDICATOR_62() +"
-		,"+ LIB_EWS_BE.INDICATOR_80() +"     
-        ,"+ LIB_EWS_BE.INDICATOR_81() +"
-    
+        ,"+ LIB_EWS_BE.INDICATOR_80() +"     
+		,"+ LIB_EWS_BE.INDICATOR_81() +"
+    	,"+ LIB_EWS_BE.INDICATOR_72() +"
+   		
 		from "+schema+"."+customerUnit.Source_tableName +" "+customerUnit.Source_tableName+"
 		JOIN "+ tableNameStatic+" "+ tableNameStatic +" ON "+tableNameStatic+".SNDG_STATIC ="+customerUnit.Source_tableName+".SNDG
         	AND "+tableNameStatic+".COUNTRY_STATIC ="+customerUnit.Source_tableName+".COUNTRY"	;
@@ -122,12 +124,13 @@ sql = "SELECT SNDG as SNDG_TMP1
 		SQLEXECUTE("DROP TABLE "+ tableNameTMP3,DBCONNECTION,NULL,{});
 	}
 	
-	SQLEXECUTE("diagnostic noviewfold on for session; "+"CREATE TABLE " +tableNameTMP3+ " as ("+sql+") WITH DATA PRIMARY INDEX(SNDG_TMP3)",DBCONNECTION,null,{});
+	SQLEXECUTE("diagnostic noviewfold on for session; "+"CREATE TABLE " +tableNameTMP3+ " as ("+sql+") WITH DATA",DBCONNECTION,null,{});
 	
 	
 	##############################
 	sql = "SELECT SNDG as SNDG_TMP4
-    		,COUNTRY as  COUNTRY_TMP4    		
+    		,COUNTRY as  COUNTRY_TMP4
+    		
 		,"+ LIB_EWS_BE.INDICATOR_63() +"
 		,"+ LIB_EWS_BE.INDICATOR_64() +"
 		,"+ LIB_EWS_BE.INDICATOR_65() +"
@@ -137,28 +140,15 @@ sql = "SELECT SNDG as SNDG_TMP1
 		,"+ LIB_EWS_BE.INDICATOR_69() +"            
 		,"+ LIB_EWS_BE.INDICATOR_70() +"
         ,"+ LIB_EWS_BE.INDICATOR_71() +"
-        ,"+ LIB_EWS_BE.INDICATOR_72() +"
-		,"+ LIB_EWS_BE.INDICATOR_73() +"
+		
+        ,"+ LIB_EWS_BE.INDICATOR_73() +"
 		,"+ LIB_EWS_BE.INDICATOR_74() +"
 		,"+ LIB_EWS_BE.INDICATOR_75() +"
 		,"+ LIB_EWS_BE.INDICATOR_76() +"
 		,"+ LIB_EWS_BE.INDICATOR_77() +"
 		,"+ LIB_EWS_BE.INDICATOR_78() +"
 		,"+ LIB_EWS_BE.INDICATOR_79() +"
-		from "+schema+"."+customerUnit.Source_tableName +" "+customerUnit.Source_tableName+"
-		JOIN "+ tableNameStatic+" "+ tableNameStatic +" ON "+tableNameStatic+".SNDG_STATIC ="+customerUnit.Source_tableName+".SNDG
-        	AND "+tableNameStatic+".COUNTRY_STATIC ="+customerUnit.Source_tableName+".COUNTRY"	;
-	
-	VAR tableNameTMP4 = customerUnit.Source_tableName+"_4";
-	IF(LIB_DB.isTableExisting(tableNameTMP4,DBCONNECTION)) THEN{
-		SQLEXECUTE("DROP TABLE "+ tableNameTMP4,DBCONNECTION,NULL,{});
-	}
-	
-	SQLEXECUTE("diagnostic noviewfold on for session; "+"CREATE TABLE " +tableNameTMP4+ " as ("+sql+") WITH DATA PRIMARY INDEX(SNDG_TMP4)",DBCONNECTION,null,{});
-	
-	##############################
-	sql = "SELECT SNDG as SNDG_TMP5
-    		,COUNTRY as  COUNTRY_TMP5
+
 		,"+ LIB_EWS_BE.INDICATOR_82() +"
 		,"+ LIB_EWS_BE.INDICATOR_83() +"
 		,"+ LIB_EWS_BE.INDICATOR_84() +"
@@ -263,7 +253,7 @@ sql = "SELECT SNDG as SNDG_TMP1
 		,"+ LIB_EWS_BE.INDICATOR_188() +"
 		,"+ LIB_EWS_BE.INDICATOR_189() +"
 		,"+ LIB_EWS_BE.INDICATOR_190() +"
-		,"+ LIB_EWS_BE.INDICATOR_191() +"
+    	,"+ LIB_EWS_BE.INDICATOR_191() +"
 		,"+ LIB_EWS_BE.INDICATOR_192() +"
 		,"+ LIB_EWS_BE.INDICATOR_193() +"
 		,"+ LIB_EWS_BE.INDICATOR_194() +"
@@ -296,19 +286,18 @@ sql = "SELECT SNDG as SNDG_TMP1
 		,"+ LIB_EWS_BE.INDICATOR_221() +"
 		,"+ LIB_EWS_BE.INDICATOR_222() +"
 		,"+ LIB_EWS_BE.INDICATOR_223() +"
-		,"+ LIB_EWS_BE.INDICATOR_224() +"
+		,"+ LIB_EWS_BE.INDICATOR_224() +"  
    		,"+ LIB_EWS_BE.INDICATOR_225() +"	
 		from "+schema+"."+customerUnit.Source_tableName +" "+customerUnit.Source_tableName+"
 		JOIN "+ tableNameStatic+" "+ tableNameStatic +" ON "+tableNameStatic+".SNDG_STATIC ="+customerUnit.Source_tableName+".SNDG
         	AND "+tableNameStatic+".COUNTRY_STATIC ="+customerUnit.Source_tableName+".COUNTRY"	;
 	
-		
-	VAR tableNameTMP5 = customerUnit.Source_tableName+"_5";
-	IF(LIB_DB.isTableExisting(tableNameTMP5,DBCONNECTION)) THEN{
-		SQLEXECUTE("DROP TABLE "+ tableNameTMP5,DBCONNECTION,NULL,{});
+	VAR tableNameTMP4 = customerUnit.Source_tableName+"_4";
+	IF(LIB_DB.isTableExisting(tableNameTMP4,DBCONNECTION)) THEN{
+		SQLEXECUTE("DROP TABLE "+ tableNameTMP4,DBCONNECTION,NULL,{});
 	}
 	
-	SQLEXECUTE("diagnostic noviewfold on for session; "+"CREATE TABLE " +tableNameTMP5+ " as ("+sql+") WITH DATA PRIMARY INDEX(SNDG_TMP5)",DBCONNECTION,null,{});
+	SQLEXECUTE("diagnostic noviewfold on for session; "+"CREATE TABLE " +tableNameTMP4+ " as ("+sql+") WITH DATA",DBCONNECTION,null,{});
 	
 	
 
@@ -332,9 +321,7 @@ sql = "SELECT SNDG
         JOIN "+tableNameTMP3 +" "+ tableNameTMP3 +" ON "+tableNameTMP3+".SNDG_TMP3 ="+customerUnit.Source_tableName+".SNDG
         	AND "+tableNameTMP3+".COUNTRY_TMP3 ="+customerUnit.Source_tableName+".COUNTRY
         JOIN "+tableNameTMP4 +" "+ tableNameTMP4 +" ON "+tableNameTMP4+".SNDG_TMP4 ="+customerUnit.Source_tableName+".SNDG
-        	AND "+tableNameTMP4+".COUNTRY_TMP4 ="+customerUnit.Source_tableName+".COUNTRY
-		JOIN "+tableNameTMP5 +" "+ tableNameTMP5 +" ON "+tableNameTMP5+".SNDG_TMP5 ="+customerUnit.Source_tableName+".SNDG
-        	AND "+tableNameTMP5+".COUNTRY_TMP5 ="+customerUnit.Source_tableName+".COUNTRY";
+        	AND "+tableNameTMP4+".COUNTRY_TMP4 ="+customerUnit.Source_tableName+".COUNTRY"		;
 
 	
 
