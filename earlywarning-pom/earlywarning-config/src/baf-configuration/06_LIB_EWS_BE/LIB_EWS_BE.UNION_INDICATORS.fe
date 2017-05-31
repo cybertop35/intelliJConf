@@ -159,8 +159,6 @@ sql = "SELECT SNDG as SNDG_TMP1
 	##############################
 	sql = "SELECT SNDG as SNDG_TMP5
     		,COUNTRY as  COUNTRY_TMP5
-		,"+ LIB_EWS_BE.INDICATOR_80() +"     
-        ,"+ LIB_EWS_BE.INDICATOR_81() +"
 		,"+ LIB_EWS_BE.INDICATOR_82() +"
 		,"+ LIB_EWS_BE.INDICATOR_83() +"
 		,"+ LIB_EWS_BE.INDICATOR_84() +"
