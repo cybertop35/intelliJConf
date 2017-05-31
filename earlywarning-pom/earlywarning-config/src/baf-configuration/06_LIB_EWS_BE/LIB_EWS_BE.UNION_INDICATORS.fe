@@ -127,8 +127,7 @@ sql = "SELECT SNDG as SNDG_TMP1
 	
 	##############################
 	sql = "SELECT SNDG as SNDG_TMP4
-    		,COUNTRY as  COUNTRY_TMP4
-    		
+    		,COUNTRY as  COUNTRY_TMP4    		
 		,"+ LIB_EWS_BE.INDICATOR_63() +"
 		,"+ LIB_EWS_BE.INDICATOR_64() +"
 		,"+ LIB_EWS_BE.INDICATOR_65() +"
@@ -146,7 +145,6 @@ sql = "SELECT SNDG as SNDG_TMP1
 		,"+ LIB_EWS_BE.INDICATOR_77() +"
 		,"+ LIB_EWS_BE.INDICATOR_78() +"
 		,"+ LIB_EWS_BE.INDICATOR_79() +"
-<<<<<<< HEAD
 		from "+schema+"."+customerUnit.Source_tableName +" "+customerUnit.Source_tableName+"
 		JOIN "+ tableNameStatic+" "+ tableNameStatic +" ON "+tableNameStatic+".SNDG_STATIC ="+customerUnit.Source_tableName+".SNDG
         	AND "+tableNameStatic+".COUNTRY_STATIC ="+customerUnit.Source_tableName+".COUNTRY"	;
@@ -163,8 +161,6 @@ sql = "SELECT SNDG as SNDG_TMP1
     		,COUNTRY as  COUNTRY_TMP5
 		,"+ LIB_EWS_BE.INDICATOR_80() +"     
         ,"+ LIB_EWS_BE.INDICATOR_81() +"
-=======
->>>>>>> f410d1bd3768bada246bb89a01df389803f95f61
 		,"+ LIB_EWS_BE.INDICATOR_82() +"
 		,"+ LIB_EWS_BE.INDICATOR_83() +"
 		,"+ LIB_EWS_BE.INDICATOR_84() +"
