@@ -1,0 +1,18 @@
+VAR formulaName = "[LIB_EWS_RETAIL.INDICATOR_31.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+
+NVL( CAST(FLG_COV_NON_RISP_SAN AS CHAR(1)) , '0') AS IND_31, 
+CAST(NULL AS VARCHAR(20)) AS ERROR_MSG_IND_31
+
+		";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;
+
