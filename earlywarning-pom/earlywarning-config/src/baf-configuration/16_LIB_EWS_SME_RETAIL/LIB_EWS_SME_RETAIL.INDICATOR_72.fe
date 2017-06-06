@@ -1,0 +1,57 @@
+VAR formulaName = "[LIB_EWS_RETAIL.INDICATOR_72.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+
+
+CASE
+	WHEN NUM_MOV_DARE_CC_M0  IS NULL AND
+	     NUM_MOV_AVERE_CC_M0 IS NULL THEN NULL
+	ELSE 		 
+		(greatest(zeroifnull(NUM_MOV_DARE_CC_M0)  , 0)+
+		greatest(zeroifnull(NUM_MOV_AVERE_CC_M0)  , 0))
+END AS SUM_IND_72_M0,
+
+CASE
+	WHEN NUM_MOV_DARE_CC_M1  IS NULL AND
+	     NUM_MOV_AVERE_CC_M1 IS NULL THEN NULL
+	ELSE 		 
+		(greatest(zeroifnull(NUM_MOV_DARE_CC_M1)  , 0)+
+		greatest(zeroifnull(NUM_MOV_AVERE_CC_M1)  , 0))
+END AS SUM_IND_72_M1,
+
+CASE
+	WHEN NUM_MOV_DARE_CC_M2  IS NULL AND
+	     NUM_MOV_AVERE_CC_M2 IS NULL THEN NULL
+	ELSE 		 
+		(greatest(zeroifnull(NUM_MOV_DARE_CC_M2)  , 0)+
+		greatest(zeroifnull(NUM_MOV_AVERE_CC_M2)  , 0))
+END AS SUM_IND_72_M2,
+
+CAST( 	 
+CASE
+	WHEN NUM_MOV_DARE_CC_M0  	IS NULL AND
+	     NUM_MOV_DARE_CC_M1 	IS NULL AND
+	     NUM_MOV_DARE_CC_M2 	IS NULL AND
+	     NUM_MOV_AVERE_CC_M0 	IS NULL AND
+	     NUM_MOV_AVERE_CC_M1 	IS NULL AND
+		 NUM_MOV_AVERE_CC_M2 	IS NULL THEN NULL
+		
+		ELSE (zeroifnull(SUM_IND_72_M0) + zeroifnull(SUM_IND_72_M1) + zeroifnull(SUM_IND_72_M2)) / (NVL2(SUM_IND_72_M0,1,0) + NVL2(SUM_IND_72_M1,1,0) + NVL2(SUM_IND_72_M2,1,0)) 
+	END AS DECIMAL(18,6)) AS IND_72,
+
+	CASE
+		WHEN (SUM_IND_72_M0 is null and SUM_IND_72_M1 is null and  SUM_IND_72_M2 is null) THEN 'AFI000_1'
+		WHEN IND_72 < 0 THEN 'AFI004_1'
+		ELSE''
+	END AS ERROR_MSG_IND_72
+
+";
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;
+
