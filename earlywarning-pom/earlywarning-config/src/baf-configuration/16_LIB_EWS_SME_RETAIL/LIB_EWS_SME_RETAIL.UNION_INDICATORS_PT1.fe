@@ -9,7 +9,7 @@ sql = "
 select 
 		COD_SNDG as SNDG
 		,null as TARGET
-		,IMP_UTILIZZO as EXPOSURE
+		,IMP_UTILIZZO_TOT as EXPOSURE
 		,COD_WORKSPACE as SEGMENT
 		,creation_DT as SYSTEM_DATE
 		,'IT' as COUNTRY
