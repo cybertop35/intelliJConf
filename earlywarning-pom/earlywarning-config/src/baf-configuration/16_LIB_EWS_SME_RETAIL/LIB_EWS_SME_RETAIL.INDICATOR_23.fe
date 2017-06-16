@@ -12,8 +12,8 @@ END AS IND_23
 
 (
 	CASE when  FLG_RATING_VALIDITY= 0 			then 'RATG0023;' ELSE '' END ||
-	CASE when  RATING in('UR','WD','WR')	then 'RATG002;' ELSE '' END ||
-	CASE when  RATING IS NULL				then 'RATG003;' ELSE '' END 
+	CASE when  COD_RATING in('UR','WD','WR')	then 'RATG002;' ELSE '' END ||
+	CASE when  COD_RATING IS NULL				then 'RATG003;' ELSE '' END 
 ) as ERROR_MSG_IND_23
 
 ";
