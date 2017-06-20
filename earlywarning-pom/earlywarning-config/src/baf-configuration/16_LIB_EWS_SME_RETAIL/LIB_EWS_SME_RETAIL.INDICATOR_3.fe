@@ -35,12 +35,12 @@ sql = "
 					when (IMP_PATRIM_NETTO_T2 <  0 and NUM_IND_3 < 0) then (NUM_IND_3/abs(IMP_PATRIM_NETTO_T2))
 					
 					when  IMP_PATRIM_NETTO_T2 is null OR IMP_PATRIM_NETTO_T1 is null then null
-					when (IMP_PATRIM_NETTO_T2 > 0) then   (cast (NUM_IND_3 as NUMBER (18,3) )/ cast (IMP_PATRIM_NETTO_T2 as NUMBER (18,3)) )
+					when (IMP_PATRIM_NETTO_T2 > 0) then   (cast (NUM_IND_3 as NUMBER (18,12) )/ cast (IMP_PATRIM_NETTO_T2 as NUMBER (18,12)) )
 				END
 				)
 			ELSE NULL
 		end 
-	as decimal(18,3)) as IND_03,
+	as decimal(18,6)) as IND_03,
 		(case when BIL_DT_T1 is null and BIL_DT_T2 is null  						then 'BILA000;' ELSE '' END ||
 	  CASE when FLG_COND_ELEGIBILITA_1 = 0 								then 'BILA001;' ELSE '' END ||
 	  CASE when FLG_COND_ELEGIBILITA_2 = 0 								then 'BILA002;' ELSE '' END ||

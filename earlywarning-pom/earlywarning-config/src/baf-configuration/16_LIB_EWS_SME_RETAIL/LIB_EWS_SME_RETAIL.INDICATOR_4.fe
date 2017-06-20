@@ -17,11 +17,11 @@ sql = "
 					when (DEN_IND_4 = 0 and NUM_IND_4 = 0) then 0
 					when (DEN_IND_4 = 0 and NUM_IND_4 < 0) then -1000000
 					when DEN_IND_4 < 0  THEN -1000000
-					else  (cast (num_ind_4 as NUMBER (18,3) )/ cast (den_ind_4 as NUMBER (18,3)) )
+					else  (cast (num_ind_4 as NUMBER (18,12) )/ cast (den_ind_4 as NUMBER (18,12)) )
 				END)
 			ELSE NULL
 		END
-	 as decimal(18,3)) as IND_04,
+	 as decimal(18,6)) as IND_04,
 		(
 	  case when BIL_DT_T1 is null and BIL_DT_T2 is null  						then 'BILA000;' ELSE '' END ||
 	  CASE when FLG_COND_ELEGIBILITA_1 = 0 								then 'BILA001;' ELSE '' END ||
