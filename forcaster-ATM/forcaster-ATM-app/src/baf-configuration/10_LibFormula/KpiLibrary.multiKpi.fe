@@ -58,6 +58,9 @@ VAR sd = SQRT(sst/(N-1));
 
 
 VAR arrayKpis = forecasterLib.multiKpi(actual, forecast);
+IF(TYPEOF(arrayKpis)<>"FEArray"){
+	return mappaKpis;
+}
 VAR sse = arrayKpis[0];
 
 
