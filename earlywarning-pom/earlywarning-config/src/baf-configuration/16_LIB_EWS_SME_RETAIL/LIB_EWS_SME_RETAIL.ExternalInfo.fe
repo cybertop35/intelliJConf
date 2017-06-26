@@ -13,10 +13,10 @@ VAR formulaName = "[LIB_EWS_SME_RETAIL.ExternalInfo] ";DEBUGMESSAGE(formulaName,
 #                   and obviously it don't have to contains the same field 2 times
 
 VAR analysisUnitInstance = Param1;
-var setup =["CRR_EXPRESSION":"IND_02=1",
+var setup =["CRR_EXPRESSION":"IND_02=1 OR IND_53=1",
 			"HAVE_ERROR_MESSAGE":true,
 			"keyColumn" : "SNDG",
-			"backtestingMonth": 3,
+			"backtestingMonth": 6,
 			"updateOutput": "LIB_EWS_SME_RETAIL.updateOutputTable(Param1);",
 			"updateAnalysisTable": "LIB_EWS_SME_RETAIL.UpdateAnalysisUnit(Param1);"
 		];
