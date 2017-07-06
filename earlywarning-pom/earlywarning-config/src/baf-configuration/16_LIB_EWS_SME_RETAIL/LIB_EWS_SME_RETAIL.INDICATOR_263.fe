@@ -7,9 +7,9 @@ VAR sql = "";
 
 sql = "
 
-(zeroifnull(NUM_MOV_DARE_CC_NC_M0) + zeroifnull(NUM_MOV_AVERE_CC_NC_M0)) AS SUM_IND_263_M0,
-(zeroifnull(NUM_MOV_DARE_CC_NC_M1) + zeroifnull(NUM_MOV_AVERE_CC_NC_M1)) AS SUM_IND_263_M1,
-(zeroifnull(NUM_MOV_DARE_CC_NC_M2) + zeroifnull(NUM_MOV_AVERE_CC_NC_M2)) AS SUM_IND_263_M2,
+cast((zeroifnull(NUM_MOV_DARE_CC_NC_M0) + zeroifnull(NUM_MOV_AVERE_CC_NC_M0)) as decimal(18,6)) AS SUM_IND_263_M0,
+cast((zeroifnull(NUM_MOV_DARE_CC_NC_M1) + zeroifnull(NUM_MOV_AVERE_CC_NC_M1)) as decimal(18,6)) AS SUM_IND_263_M1,
+cast((zeroifnull(NUM_MOV_DARE_CC_NC_M2) + zeroifnull(NUM_MOV_AVERE_CC_NC_M2)) as decimal(18,6)) AS SUM_IND_263_M2,
 
 
 
