@@ -1,0 +1,26 @@
+VAR formulaName = "[LIB_EWS_IT.INDICATOR_902.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+		CAST(IMP_SALDO_M0 AS DECIMAL(18,12)) as NUM_IND_902 ,
+		CAST(IMP_SALDO_M5 AS DECIMAL(18,12)) as DEN_IND_902
+		,
+		cast (
+			CASE
+					when  NUM_IND_902 is null OR DEN_IND_902 is null then null
+					when (DEN_IND_902 = 0 and NUM_IND_902 > 0 ) then 1
+					when (DEN_IND_902 = 0 and NUM_IND_902 = 0 ) then 0
+					when (DEN_IND_902 = 0 and NUM_IND_902 < 0) then -1
+					else (NUM_IND_902/DEN_IND_902)-1
+				END as decimal(18,6)) as IND_902,
+		
+	null as ERROR_MSG_IND_902
+		";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;
