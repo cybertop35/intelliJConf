@@ -5,9 +5,7 @@ VAR sql = "";
 
 sql = "
 
-
-
-
+cast(
 CASE
 	WHEN  IND_902 = 0 AND (FLG_BONIF_M1 = '0' AND FLG_BONIF_M2 = '0' AND FLG_BONIF_M3 = '0' AND FLG_BONIF_M4 = '0' AND FLG_BONIF_M5 = '0') THEN 6
 	WHEN (IND_902 = 0 AND (FLG_BONIF_M0 = '0' AND FLG_BONIF_M1 = '0' AND FLG_BONIF_M2 = '0' AND FLG_BONIF_M3 = '0' AND FLG_BONIF_M4 = '0')) OR
@@ -31,7 +29,7 @@ CASE
 		 (IND_902 = 4 AND (FLG_BONIF_M5 = '0')) OR
 		 (IND_902 = 5 AND (FLG_BONIF_M5 = '0')) THEN 1
 	ELSE 0 
-END AS IND_904
+END as decimal(1,0)) AS IND_904
 		 
 		 
 		 
