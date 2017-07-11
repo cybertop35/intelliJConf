@@ -16,7 +16,12 @@ sql = "		WITH
 					,"+ LIB_EWS_RETAIL.INDICATOR_213() +"
 					,"+ LIB_EWS_RETAIL.INDICATOR_214() +"
 					,"+ LIB_EWS_RETAIL.INDICATOR_215() +"
-                    ,"+ LIB_EWS_RETAIL.INDICATOR_900() +"	
+                    ,"+ LIB_EWS_RETAIL.INDICATOR_900() +"
+					,"+ LIB_EWS_RETAIL.INDICATOR_901() +"
+					,"+ LIB_EWS_RETAIL.INDICATOR_902() +"
+					,"+ LIB_EWS_RETAIL.INDICATOR_903() +"
+					,"+ LIB_EWS_RETAIL.INDICATOR_904() +"
+				
 					from "+schema+"."+customerUnit.Source_tableName+
 				")
 
@@ -26,6 +31,7 @@ sql = "		WITH
         ,"+ LIB_EWS_RETAIL.INDICATOR_222() +"
 		,"+ LIB_EWS_RETAIL.INDICATOR_223() +"
 		,"+ LIB_EWS_RETAIL.INDICATOR_224() +"
+
 
 
 	from "+schema+"."+customerUnit.Source_tableName +" T 
