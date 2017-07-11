@@ -29,7 +29,9 @@ CASE
 		 (IND_902 = 4 AND (FLG_BONIF_M5 = '0')) OR
 		 (IND_902 = 5 AND (FLG_BONIF_M5 = '0')) THEN 1
 	ELSE 0 
-END as decimal(1,0)) AS IND_904
+END as decimal(1,0)) AS IND_904,
+
+	null as ERROR_MSG_IND_904
 		 
 		 
 		 
