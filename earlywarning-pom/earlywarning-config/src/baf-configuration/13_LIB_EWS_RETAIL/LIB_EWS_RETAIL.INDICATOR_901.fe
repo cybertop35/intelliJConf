@@ -16,7 +16,15 @@ sql = "
 					else (NUM_IND_901/DEN_IND_901)-1
 				END as decimal(18,6)) as IND_901,
 		
-	null as ERROR_MSG_IND_901
+				CASE
+					when  NUM_IND_901 is null and DEN_IND_901 is null then 'BILFAM000_1'
+					when (DEN_IND_901 = 0 and NUM_IND_901 > 0 ) then 'BILFAM002_2'
+					when (DEN_IND_901 = 0 and NUM_IND_901 = 0 ) then 'BILFAM002_1'
+					when (DEN_IND_901 = 0 and NUM_IND_901 < 0) then 'BILFAM002_3'
+					when  NUM_IND_901 is not null and DEN_IND_901 is null then 'BILFAM003_1'
+					when  NUM_IND_901 is null and DEN_IND_901 is not null then 'BILFAM003_2'
+					else ''
+				END	as ERROR_MSG_IND_901
 		";
 
 
