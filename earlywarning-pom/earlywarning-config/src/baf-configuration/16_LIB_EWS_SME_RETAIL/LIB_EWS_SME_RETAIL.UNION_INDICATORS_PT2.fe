@@ -1,13 +1,26 @@
-VAR formulaName = "[LIB_SME_RETAIL.UNION_INDICATORS_PT2.fe]";
+VAR formulaName = "[LIB_RETAIL.UNION_INDICATORS_PT2.fe]";
 DEBUGMESSAGE(formulaName, "START");
 
 VAR customerUnit = Param1;
 VAR schema = customerUnit.TeradataSchema;
 VAR sql = "";
 
-sql = "	select
-		COD_SNDG AS SNDG_PT2
-		
+sql = "		WITH 
+			DIP as (select 
+					COD_SNDG as SNDG_DIP_1
+
+					
+,"+ LIB_EWS_SME_RETAIL.INDICATOR_900 () +"
+,"+ LIB_EWS_SME_RETAIL.INDICATOR_212 () +"
+,"+ LIB_EWS_SME_RETAIL.INDICATOR_213 () +"
+,"+ LIB_EWS_SME_RETAIL.INDICATOR_214 () +"
+,"+ LIB_EWS_SME_RETAIL.INDICATOR_215 () +"
+				
+					from "+schema+"."+customerUnit.Source_tableName+
+				")
+
+		select
+		COD_SNDG AS SNDG_PT2 ,DIP.*
 ,"+ LIB_EWS_SME_RETAIL.INDICATOR_200 () +"
 ,"+ LIB_EWS_SME_RETAIL.INDICATOR_203 () +"
 ,"+ LIB_EWS_SME_RETAIL.INDICATOR_52  () +"
@@ -39,10 +52,26 @@ sql = "	select
 ,"+ LIB_EWS_SME_RETAIL.INDICATOR_169 () +"
 ,"+ LIB_EWS_SME_RETAIL.INDICATOR_170 () +"
 ,"+ LIB_EWS_SME_RETAIL.INDICATOR_171 () +"
+,"+ LIB_EWS_SME_RETAIL.INDICATOR_100 () +"
+,"+ LIB_EWS_SME_RETAIL.INDICATOR_102 () +"
+,"+ LIB_EWS_SME_RETAIL.INDICATOR_103 () +"
+,"+ LIB_EWS_SME_RETAIL.INDICATOR_104 () +"
+,"+ LIB_EWS_SME_RETAIL.INDICATOR_105 () +"
+,"+ LIB_EWS_SME_RETAIL.INDICATOR_106 () +"
+,"+ LIB_EWS_SME_RETAIL.INDICATOR_107 () +"
+,"+ LIB_EWS_SME_RETAIL.INDICATOR_108 () +"
+,"+ LIB_EWS_SME_RETAIL.INDICATOR_114 () +"
+,"+ LIB_EWS_SME_RETAIL.INDICATOR_115 () +"
+,"+ LIB_EWS_SME_RETAIL.INDICATOR_116 () +"
+,"+ LIB_EWS_SME_RETAIL.INDICATOR_117 () +"
+,"+ LIB_EWS_SME_RETAIL.INDICATOR_201 () +"
+,"+ LIB_EWS_SME_RETAIL.INDICATOR_202 () +"
+,"+ LIB_EWS_SME_RETAIL.INDICATOR_204 () +"
 
 
 
-	from "+schema+"."+customerUnit.Source_tableName;
+	from "+schema+"."+customerUnit.Source_tableName +" T 
+		JOIN DIP DIP ON DIP.SNDG_DIP_1 = T.COD_SNDG";
 
 DEBUGMESSAGE(formulaName, sql);
 DEBUGMESSAGE(formulaName, "END");

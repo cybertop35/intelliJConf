@@ -4,7 +4,7 @@ DEBUGMESSAGE(formulaName, "START");
 VAR sql = "";
 
 sql = "
-		(IMP_PATRIM_NETTO_T1 - IMP_PATRIM_NETTO_T2) as NUM_IND_3 
+		(cast(IMP_PATRIM_NETTO_T1 as decimal(20,12)) - cast(IMP_PATRIM_NETTO_T2 as decimal(20,12))) as NUM_IND_3 
 		,
 		cast( 
 		CASE 
@@ -35,7 +35,7 @@ sql = "
 					when (IMP_PATRIM_NETTO_T2 <  0 and NUM_IND_3 < 0) then (NUM_IND_3/abs(IMP_PATRIM_NETTO_T2))
 					
 					when  IMP_PATRIM_NETTO_T2 is null OR IMP_PATRIM_NETTO_T1 is null then null
-					when (IMP_PATRIM_NETTO_T2 > 0) then   (cast (NUM_IND_3 as NUMBER (18,12) )/ cast (IMP_PATRIM_NETTO_T2 as NUMBER (18,12)) )
+					when (IMP_PATRIM_NETTO_T2 > 0) then   (cast (NUM_IND_3 as NUMBER (20,12) )/ cast (IMP_PATRIM_NETTO_T2 as NUMBER (20,12)) )
 				END
 				)
 			ELSE NULL

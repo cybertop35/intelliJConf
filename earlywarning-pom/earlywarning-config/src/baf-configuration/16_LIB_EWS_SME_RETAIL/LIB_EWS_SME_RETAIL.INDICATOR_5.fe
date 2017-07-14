@@ -21,7 +21,7 @@ sql = "
 				when DEN_IND_5  = 0 and NUM_IND_5 <= 0 then 0.16393						
 				when DEN_IND_5  < 0 and NUM_IND_5 > 0 then 1000000
 				when DEN_IND_5  < 0 and NUM_IND_5 <= 0 then 0.16393	
-				else  (cast (num_ind_5 as NUMBER (18,12) )/ cast (den_ind_5 as NUMBER (18,12)) )
+				else  (cast (num_ind_5 as NUMBER (20,12) )/ cast (den_ind_5 as NUMBER (20,12)) )
 			END	)
 		ELSE NULL
 		END
