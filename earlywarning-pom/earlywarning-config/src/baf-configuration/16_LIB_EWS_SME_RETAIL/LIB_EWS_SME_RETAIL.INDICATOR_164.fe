@@ -5,9 +5,9 @@ VAR sql = "";
 
 sql = "
 
-IMP_ANTEXP_30D_M0 AS NUM_IND_164,
+cast((IMP_ANTEXP_30D_M0)*(-1) as decimal(20,6))  AS NUM_IND_164,
 
-IMP_ACC_S_T_C_M0 AS DEN_IND_164,	
+cast(IMP_ACC_S_T_C_M0 as decimal(20,6)) AS DEN_IND_164,	
 
 
 CAST(	
