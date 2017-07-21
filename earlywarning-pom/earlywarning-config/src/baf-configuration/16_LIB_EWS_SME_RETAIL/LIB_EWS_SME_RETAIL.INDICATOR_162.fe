@@ -6,9 +6,9 @@ VAR sql = "";
 sql = "
 
 
-IMP_FAT_OVERDUE_M0 AS NUM_IND_162,
+cast(IMP_FAT_OVERDUE_M0 as decimal(20,6)) AS NUM_IND_162,
 
-IMP_ACC_S_T_C_M0 AS DEN_IND_162,
+cast(IMP_ACC_CASSA_BT as decimal(20,6)) AS DEN_IND_162,
 
 CAST(	
 	CASE
