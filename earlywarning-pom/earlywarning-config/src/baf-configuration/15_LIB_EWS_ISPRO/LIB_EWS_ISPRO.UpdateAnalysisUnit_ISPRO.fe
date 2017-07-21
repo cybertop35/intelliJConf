@@ -200,13 +200,16 @@ VAR select =  "SELECT SNDG as SNDG,
 		,"+ LIB_EWS_BE.INDICATOR_223() +"
 		,"+ LIB_EWS_BE.INDICATOR_224() +"
 		,"+ LIB_EWS_BE.INDICATOR_225() +"
-
+					
          FROM "+schema+"."+customerUnit.Source_tableName+" 
          WHERE COUNTRY='ISPRO'";
 
 VAR QUERY ="CREATE TABLE "+ CAU_TMP_TABLE_NAME +" 
 			as ( 
-				"+select+"				
+				select t.*
+
+				FROM (
+				"+select+") t				
 			) WITH DATA PRIMARY INDEX(SNDG)";
 
 SQLEXECUTE("diagnostic noviewfold on for session; "+QUERY,DBCONNECTION,NULL,{});
