@@ -15,6 +15,7 @@ sql = "		WITH
 ,"+ LIB_EWS_SME_RETAIL.INDICATOR_213 () +"
 ,"+ LIB_EWS_SME_RETAIL.INDICATOR_214 () +"
 ,"+ LIB_EWS_SME_RETAIL.INDICATOR_215 () +"
+,"+ LIB_EWS_SME_RETAIL.INDICATOR_36 () +"
 				
 					from "+schema+"."+customerUnit.Source_tableName+
 				")
