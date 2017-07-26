@@ -13,7 +13,7 @@ CASE
 	ELSE 		 
 		(greatest(zeroifnull(NUM_MOV_DARE_CC_M0)  , 0)+
 		greatest(zeroifnull(NUM_MOV_AVERE_CC_M0)  , 0))
-END as decimal(18,6)) AS SUM_IND_72_M0,
+END as decimal(30,4)) AS SUM_IND_72_M0,
 cast(
 CASE 
 	WHEN NUM_MOV_DARE_CC_M1  IS NULL AND
@@ -21,7 +21,7 @@ CASE
 	ELSE 		 
 		(greatest(zeroifnull(NUM_MOV_DARE_CC_M1)  , 0)+
 		greatest(zeroifnull(NUM_MOV_AVERE_CC_M1)  , 0))
-END as decimal(18,6)) AS SUM_IND_72_M1,
+END as decimal(30,4)) AS SUM_IND_72_M1,
 cast(
 CASE
 	WHEN NUM_MOV_DARE_CC_M2  IS NULL AND
@@ -29,7 +29,7 @@ CASE
 	ELSE 		 
 		(greatest(zeroifnull(NUM_MOV_DARE_CC_M2)  , 0)+
 		greatest(zeroifnull(NUM_MOV_AVERE_CC_M2)  , 0))
-END as decimal(18,6))AS SUM_IND_72_M2,
+END as decimal(30,4))AS SUM_IND_72_M2,
 
 CAST( 	 
 CASE
@@ -41,7 +41,7 @@ CASE
 		 NUM_MOV_AVERE_CC_M2 	IS NULL THEN NULL
 		
 		ELSE (zeroifnull(SUM_IND_72_M0) + zeroifnull(SUM_IND_72_M1) + zeroifnull(SUM_IND_72_M2)) / (NVL2(SUM_IND_72_M0,1,0) + NVL2(SUM_IND_72_M1,1,0) + NVL2(SUM_IND_72_M2,1,0)) 
-	END AS DECIMAL(18,6)) AS IND_72,
+	END AS DECIMAL(20,4)) AS IND_72,
 
 	CASE
 		WHEN (SUM_IND_72_M0 is null and SUM_IND_72_M1 is null and  SUM_IND_72_M2 is null) THEN 'AFI000_1'
