@@ -15,6 +15,12 @@ sql = "
 									AND FLG_COND_ELEGIBILITA_5 = 1 
 									AND FLG_COND_ELEGIBILITA_6 = 1) ) 
 			or (FIN_STAT_SOURCE= 'CIQ' AND(FLG_COND_ELEGIBILITA_1=1 AND FLG_COND_ELEGIBILITA_2=1))
+			
+			or (FIN_STAT_SOURCE= 'FIS' AND(FLG_COND_ELEGIBILITA_1=1 
+									   AND FLG_COND_ELEGIBILITA_2=1
+									   AND FLG_COND_ELEGIBILITA_5=1 											
+									   AND FLG_COND_ELEGIBILITA_6=1 )
+					)
 		THEN (
 			CASE
 				when DEN_IND_5  = 0 and NUM_IND_5 > 0 then 1000000
@@ -47,6 +53,11 @@ sql = "
 													FLG_COND_ELEGIBILITA_2=1 AND
 													FLG_COND_ELEGIBILITA_6 = 1 
 												)
+					)
+					or (FIN_STAT_SOURCE= 'FIS' AND(FLG_COND_ELEGIBILITA_1=1 
+											   AND FLG_COND_ELEGIBILITA_2=1
+											   AND FLG_COND_ELEGIBILITA_5=1 											
+											   AND FLG_COND_ELEGIBILITA_6=1 )
 					)
 				)
 				AND (DEN_IND_5 <= 0 
