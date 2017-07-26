@@ -4,8 +4,8 @@ DEBUGMESSAGE(formulaName, "START");
 VAR sql = "";
 
 sql = "
-		(cast(GREATEST(IMP_RICAVI_VEND_PREST_T1,IMP_VAL_PROD_NETTA_T1) as decimal(20,12)) - cast(GREATEST(IMP_RICAVI_VEND_PREST_T2,IMP_VAL_PROD_NETTA_T2) as decimal(20,12))) as NUM_IND_4
-	, cast(GREATEST(IMP_RICAVI_VEND_PREST_T2,IMP_VAL_PROD_NETTA_T2) as decimal(20,12)) as DEN_IND_4
+		(cast(GREATEST(IMP_RICAVI_VEND_PREST_T1,IMP_VAL_PROD_NETTA_T1) as decimal(20,6)) - cast(GREATEST(IMP_RICAVI_VEND_PREST_T2,IMP_VAL_PROD_NETTA_T2) as decimal(20,6))) as NUM_IND_4
+	, cast(GREATEST(IMP_RICAVI_VEND_PREST_T2,IMP_VAL_PROD_NETTA_T2) as decimal(20,6)) as DEN_IND_4
 	,
 	cast( 
 		CASE 
@@ -38,7 +38,7 @@ sql = "
 					when (DEN_IND_4 = 0 and NUM_IND_4 = 0) then 0
 					when (DEN_IND_4 = 0 and NUM_IND_4 < 0) then -1000000
 					when DEN_IND_4 < 0  THEN -1000000
-					else  (cast (num_ind_4 as NUMBER (20,12) )/ cast (den_ind_4 as NUMBER (20,12)) )
+					else  (cast (num_ind_4 as NUMBER (20,6) )/ cast (den_ind_4 as NUMBER (20,6)) )
 				END)
 			ELSE NULL
 		END
