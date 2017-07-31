@@ -4,11 +4,26 @@ DEBUGMESSAGE(formulaName, "START");
 VAR sql = "";
 
 sql = "
-		(IMP_UTILE_PERD_CE+IMP_TOT_AMMORTAMENTI+IMP_INT_PASS_ONERI_ASS+IMP_ACCANTONAMENTI) AS NUM_IND_5
-	, (IMP_DEBITI_FIN_BT + (IMP_DEBITI_FIN_MLT/3.5) - IMP_LIQUIDITA + IMP_INT_PASS_ONERI_ASS ) as DEN_IND_5
+cast(
+case when  IMP_UTILE_PERD_CE is null and 
+		   IMP_TOT_AMMORTAMENTI is null and 
+		   IMP_INT_PASS_ONERI_ASS is null and 
+	       IMP_ACCANTONAMENTI is null then null 
+	 else
+		(zeroifnull(IMP_UTILE_PERD_CE)+zeroifnull(IMP_TOT_AMMORTAMENTI)+zeroifnull(IMP_INT_PASS_ONERI_ASS)+zeroifnull(IMP_ACCANTONAMENTI)) 
+end as decimal(20,6)) AS NUM_IND_5,
+
+cast(
+case when  IMP_DEBITI_FIN_BT is null and 
+		   IMP_DEBITI_FIN_MLT is null and 
+		   IMP_LIQUIDITA is null and
+		   IMP_INT_PASS_ONERI_ASS is null then null 
+	 else
+	(zeroifnull(IMP_DEBITI_FIN_BT) + (zeroifnull(IMP_DEBITI_FIN_MLT)/3.5) - zeroifnull(IMP_LIQUIDITA) + zeroifnull(IMP_INT_PASS_ONERI_ASS ))
+end as decimal(20,6))as DEN_IND_5
 	,
 	cast( CASE 
-		WHEN (FIN_STAT_SOURCE = 'CEBI' AND(FLG_COND_ELEGIBILITA_1 = 1 
+		WHEN ((FIN_STAT_SOURCE = 'CEBI' or FIN_STAT_SOURCE = 'NOP') AND(FLG_COND_ELEGIBILITA_1 = 1 
 									AND FLG_COND_ELEGIBILITA_2 = 1 
 									AND FLG_COND_ELEGIBILITA_3 = 1 
 									AND FLG_COND_ELEGIBILITA_4 = 1 
@@ -41,7 +56,7 @@ sql = "
 	  CASE when FLG_COND_ELEGIBILITA_5 = 0 								then 'BILA005;' ELSE '' END ||
 	  CASE when FLG_COND_ELEGIBILITA_6 = 0 								then 'BILA006;' ELSE '' END ||
 	  CASE WHEN (
-					(FIN_STAT_SOURCE = 'CEBI' AND(	FLG_COND_ELEGIBILITA_1 = 1 AND 
+					((FIN_STAT_SOURCE = 'CEBI' or FIN_STAT_SOURCE = 'NOP') AND(	FLG_COND_ELEGIBILITA_1 = 1 AND 
 													FLG_COND_ELEGIBILITA_2 = 1 AND 
 													FLG_COND_ELEGIBILITA_3 = 1 AND 
 													FLG_COND_ELEGIBILITA_4 = 1 AND 
