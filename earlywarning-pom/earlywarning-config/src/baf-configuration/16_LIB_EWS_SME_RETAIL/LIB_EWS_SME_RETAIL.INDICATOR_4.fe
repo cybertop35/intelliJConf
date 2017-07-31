@@ -12,7 +12,7 @@ case when IMP_RICAVI_VEND_PREST_T1 is null and
 		(cast(GREATEST(IMP_RICAVI_VEND_PREST_T1,IMP_VAL_PROD_NETTA_T1) as decimal(20,6)) - cast(GREATEST(IMP_RICAVI_VEND_PREST_T2,IMP_VAL_PROD_NETTA_T2) as decimal(20,6)))
 end	as NUM_IND_4,
 
-case when IMP_RICAVI_VEND_PREST_T2is null and
+case when IMP_RICAVI_VEND_PREST_T2 is null and
 			IMP_VAL_PROD_NETTA_T2 is null then null
 	else
 		cast(GREATEST(IMP_RICAVI_VEND_PREST_T2,IMP_VAL_PROD_NETTA_T2) as decimal(20,6)) 

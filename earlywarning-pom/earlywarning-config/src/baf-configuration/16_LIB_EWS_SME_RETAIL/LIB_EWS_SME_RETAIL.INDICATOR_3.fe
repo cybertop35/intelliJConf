@@ -5,11 +5,7 @@ VAR sql = "";
 
 sql = "
 
-case when IMP_PATRIM_NETTO_T1 is null and 
-		  IMP_PATRIM_NETTO_T2 is null then null
-	else 
-		(cast(zeroifnull(IMP_PATRIM_NETTO_T1) as decimal(20,6)) - cast(zeroifnull(IMP_PATRIM_NETTO_T2) as decimal(20,6))) 
-end as NUM_IND_3 
+cast(zeroifnull(IMP_PATRIM_NETTO_T1) as decimal(20,6)) - cast(zeroifnull(IMP_PATRIM_NETTO_T2) as decimal(20,6)) as NUM_IND_3 
 		,
 		cast( 
 		CASE 
