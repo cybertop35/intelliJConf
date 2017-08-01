@@ -4,6 +4,7 @@ DEBUGMESSAGE(formulaName, "START");
 VAR sql = "";
 
 sql = "
+
 cast(
 case when  IMP_UTILE_PERD_CE is null and 
 		   IMP_TOT_AMMORTAMENTI is null and 
@@ -19,7 +20,7 @@ case when  IMP_DEBITI_FIN_BT is null and
 		   IMP_LIQUIDITA is null and
 		   IMP_INT_PASS_ONERI_ASS is null then null 
 	 else
-	(zeroifnull(IMP_DEBITI_FIN_BT) + (zeroifnull(IMP_DEBITI_FIN_MLT)/3.5) - zeroifnull(IMP_LIQUIDITA) + zeroifnull(IMP_INT_PASS_ONERI_ASS ))
+	(zeroifnull(IMP_DEBITI_FIN_BT) + (cast(zeroifnull(IMP_DEBITI_FIN_MLT) as decimal(18,6))/3.5) - zeroifnull(IMP_LIQUIDITA) + zeroifnull(IMP_INT_PASS_ONERI_ASS ))
 end as decimal(20,6))as DEN_IND_5
 	,
 	cast( CASE 

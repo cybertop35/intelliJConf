@@ -6,13 +6,13 @@ VAR sql = "";
 sql = "
 
 CASE
-	WHEN IMP_SALDO_CC_M0 IS NULL AND
+	WHEN IMP_SALDO_CC_GT_0_M0 IS NULL AND
 	     IMP_VAL_MERC_CD_M0 IS NULL AND
 	     IMP_SALDO_PCT_M0 IS NULL AND
 	     IMP_SALDO_GPM_M0 IS NULL AND
 	     IMP_SALDO_ASSIC_M0 IS NULL THEN NULL
 	ELSE 		 
-		(greatest(zeroifnull(IMP_SALDO_CC_M0)     , 0)+
+		(greatest(zeroifnull(IMP_SALDO_CC_GT_0_M0)     , 0)+
 		greatest(zeroifnull(IMP_VAL_MERC_CD_M0)  , 0)+
 		greatest(zeroifnull(IMP_SALDO_PCT_M0)    , 0)+
 		greatest(zeroifnull(IMP_SALDO_GPM_M0)    , 0)+
@@ -20,13 +20,13 @@ CASE
 END AS SUM_IND_71_M0,
 
 CASE
-	WHEN IMP_SALDO_CC_M1 IS NULL AND
+	WHEN IMP_SALDO_CC_GT_0_M1 IS NULL AND
 	     IMP_VAL_MERC_CD_M1 IS NULL AND
 	     IMP_SALDO_PCT_M1 IS NULL AND
 	     IMP_SALDO_GPM_M1 IS NULL AND
 	     IMP_SALDO_ASSIC_M1 IS NULL THEN NULL
 	ELSE 	
-	(greatest(zeroifnull(IMP_SALDO_CC_M1)     , 0)+
+	(greatest(zeroifnull(IMP_SALDO_CC_GT_0_M1)     , 0)+
 	 greatest(zeroifnull(IMP_VAL_MERC_CD_M1)  , 0)+
 	 greatest(zeroifnull(IMP_SALDO_PCT_M1)    , 0)+
 	 greatest(zeroifnull(IMP_SALDO_GPM_M1)    , 0)+
@@ -34,13 +34,13 @@ CASE
 END AS SUM_IND_71_M1,
 
 CASE
-	WHEN IMP_SALDO_CC_M2 IS NULL AND
+	WHEN IMP_SALDO_CC_GT_0_M2 IS NULL AND
 	     IMP_VAL_MERC_CD_M2 IS NULL AND
 	     IMP_SALDO_PCT_M2 IS NULL AND
 	     IMP_SALDO_GPM_M2 IS NULL AND
 	     IMP_SALDO_ASSIC_M2 IS NULL THEN NULL
 	ELSE 	
-	(greatest(zeroifnull(IMP_SALDO_CC_M2)     , 0)+
+	(greatest(zeroifnull(IMP_SALDO_CC_GT_0_M2)     , 0)+
 	 greatest(zeroifnull(IMP_VAL_MERC_CD_M2)  , 0)+
 	 greatest(zeroifnull(IMP_SALDO_PCT_M2)    , 0)+
 	 greatest(zeroifnull(IMP_SALDO_GPM_M2)    , 0)+
@@ -49,17 +49,17 @@ END AS SUM_IND_71_M2,
 
 CAST( 	 
 CASE
-	WHEN IMP_SALDO_CC_M0  		IS NULL AND
+	WHEN IMP_SALDO_CC_GT_0_M0  		IS NULL AND
 	     IMP_VAL_MERC_CD_M0 	IS NULL AND
 	     IMP_SALDO_PCT_M0 		IS NULL AND
 	     IMP_SALDO_GPM_M0 		IS NULL AND
 	     IMP_SALDO_ASSIC_M0 	IS NULL AND
-		 IMP_SALDO_CC_M1 		IS NULL AND  
+		 IMP_SALDO_CC_GT_0_M1 		IS NULL AND  
 		 IMP_VAL_MERC_CD_M1 	IS NULL AND
 		 IMP_SALDO_PCT_M1 	    IS NULL AND
 		 IMP_SALDO_GPM_M1 	    IS NULL AND
 		 IMP_SALDO_ASSIC_M1 	IS NULL AND
-		 IMP_SALDO_CC_M2 		IS NULL AND
+		 IMP_SALDO_CC_GT_0_M2 		IS NULL AND
 	     IMP_VAL_MERC_CD_M2 	IS NULL AND
 	     IMP_SALDO_PCT_M2 		IS NULL AND
          IMP_SALDO_GPM_M2 		IS NULL AND
