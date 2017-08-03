@@ -40,7 +40,7 @@ CASE
 	     NUM_MOV_AVERE_CC_M1 	IS NULL AND
 		 NUM_MOV_AVERE_CC_M2 	IS NULL THEN NULL
 		
-		ELSE (zeroifnull(SUM_IND_72_M0) + zeroifnull(SUM_IND_72_M1) + zeroifnull(SUM_IND_72_M2)) / (NVL2(SUM_IND_72_M0,1,0) + NVL2(SUM_IND_72_M1,1,0) + NVL2(SUM_IND_72_M2,1,0)) 
+		ELSE (zeroifnull(SUM_IND_72_M0) + zeroifnull(SUM_IND_72_M1) + zeroifnull(SUM_IND_72_M2)) 
 	END AS DECIMAL(20,4)) AS IND_72,
 
 	CASE
