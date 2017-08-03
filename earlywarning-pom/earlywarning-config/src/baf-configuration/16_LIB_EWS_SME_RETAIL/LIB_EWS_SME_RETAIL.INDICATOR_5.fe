@@ -49,7 +49,7 @@ end as decimal(20,6))as DEN_IND_5
 		END
 	 as decimal(18,6)) AS IND_05,
 		(
-	  case when FIN_STAT_SOURCE in('CEBI' , 'CIQ', 'FIS') and BIL_DT_T1 is null 					  						then 'BILA000;' ELSE '' END ||
+	  case when BIL_DT_T1 is null 					  						then 'BILA000;' ELSE '' END ||
 	  CASE when FIN_STAT_SOURCE in('CEBI' , 'CIQ', 'FIS') and FLG_COND_ELEGIBILITA_1 = 0 								then 'BILA001;' ELSE '' END ||
 	  CASE when FIN_STAT_SOURCE in('CEBI' , 'CIQ', 'FIS') and FLG_COND_ELEGIBILITA_2 = 0 								then 'BILA002;' ELSE '' END ||
 	  CASE when FIN_STAT_SOURCE in('CEBI' , 'CIQ', 'FIS') and FLG_COND_ELEGIBILITA_3 = 0 								then 'BILA003;' ELSE '' END ||
