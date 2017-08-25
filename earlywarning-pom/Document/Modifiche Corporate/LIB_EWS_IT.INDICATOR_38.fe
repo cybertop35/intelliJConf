@@ -5,7 +5,7 @@ VAR sql = "";
 
 sql = "
 cast(zeroifnull(PRE_TAX_PROFIT_T1) as decimal(20,6)) - cast(zeroifnull(PRE_TAX_PROFIT_T2) as decimal(20,6)) as NUM_IND_38,
-ABS(zeroifnull(PRE_TAX_PROFIT_T2) as decimal(20,6)) AS DEN_IND_38,
+ABS(cast(zeroifnull(PRE_TAX_PROFIT_T2) as decimal(20,6))) AS DEN_IND_38,
 
 CAST(
 	CASE

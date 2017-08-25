@@ -41,7 +41,7 @@ end as DEN_IND_4
 					when (DEN_IND_4 = 0 and NUM_IND_4 = 0) then 0
 					when (DEN_IND_4 = 0 and NUM_IND_4 < 0) then -1000000
 					when DEN_IND_4 < 0  THEN -1000000
-					else  (cast (num_ind_4 as NUMBER (18,3) )/ cast (den_ind_4 as NUMBER (18,3)) )
+					else  (cast (num_ind_4 as NUMBER (20,6) )/ cast (den_ind_4 as NUMBER (20,6)) )
 				END)
 			ELSE NULL
 		END
