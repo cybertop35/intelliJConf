@@ -1,0 +1,24 @@
+VAR formulaName = "[LIB_EWS_IT.IND_03_FL_OVERRIDE.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+
+CAST(
+		CASE 
+			WHEN BR_03_OVERRIDE  = 0 AND IND_03 <= VAL_BR_03_OVERRIDE THEN 1
+			ELSE 0
+		END AS CHAR(1)) AS IND_03_FL_OVERRIDE,
+		
+		(CASE
+			WHEN BR_03_OVERRIDE  = 0 AND IND_03 <= VAL_BR_03_OVERRIDE THEN ''
+			ELSE ''
+		END ) AS ERROR_MSG_IND_03_FL_OVERRIDE
+";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

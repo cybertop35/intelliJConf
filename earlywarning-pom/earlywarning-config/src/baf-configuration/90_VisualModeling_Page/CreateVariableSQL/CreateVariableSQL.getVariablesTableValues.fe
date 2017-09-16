@@ -1,0 +1,41 @@
+var formulaName = "[CreateVariableSQL.getVariablesTableValues] ";
+DEBUGMESSAGE(formulaName, "START");
+
+# Param1 FEArray
+# Result FEMap
+# Starting from a variables list, this formula returns the values to configure the dataTable of variables.
+
+var variablesList = Param1;
+
+var allPageLabels = LIB_Label.predictiveApp('VisualModeling');
+
+var variablesTableMap = [];
+
+var tableValues = {};
+var tableIds = {};
+var i;
+var valuesInfo;
+for(i = 0;i<size(variablesList); i=i+1) {
+    IF (variablesList[i]["variableType"]=='CONTINUOUS' AND variablesList[i]["dataType"]<>'STRING') {
+        valuesInfo = allPageLabels['MIN'] + ': ' + variablesList[i]["continuousValues"]['min'] + ', ' + allPageLabels['MIN'] + ': ' + variablesList[i]["continuousValues"]['max'];
+    } ELSE IF (variablesList[i]["dataType"]=='BOOLEAN'){
+        valuesInfo = allPageLabels['VALUES'] + ': true, false';
+    } ELSE {
+        valuesInfo = allPageLabels['NUMBER_OF_VALUES'] + ': ' + SIZE(variablesList[i]["categoricalValues"]);
+    }
+    addelement(tableValues, {
+        ['label'    : variablesList[i]["columnLabel"]],
+        ['tooltip'  : [
+            'title': variablesList[i]["columnLabel"],
+            'rows' : {allPageLabels['DATA_TYPE'] + ': ' + CAPITALIZE(variablesList[i]["dataType"]), allPageLabels['TYPE'] + ': ' + CAPITALIZE(variablesList[i]["variableType"]), valuesInfo}
+        ]],
+        ['eventType':'refresh', 'action': variablesList[i]["columnName"]]
+    });
+    addelement(tableIds, i);
+}
+
+PUT(variablesTableMap, 'tableValues', tableValues);
+PUT(variablesTableMap, 'tableIds', tableIds);
+
+DEBUGMESSAGE(formulaName, "END");
+return variablesTableMap;

@@ -1,0 +1,22 @@
+VAR formulaName = "[TransformWoe.getNodeSettings] ";
+DEBUGMESSAGE(formulaName, "START");
+
+# FENull nullValue = TransformBin.getNodeSettings(FEMap symbolTable);
+# Param1:       FEMap       the page symbol table
+# RESULT VALUE: FENull      none
+# EFFECTS       -           the symbolTable['nodeValue'] entry will be filled
+# There are no return value and the symbolTable['nodeValue'] entry will be filled
+#  with all node page information
+
+# VAR symbolTable = [];
+# VAR nullValue = TransformBin.getNodeSettings(symbolTable);
+
+VAR user = Param1;
+VAR routerMap = Param2;
+VAR symbolTable = Param3;
+
+LIB_VMCommons.setNodeInfo(symbolTable, "TRFWOE", NULL);
+PUT(symbolTable['nodeValue'], 'thresholds',symbolTable['thresholds']);
+
+DEBUGMESSAGE(formulaName, "END");
+RETURN null;

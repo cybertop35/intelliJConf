@@ -1,0 +1,24 @@
+VAR formulaName = "[LIB_EWS_BE.INDICATOR_53.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+
+CAST
+	 (CASE 
+		WHEN NULLIF(FLG_EXPOSURE,'') IS NULL THEN '0'
+		ELSE FLG_EXPOSURE 
+	END AS CHAR(1)) AS IND_53,
+
+CASE
+ 	WHEN NULLIF(FLG_EXPOSURE,'') IS NULL THEN 'E0001' ELSE ''
+END AS ERROR_MSG_IND_53
+
+";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

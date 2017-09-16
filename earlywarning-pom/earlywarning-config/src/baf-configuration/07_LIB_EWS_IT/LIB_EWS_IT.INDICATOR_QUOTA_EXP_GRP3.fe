@@ -1,0 +1,18 @@
+VAR formulaName = "[LIB_EWS_IT.INDICATOR_QUOTA_EXP_GRP3.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+
+sql = "
+
+CAST ( cast(EXPOSURE_K_EURO_CTPY as decimal(30,12)) / NULLIFZERO(cast (IMP_UTL_GRP_3 as decimal(30,12)))  AS DECIMAL(30,12) ) AS QUOTA_EXP_GRP3,
+CAST(NULL as VARCHAR(50)) AS ERROR_MSG_QUOTA_EXP_GRP3
+
+";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

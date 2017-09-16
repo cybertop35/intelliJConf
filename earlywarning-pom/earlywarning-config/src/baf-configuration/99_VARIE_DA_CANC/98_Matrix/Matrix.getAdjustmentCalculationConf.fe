@@ -1,0 +1,58 @@
+VAR formulaName = "[Matrix.getAdjustmentCalculationConf] ";
+DEBUGMESSAGE(formulaName, "START");
+
+# Param3: FEMap       symbol table map
+# Result: FEArray     an array of adjustment info
+# Return the calculated adjustments configuration
+
+VAR symbolTable = Param1;
+
+var adjustmentsConfiguration = {};
+
+var expressionQuery;
+var categoricalScores = {};
+var adjustment;
+var oldColor;
+var newColor;
+var sqlQuery;
+if (SIZE(keyset(symbolTable['adjustmentsConfiguration'])) > 0){
+    var arrAdjustments = {};
+    foreach(keyset(symbolTable['adjustmentsConfiguration']) as keyAdj) {
+        ADDELEMENT(arrAdjustments, {keyAdj, symbolTable['adjustmentsConfiguration'][keyAdj]['orderPosition']});
+    }
+
+    VAR formula="
+    IF (Param1[1]<Param2[1]) THEN RETURN -1;
+    IF (Param1[1]>Param2[1]) THEN RETURN 1;
+    RETURN 0;
+    ";
+    arrAdjustments = SORT_WITH_CMP(arrAdjustments, "ASC", formula);
+
+    FOREACH(arrAdjustments AS adj) {
+       adjustment = symbolTable['adjustmentsConfiguration'][adj[0]];
+       expressionQuery = adjustment['expressionQuery'];
+       categoricalScores = {};
+
+       foreach(adjustment['swapColorInfoList'] as colorSwap){
+           oldColor = colorSwap[0];
+           newColor = colorSwap[1];
+
+           ADDELEMENT(categoricalScores, [
+               'from'  : Utils.SingleSetToElement(Categorical_Score[BackgroundPaletteColor=$oldColor AND IsMatrixCategory=TRUE].ID),
+               'to'    : Utils.SingleSetToElement(Categorical_Score[BackgroundPaletteColor=$newColor AND IsFastTrackCategory=TRUE].ID)
+           ]);
+       }
+
+       if (symbolTable['matrixId'] <> NULL) {
+           sqlQuery = LIB_BRJson.getSQLquery(expressionQuery);
+       }
+       else {
+           # Visual Modeling
+           sqlQuery = LIB_VMCommons.getSqlFromExpQuery(expressionQuery, symbolTable['inputVariables'], 'T');
+       }
+       ADDELEMENT(adjustmentsConfiguration, ['adjID': adjustment['id'], 'query': sqlQuery, 'categoricalScores': categoricalScores]);
+    }
+}
+
+DEBUGMESSAGE(formulaName, "END");
+RETURN adjustmentsConfiguration;

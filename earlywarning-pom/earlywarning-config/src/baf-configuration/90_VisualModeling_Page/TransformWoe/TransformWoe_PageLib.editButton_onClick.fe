@@ -1,0 +1,134 @@
+var formulaName = "[TransformWoe_PageLib.editButton_onClick] ";
+DEBUGMESSAGE(formulaName, "START");
+
+var user 		= Param1;
+var routerMap 	= Param2;
+var symbolTable 	= Param3;
+
+VAR thresholdsMap 	= symbolTable["thresholds"];
+var variablesInfo 	= symbolTable["variablesInfo"];
+VAR variableId 		= symbolTable["selectedRow"][2];
+VAR variableType 		= symbolTable["selectedRow"][1];
+var minYModelValue 	= 0;
+var maxYModelValue 	= 0;
+VAR thresholds 		= {};
+VAR widget 			= NULL;
+
+
+variableId	= variableId["value"];
+variableType 	= variableType["label"];
+
+IF(thresholdsMap == NULL){
+	thresholdsMap = [];
+}
+
+ 
+VAR widgets = {
+	
+	[
+        'widgetId'  :   'popupConfigureTitle',
+        'name'		:   'output',
+        'value'	    :   [ 'label' : 'Configure Threshold', 'class': 'un-body2-bold ux-text-grey-p2' ],
+        'position'	:   '#configureTitlePH'
+    ],
+	[
+		'widgetId':'buttonCancel',
+		'name':'actionButton',
+		'value':[ 'label' : 'Cancel', 'skin' : [ 'color' : 'blue', 'size' : 'standard' ] ],
+		'position':'#cancelButtonPH'
+	],
+	[
+		'widgetId':'buttonSave',
+		'name':'actionButton',
+		'value':[ 'label' : 'Save', 'skin' : [ 'color' : 'green', 'size' : 'standard' ] ],
+		'position':'#saveButtonPH'
+	]
+	
+};
+
+IF(variableType == "CONTINUOUS" ) {
+	thresholds = {};
+	if (thresholdsMap[variableId] == NULL){
+		ADDELEMENT(thresholds, ['score' : UPCASE('NEW VALUE...'), 'from' : 0 , 'to' :0, 'index': 0, 'labelColor': 'grey-m3']);
+		ADDELEMENT(thresholds, ['score' : UPCASE('NEW VALUE...'), 'from' : 0, 'to' :0, 'index': 1, 'labelColor': 'grey-m3']);
+		ADDELEMENT(thresholds, ['score' : UPCASE('NEW VALUE...'), 'from' : 0, 'to' :0, 'index': 2, 'labelColor': 'grey-m3']);
+		ADDELEMENT(thresholds, ['score' : UPCASE('NEW VALUE...'), 'from' : 0, 'to' :0, 'index': 3, 'labelColor': 'grey-m3']);
+	#	put(thresholdsMap,variableId,thresholds);
+   #	put(symbolTable,"thresholds",thresholdsMap);
+	}
+	else{
+		thresholds = thresholdsMap[variableId];
+	}
+
+	widget = [	"widgetId"  : "widgetsGridPH",
+				"name"      : "thresholdsGridWoa",
+				"value"     : [
+					'thresholds'   : thresholds,
+					'maxHeight': 257,
+					'maxThresholdsNumber': 10,
+					'defaultThresholdName': UPCASE('NEW VALUE') + '...',
+					'minValue' : minYModelValue,
+					'maxValue': maxYModelValue,
+					'minValueMessage': 'Min Value: ' + minYModelValue,
+					'maxValueMessage': 'Max Value: ' + maxYModelValue
+				],
+				"position"  : "#widgetsGridPH"
+			];
+		
+		
+	addelement(widgets,widget);
+}
+var distincValues = {};
+
+IF(variableType == "CATEGORICAL") {
+	thresholds = {};
+	if (thresholdsMap[variableId] == NULL){
+		foreach(variablesInfo as variable){
+			
+			DEBUGMESSAGE(formulaName,variable);
+			if(variable["id"] == variableId ){
+				distincValues = variable["categoricalValues"];
+				foreach(distincValues as val){
+					ADDELEMENT(thresholds, {['label': val],  ['inputValue': 0]});
+				}	
+			}
+		}
+		# put(thresholdsMap,variableId,thresholds);
+		# put(symbolTable,"thresholds",thresholdsMap);
+	}
+	else{
+		thresholds = thresholdsMap[variableId];
+	}
+	
+	DEBUGMESSAGE(formulaName,thresholds);
+	widget = [	'widgetId':'widgetsGridPH',
+				'name':'dataTable',
+				'value':[
+					'height':250,
+					'columns': {
+						['headerLabel': "Category", 	'headerStyle':"text-center", 	'widgetName':"output", 		'widgetParameters': ["class":"ux-body2 ux-text-grey"]],
+						['headerLabel': "Score",		'headerStyle':"text-center", 	'widgetName':"numberInput" ]
+					},
+					'values': thresholds
+					
+				],
+				'position':'#widgetsGridPH'
+			];
+		
+	addelement(widgets,widget);
+}
+
+VAR popup = {[
+    "widgetId" : "popupConfigureWoe",
+    "name"     : "template",
+    "value"    : [
+        'show'     : true,
+        'popup'    : true,
+        'layout'   : 'pages/layouts/popupConfigureWoe/',
+        'widgets'  : widgets
+    ],
+    "position" : "#popupConfigureWoe"
+]};
+
+DEBUGMESSAGE(formulaName, "END");
+RETURN ['widgets': popup, 'widgetsToRemove': {}];

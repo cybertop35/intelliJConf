@@ -1,0 +1,24 @@
+VAR formulaName = "[LIB_EWS_IT.INDICATOR_87.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+
+cast(
+	case 
+		when ESP_FL_FORBORNE_SCONFINO is null then '0'
+		else ESP_FL_FORBORNE_SCONFINO
+	end as char(1)) AS IND_87
+,
+CASE when ESP_FL_FORBORNE_SCONFINO is null then 'ESP000_1'
+		else ''
+END AS ERROR_MSG_IND_87
+
+";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

@@ -1,0 +1,17 @@
+var formulaName = "[CreateVariableSQL.getNodeSettings] ";
+DEBUGMESSAGE(formulaName, "START");
+
+# Param1 FEString
+# Param2 FEMap
+# Param3 FEMap
+# Result FENull
+# Starting from user, router map and symbol table, this formula returns nothing and update node value with node page info.
+
+var user = Param1;
+var routerMap = Param2;
+var symbolTable = Param3;
+
+LIB_VMCommons.setNodeInfo(symbolTable, "CNVARSQ", NULL);
+
+DEBUGMESSAGE(formulaName, "END");
+return null;

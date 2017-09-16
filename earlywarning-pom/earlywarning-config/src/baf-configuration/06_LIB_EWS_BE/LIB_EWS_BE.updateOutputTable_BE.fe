@@ -1,0 +1,73 @@
+VAR formulaName = "[LIB_EWS_BE.updateOutputTable_BE] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR customerUnit = Param1;
+
+VAR T_OUT 			= customerUnit.Output_tableName;
+VAR T_OUT_TMP 		= T_OUT+"_TMP";
+VAR T_OUT_BCK 		= T_OUT+"_BCK";
+
+VAR DBCONNECTION 	= Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
+VAR columns;
+VAR CREATED = FALSE;
+VAR SQL;
+VAR analysisUnitTable;
+VAR UNION;
+VAR analysisUnitList = customerUnit.CustomerUnit_AnalysisUnit.Analysis_Unit;
+VAR includeUnit;
+VAR tmp = "T_TEMP_BE";
+VAR CURRENT_DATE = PARSESTRING(NOW(),'dd/MM/YYYY');
+UNION = UNION+ " JOIN (";
+foreach(analysisUnitList as unit){
+	analysisUnitTable = unit.ResultTableName;
+	includeUnit = LIB_EWS.checkAnalysisUnitStatus(unit);
+	if(LIB_DB.isTableExisting(analysisUnitTable,DBCONNECTION) and includeUnit == true) THEN {	
+		UNION = UNION + " select "+unit.ResultTableName +".*				from "+unit.ResultTableName +" "+unit.ResultTableName + "
+					 JOIN "+customerUnit.TeradataSchema+ "." +customerUnit.Source_tableName + " "+customerUnit.Source_tableName+ " on " +customerUnit.Source_tableName+".SNDG = "+unit.ResultTableName+".SNDG AND  " +customerUnit.Source_tableName+".COUNTRY = "+unit.ResultTableName+".COUNTRY
+					 JOIN "+unit.AnalyticalTable + " "+ unit.AnalyticalTable+ " on " +unit.AnalyticalTable+".SNDG = "+unit.ResultTableName+".SNDG AND " +unit.AnalyticalTable+".COUNTRY = "+unit.ResultTableName+".COUNTRY
+				WHERE TO_CHAR("+unit.ResultTableName +".creation_date,'dd/MM/YYYY') = '"+CURRENT_DATE+"'
+				and "+customerUnit.Source_tableName+".SYSTEM_DATE = "+unit.AnalyticalTable+".SYSTEM_DATE";
+        columns = "BASE.*,"+ ARRAY_TO_STRING( Utils.getColumnName(analysisUnitTable,{"SNDG","COUNTRY"})   );
+		UNION = UNION + " UNION ALL ";	
+	}
+
+}
+UNION = SUBSTRING(UNION, 0, LENGTH(UNION) - 10);
+UNION = UNION+ " ) SCORE ON base.SNDG = SCORE.SNDG and BASE.COUNTRY = SCORE.COUNTRY";
+
+IF(LIB_DB.isTableExisting(tmp,DBCONNECTION)) THEN{
+    SQLEXECUTE("DROP TABLE "+ tmp,DBCONNECTION,NULL,{});
+}
+SQLEXECUTE("CREATE TABLE " +tmp+ " as ("+LIB_EWS_BE.UNION_INDICATORS(customerUnit)+") WITH DATA",DBCONNECTION,null,{});
+
+SQL = "SELECT  "+columns+" FROM "+tmp+" base";
+
+SQL = SQL + UNION;
+
+IF(LIB_DB.isTableExisting(T_OUT_TMP,DBCONNECTION)) THEN{
+    SQLEXECUTE("DROP TABLE "+ T_OUT_TMP,DBCONNECTION,NULL,{});
+}
+    
+SQL = "CREATE MULTISET TABLE "+T_OUT_TMP+" AS ( "+ SQL+" ) WITH DATA PRIMARY INDEX(SNDG)";
+SQLEXECUTE(SQL,DBCONNECTION,NULL,{});
+
+    
+CREATED = LIB_DB.isTableExistingAndHavingData(T_OUT_TMP, DBCONNECTION);
+
+IF(CREATED) THEN {
+    IF(LIB_DB.isTableExisting(T_OUT_BCK,DBCONNECTION)) THEN    {
+        SQLEXECUTE("DROP TABLE "+T_OUT_BCK,DBCONNECTION,NULL,{});
+    }
+    IF(LIB_DB.isTableExisting(T_OUT,DBCONNECTION)) THEN    {
+        LIB_DB.renameTable(T_OUT,T_OUT_BCK,DBCONNECTION,NULL);
+    }
+       
+    LIB_DB.renameTable(T_OUT_TMP,T_OUT,DBCONNECTION,NULL);
+ 			
+	return NOW();
+    
+}
+return null;
+
+DEBUGMESSAGE(formulaName, "END");
+

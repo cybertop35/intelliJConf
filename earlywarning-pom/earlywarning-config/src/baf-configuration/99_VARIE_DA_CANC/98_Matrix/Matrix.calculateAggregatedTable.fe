@@ -1,0 +1,257 @@
+VAR formulaName = "[Matrix.calculateAggregatedTable] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR symbolTable = Param1;
+
+VAR matrixId = symbolTable['matrixId'];
+VAR analysisUnitId = symbolTable['analysisUnitId'];
+VAR dataToUse = symbolTable['data'];
+VAR customFieldColumnName = symbolTable['customField']['columnName'];
+
+VAR analysisUnitInstance = Analysis_Unit[ID=$analysisUnitId];
+VAR matrixInstance = Matrix[ID=$matrixId];
+
+# deciding whether create tables or not
+IF (NOT analysisUnitInstance.StoreIntermediateResults OR IS_EMPTY(analysisUnitInstance.StoreIntermediateResults)) THEN {
+    DEBUGMESSAGE(formulaName, "END");
+    RETURN NULL;
+}
+
+# retrieving analysis unit and result table names
+VAR inputTables = {analysisUnitInstance.AnalyticalTable, analysisUnitInstance.BktestAnalyticalTable};
+VAR resultTables = {matrixInstance.AggregatedTableName, matrixInstance.AggregatedBktestTableName};
+VAR calculationEnvironmentList;
+VAR isDataToUseFound = FALSE;
+IF(dataToUse=='actual') THEN {
+    ASSERT(NOT IS_EMPTY(resultTables[0]), formulaName + "Missing aggregated table name.");
+    calculationEnvironmentList = {[
+        'inputTable'    : inputTables[0],
+        'outputTable'   : resultTables[0]
+    ]};
+    isDataToUseFound = TRUE;
+}
+IF(dataToUse=='backtesting') THEN {
+    ASSERT(NOT IS_EMPTY(resultTables[1]), formulaName + "Missing back testing aggregated table name.");
+    calculationEnvironmentList = {[
+        'inputTable'    : inputTables[1],
+        'outputTable'   : resultTables[1]
+    ]};
+    isDataToUseFound = TRUE;
+}
+IF(NOT isDataToUseFound) THEN {
+    ASSERT(NOT IS_EMPTY(resultTables[0]), formulaName + "Missing aggregated table name.");
+    ASSERT(NOT IS_EMPTY(resultTables[1]), formulaName + "Missing back testing aggregated table name.");
+    calculationEnvironmentList = {[
+        'inputTable'    : inputTables[0],
+        'outputTable'   : resultTables[0]
+    ], [
+        'inputTable'    : inputTables[1],
+        'outputTable'   : resultTables[1]
+    ]};
+}
+
+
+VAR datasourceName = Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
+VAR datasourceType = LIB_DB.getJDBCConnectionType(datasourceName);
+
+VAR resultTable_NEW;
+VAR resultTable_BKP;
+VAR createQuery;
+VAR insertQuery;
+
+VAR ntile = Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].NTile;
+
+var withElements = {};
+var dBDataType;
+
+FOREACH(calculationEnvironmentList AS calculationEnvironmentI) {
+    resultTable_NEW = calculationEnvironmentI['outputTable'] + "_NEW";
+    resultTable_BKP = calculationEnvironmentI['outputTable'] + "_BKP";
+
+    LIB_DB.DropTableIfExists(resultTable_NEW, datasourceName);
+
+    withElements = Matrix.getMatrixAggregatedTableQueryPreamble(symbolTable);
+    ADDELEMENT(withElements, "CROSSED_MODELS2 AS (
+                               " +
+                               "  SELECT
+                               " +
+                               "    H_SCORE, GREATEST(LEAST(WIDTH_BUCKET(H_SCORE, 0, 1, " + ntile + "), " + ntile + "), 1) AS H_BUCKET,
+                               " +
+                               "    V_SCORE, GREATEST(LEAST(WIDTH_BUCKET(V_SCORE, 0, 1, " + ntile + "), " + ntile + "), 1) AS V_BUCKET,
+                               " +
+                               "    TARGET, " + customFieldColumnName + ",
+                               " +
+                               "    CASE WHEN TARGET = 1 THEN " + customFieldColumnName + " WHEN TARGET = 0 THEN 0 ELSE NULL END AS " + customFieldColumnName + "_IN_TARGET,
+                               " +
+                               " " +  IIF(matrixInstance.XAxisWeight<>NULL," (" + matrixInstance.XAxisWeight + "*H_SCORE)+((1-" + (1-matrixInstance.XAxisWeight) + ")*V_SCORE)",0) + " AS CONTINUOUS_SCORE
+                               " +
+                               "  FROM CROSSED_MODELS1
+                               " +
+                               ")");
+    ADDELEMENT(withElements, "CROSSED_MODELS3 AS (
+                               " +
+                               "  SELECT
+                               " +
+                               "    H_BUCKET, AVG(H_SCORE) AS H_SCORE,
+                               " +
+                               "    V_BUCKET, AVG(V_SCORE) AS V_SCORE,
+                               " +
+                               "    COUNT(*) AS CASES,
+                               " +
+                               "    CASE
+                               " +
+                               "      WHEN (SELECT TOTAL_CASES FROM WORKSPACE_AGGREGATION) = 0 THEN 0
+                               " +
+                               "      ELSE 1.0*COUNT(*)/(SELECT TOTAL_CASES FROM WORKSPACE_AGGREGATION)
+                               " +
+                               "    END AS CASES_WORKSPACE_PERCENTAGE,
+                               " +
+                               "    SUM(TARGET) AS CASES_IN_TARGET,
+                               " +
+                               "    SUM(" + customFieldColumnName + ") AS " + customFieldColumnName + ",
+                               " +
+                               "    CASE
+                               " +
+                               "      WHEN (SELECT TOTAL_" + customFieldColumnName + " FROM WORKSPACE_AGGREGATION) = 0 THEN 0
+                               " +
+                               "      WHEN (SELECT TOTAL_" + customFieldColumnName + " FROM WORKSPACE_AGGREGATION) IS NULL THEN NULL
+                               " +
+                               "      ELSE SUM(" + customFieldColumnName + ")/(SELECT TOTAL_" + customFieldColumnName + " FROM WORKSPACE_AGGREGATION)
+                               " +
+                               "    END AS " + customFieldColumnName + "_WORKSPACE_PERCENTAGE,
+                               " +
+                               "    SUM(" + customFieldColumnName + "_IN_TARGET) AS " + customFieldColumnName + "_IN_TARGET,
+                               " +
+                               "    SUM(CONTINUOUS_SCORE) AS CONTINUOUS_SCORE
+                               " +
+                               "  FROM CROSSED_MODELS2
+                               " +
+                               "  GROUP BY H_BUCKET, V_BUCKET
+                               " +
+                               ")");
+    ADDELEMENT(withElements, "H_VOID AS (
+                                 " +
+                               LIB_DB.getConnectBySubQuery([
+                                   'levelAliasField'       : 'H_BUCKET',
+                                   'levelFieldPosition'    : 0,
+                                   'orherFieldList'        : {
+                                       {0, 'H_SCORE'}
+                                   },
+                                   'limit'                 : ntile
+                               ], datasourceName) + "
+                               " +
+                               " UNION ALL SELECT " + LIB_DB.getQueryFromDual([ 'selectClause' : 'NULL AS H_BUCKET, 0 AS H_SCORE' ], datasourceName) + "
+                               " +
+                               ")");
+    ADDELEMENT(withElements, "V_VOID AS (
+                                 " +
+                               LIB_DB.getConnectBySubQuery([
+                                   'levelAliasField'       : 'V_BUCKET',
+                                   'levelFieldPosition'    : 0,
+                                   'orherFieldList'        : {
+                                       {0, 'V_SCORE'}
+                                   },
+                                   'limit'                 : ntile
+                               ], datasourceName) + "
+                               " +
+                               " UNION ALL SELECT " + LIB_DB.getQueryFromDual([ 'selectClause' : 'NULL AS V_BUCKET, 0 AS V_SCORE' ], datasourceName) + "
+                               " +
+                               ")");
+    ADDELEMENT(withElements, "JOIN_VOID AS (
+                               " +
+                               "  SELECT
+                               " +
+                               "    H_BUCKET, H_SCORE,
+                               " +
+                               "    V_BUCKET, V_SCORE
+                               " +
+                               "  FROM H_VOID
+                               " +
+                               "  JOIN V_VOID
+                               " +
+                               "  ON 1=1
+                               " +
+                               ")");
+    ADDELEMENT(withElements, "UNION_ALL AS (
+                               " +
+                               "  SELECT *
+                               " +
+                               "  FROM CROSSED_MODELS3
+                               " +
+                               "  UNION ALL
+                               " +
+                               "  SELECT VOID.*,
+                               " +
+                               # TODO evaluate whether a cast to null is necessary or not
+                               "    0 AS CASES, 0 AS CASES_WORKSPACE_PERCENTAGE, NULL AS CASES_IN_TARGET, 0 AS " + customFieldColumnName + ", 0 AS " + customFieldColumnName + "_WORKSPACE_PERCENTAGE, NULL AS " + customFieldColumnName + "_IN_TARGET, NULL AS CONTINUOUS_SCORE
+                               " +
+                               "  FROM JOIN_VOID VOID
+                               " +
+                               ")");
+
+    # Create table new
+
+    dBDataType = LIB_DB.getDBRelatedNumberType(['datasourceType' : datasourceType]);
+    createQuery = "CREATE TABLE " + resultTable_NEW + " (" +
+        " H_BUCKET " + dBDataType + "," +
+        " H_SCORE " + dBDataType + "," +
+        " V_BUCKET " + dBDataType + "," +
+        " V_SCORE " + dBDataType + "," +
+        " CASES " + dBDataType + "," +
+        " CASES_WORKSPACE_PERCENTAGE " + dBDataType + "," +
+        " CASES_IN_TARGET " + dBDataType + "," +
+        customFieldColumnName + " " + dBDataType + "," +
+        customFieldColumnName + "_WORKSPACE_PERCENTAGE " + dBDataType + "," +
+        customFieldColumnName + "_IN_TARGET " + dBDataType  + "," +
+        " CONTINUOUS_SCORE " + dBDataType  +
+        " )";
+    DEBUGMESSAGE(formulaName, "createQuery: " + createQuery);
+    SQLEXECUTE(createQuery, datasourceName,NULL,{});
+
+    # Fill table new
+    insertQuery = "insert into " + resultTable_NEW + " "
+                   + LIB_DB.getWithClause(withElements, datasourceName) + " SELECT
+                   " +
+                   "  H_BUCKET, SUM(H_SCORE) AS H_SCORE,
+                   " +
+                   "  V_BUCKET, SUM(V_SCORE) AS V_SCORE,
+                   " +
+                   "  SUM(CASES) AS CASES,
+                   " +
+                   "  SUM(CASES_WORKSPACE_PERCENTAGE) AS CASES_WORKSPACE_PERCENTAGE,
+                   " +
+                   "  SUM(CASES_IN_TARGET) AS CASES_IN_TARGET,
+                   " +
+                   "  SUM(" + customFieldColumnName + ") AS " + customFieldColumnName + ",
+                   " +
+                   "  SUM(" + customFieldColumnName + "_WORKSPACE_PERCENTAGE) AS " + customFieldColumnName + "_WORKSPACE_PERCENTAGE,
+                   " +
+                   "  SUM(" + customFieldColumnName + "_IN_TARGET) AS " + customFieldColumnName + "_IN_TARGET,
+                   " +
+                   "  AVG(CONTINUOUS_SCORE) AS CONTINUOUS_SCORE
+                   " +
+                   "FROM UNION_ALL
+                   " +
+                   "GROUP BY H_BUCKET, V_BUCKET";
+    DEBUGMESSAGE(formulaName, "insertQuery:" + insertQuery);
+    SQLEXECUTE(insertQuery, datasourceName, NULL, {});
+
+    LIB_DB.swapPreviousTableWithNewOneIfCorrect(calculationEnvironmentI['outputTable'], resultTable_BKP, resultTable_NEW, datasourceName, analysisUnitInstance.ScoreTablesPath);
+
+}
+
+# COUNT_POINT
+# cases (null in actual)
+# cases in target (null in actual)
+# exposure
+# exposure in target (null in actual)
+
+# the following 4 fields are to calculate for both models
+# RPBD_BUCKET
+# RPBD_SCORE
+# MIN_RPBD_SCORE
+# MAX_RPBD_SCORE
+
+
+DEBUGMESSAGE(formulaName, "END");
+RETURN NOW();

@@ -1,0 +1,120 @@
+# FENull returnNull LIB_EWS.backTesting;
+# RETURN VALUE: FENull      -
+# EFFETCS:      -           updateAnalyticaltable
+# Param1:       FEInstance  analysisUnit instance id
+
+DEBUGMESSAGE("LIB_EWS.backTesting.fe"); # stacktrace
+
+VAR analysisUnitID = Param1;
+
+VAR SQL_COLUMNS;
+VAR SQL_COLUMNS_INS;
+VAR COLUMNS;
+VAR SQL ;
+
+VAR logActionName 			= "BackTesting";
+
+VAR analysisUnit 			= Analysis_Unit[ID=$analysisUnitID];
+VAR analysisUnitTable 		= analysisUnit.AnalyticalTable;
+VAR backTestingHistoryView	= analysisUnit.BktestAnalyticalTable;
+
+VAR backTestingHistoryTable = analysisUnitTable+"_H";
+VAR backTestingCRRTable		= analysisUnitTable+"_CRR_DEF";
+
+VAR externalInfoFormula 	= analysisUnit.CustomerInfoFormula;	
+VAR JDBC_NAME 				= Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
+
+VAR SETUP = EVAL(externalInfoFormula, {analysisUnit});
+VAR CRR_COLUMN_NAME = SETUP["CRR_INDICATOR"];
+VAR backtestingMonth = SETUP["backtestingMonth"];
+
+
+########################
+## Creazione Tabelle  ##
+########################
+COLUMNS = analysisUnit.AnalysisUnit_Variable.Variable.ColumnName order by [ColumnName];
+SQL_COLUMNS = " SNDG,EXPOSURE, ADD_MONTHS (CURRENT_DATE,-1) as HISTORY_DATE";
+SQL_COLUMNS_INS = " SNDG,EXPOSURE, HISTORY_DATE";
+FOREACH( COLUMNS as column ) {
+	if(column <> "TARGET" and column <> "SNDG" AND column <> "EXPOSURE"){
+		SQL_COLUMNS 		= SQL_COLUMNS +"," +column;
+		SQL_COLUMNS_INS 	= SQL_COLUMNS_INS+"," +column;
+    }
+}
+
+
+SQL = "CREATE TABLE "+backTestingHistoryTable+" as (select  "+ SQL_COLUMNS +" FROM "+analysisUnitTable+" ) with NO data";
+IF (not LIB_DB.isTableExisting(backTestingHistoryTable,JDBC_NAME)) {
+	SQLEXECUTE(SQL,JDBC_NAME,0,{});
+    SAVE_LOG("Info", logActionName, "create table "+backTestingHistoryTable);
+}
+
+SQL = "CREATE TABLE "+backTestingCRRTable+" AS ( select SNDG, CURRENT_DATE AS LOAD_DATE FROM "+analysisUnitTable+") WITH NO DATA";
+IF (not LIB_DB.isTableExisting(backTestingCRRTable,JDBC_NAME)) {
+	SQLEXECUTE(SQL,JDBC_NAME,0,{});
+    SAVE_LOG("Info", logActionName, "Create table "+backTestingCRRTable);
+}
+
+SQL ="REPLACE view "+backTestingHistoryView+" as 
+		select  h.*
+			,(case
+				when crr.sndg is not null then 1
+				else 0
+			end ) AS TARGET
+		from "+backTestingHistoryTable+"  H
+			left join (
+					select sndg 
+					from "+backTestingCRRTable+" 
+					where LOAD_DATE between TRUNC(ADD_MONTHS(CURRENT_DATE,-"+backtestingMonth+"),'mon') and TRUNC(ADD_MONTHS(CURRENT_DATE,-1),'mon')
+			group by sndg 
+			) CRR ON h.sndg =crr.sndg
+		where EXTRACT (YEAR FROM H.HISTORY_DATE) = EXTRACT (YEAR  FROM ADD_MONTHS( CURRENT_DATE,-"+backtestingMonth+")) 
+			and EXTRACT (MONTH FROM H.HISTORY_DATE) = EXTRACT (MONTH FROM ADD_MONTHS( CURRENT_DATE,-"+backtestingMonth+"))
+			and "+CRR_COLUMN_NAME+" <> 1" ;
+  
+IF (length(backTestingHistoryView) <> 0) {
+	SQLEXECUTE(SQL,JDBC_NAME,0,{});
+    SAVE_LOG("Info", logActionName, "REPLACE view "+backTestingHistoryView);
+}
+  
+##################################
+######### POPOLA TABELLE #########
+##################################
+VAR month;
+VAR currentMonth;
+currentMonth = GETMONTH(NOW());
+
+SQL = "SELECT MAX( EXTRACT (MONTH FROM HISTORY_DATE)) from "+backTestingHistoryTable;
+month = SQLEXECUTE(SQL,JDBC_NAME,0,{});
+
+if(SIZE(month) > 0 ) {
+	month = month[0][0];
+ }
+else
+	month = 0;
+    
+IF (LIB_DB.isTableExisting(analysisUnitTable+"_BCK",JDBC_NAME))   { 
+    
+IF (((currentMonth - month) == 2) OR month == null){
+	SQL = "INSERT INTO "+backTestingHistoryTable+" ( "+SQL_COLUMNS_INS+") SELECT "+SQL_COLUMNS+" FROM "+analysisUnitTable+"_BCK";
+    SQLEXECUTE(SQL,JDBC_NAME,0,{});
+    SAVE_LOG("Info", logActionName, "Insert table "+backTestingCRRTable);
+}
+
+
+SQL = "INSERT INTO "+backTestingCRRTable+" 
+		SELECT SNDG,CURRENT_DATE as HISTORY_DATE 
+		FROM "+analysisUnitTable +" 
+		where "+CRR_COLUMN_NAME+"=1 
+			and sndg not in (select sndg from  "+backTestingCRRTable+" 
+								where EXTRACT (YEAR FROM Load_date) = EXTRACT (YEAR FROM CURRENT_DATE) 
+								  and EXTRACT (MONTH FROM Load_date) = EXTRACT (MONTH FROM CURRENT_DATE)  
+								  and EXTRACT (DAY FROM Load_date) = EXTRACT (DAY FROM CURRENT_DATE)   )";
+SQLEXECUTE(SQL,JDBC_NAME,0,{});
+SAVE_LOG("Info", logActionName, "Insert table "+backTestingCRRTable);
+}
+
+  
+ 
+
+return now();

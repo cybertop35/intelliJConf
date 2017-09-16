@@ -1,0 +1,31 @@
+var formulaName = "[WeightedModelWoe_PageLib.saveButton_onClick] ";
+DEBUGMESSAGE(formulaName, "START");
+
+# FEArray widgetsAndNotifications = TransformBin_PageLib.saveButton_onClick(FEString user, FEMap routerMap, FEMap symbolTable);
+# Param1:       FEString    user
+# Param2:       FEMap       router map
+# Param3:       FEMap       symbol table map
+# RESULT VALUE: FEArray     an array of widget
+# EFFECTS       -           some symbol table entry will be modified
+
+# var user = "Analyst";
+# var routerMap = ;
+# var symbolTable = ;
+# var widgetsAndNotifications = TransformBin_PageLib.saveButton_onClick(user, routerMap, symbolTable);
+
+var user = Param1;
+var routerMap = Param2;
+var eventContext = routerMap["eventContext"];
+var symbolTable = Param3;
+
+var widgets = {};
+var notifications = {};
+var widgetsAndNotifications = [
+    'widgets'       : widgets,
+    'notifications' : notifications
+];
+
+widgetsAndNotifications = LIB_VMCommons.saveButton_onClick(user, routerMap, symbolTable);
+
+DEBUGMESSAGE(formulaName, "END");
+return widgetsAndNotifications;

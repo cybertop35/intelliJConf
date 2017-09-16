@@ -1,0 +1,19 @@
+VAR formulaName = "[LIB_EWS_IT.INDICATOR_25.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+NVL( CAST(CDS_SPREAD_5Y AS DECIMAL(30,12)) , NULL)
+		AS IND_25,
+		
+		CASE 
+			WHEN CDS_SPREAD_5Y IS NULL THEN 'MKT000_1'
+			END AS ERROR_MSG_IND_25
+		";
+
+
+DEBUGMESSAGE(formulaName, sql); 
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

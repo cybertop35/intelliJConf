@@ -1,0 +1,25 @@
+VAR formulaName = "[LIB_EWS_BE.INDICATOR_46.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+
+CAST
+	(CASE 
+		WHEN NULLIF(FLG_FIN_CONSISTENCY,'') IS NULL THEN '0'
+		ELSE FLG_FIN_CONSISTENCY 
+	END AS CHAR(1)) AS IND_46,
+
+CASE
+	WHEN NULLIF(FLG_FIN_CONSISTENCY,'') IS NULL THEN 'E0001' ELSE ''
+END ERROR_MSG_IND_46
+
+
+";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

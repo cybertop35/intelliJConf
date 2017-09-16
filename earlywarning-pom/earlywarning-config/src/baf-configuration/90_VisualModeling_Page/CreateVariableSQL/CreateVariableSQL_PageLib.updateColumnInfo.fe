@@ -1,0 +1,22 @@
+var formulaName = "[CreateVariable_PageLib.updateColumnInfo] ";
+DEBUGMESSAGE(formulaName, "START");
+
+# Param1 FEString
+# Param2 FEMap
+# Param3 FEMap
+# Result FENull
+# Starting from event handling input, this formula returns null and update symbol table with new column label and name
+
+var user = Param1;
+var routerMap = Param2;
+var symbolTable = Param3;
+
+var variableNameUserSelected = routerMap['widgets']["newVariableInput"]["value"]["value"];
+symbolTable['nodeValue']['variableLabelName'] = variableNameUserSelected;
+
+VAR charToCleanList = {" ", "-", ",", "+", "*", "/", "%", "&", "$", "'", '"', "|", "?", "!", "(", ")", "[", "]", "£"};
+variableNameUserSelected = Utils.cleanString(variableNameUserSelected, charToCleanList, "_");
+symbolTable['nodeValue']['variableColumnName'] = variableNameUserSelected;
+
+DEBUGMESSAGE(formulaName, "END");
+return null;

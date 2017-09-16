@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.i4c.framework.web</groupId>
+        <artifactId>fwk-packaged-app-root</artifactId>
+        <version>8.0</version>
+		<relativePath/>
+    </parent>
+
+    <groupId>com.accenture.ews</groupId>
+    <artifactId>earlywarning-config</artifactId>
+    <version>8.0</version>
+    <packaging>ejb</packaging>
+	
+	<name>${project.artifactId} (${project.version})</name>
+    
+	<properties>
+        <aaap.version>${project.parent.version}</aaap.version>
+        <aaap.catalog.version>8.0-EWF3</aaap.catalog.version>
+        <aaap.deployPagesTo>${project.build.directory}/deploy</aaap.deployPagesTo>
+    </properties>
+
+	    <build>
+        <plugins>
+            <plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-dependency-plugin</artifactId></plugin>
+            <plugin><groupId>com.github.eirslett</groupId><artifactId>frontend-maven-plugin</artifactId></plugin>
+            <plugin><artifactId>maven-assembly-plugin</artifactId></plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-pages</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${aaap.deployPagesTo}</outputDirectory>
+                            <overwrite>true</overwrite>
+                            <resources>
+                                <resource>
+                                    <directory>target</directory>
+                                    <includes>
+                                        <include>layouts/**/*.*</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId><artifactId>truezip-maven-plugin</artifactId><version>1.0-beta-5</version>
+                <executions>
+                    <execution><id>zip-BAF-configurations</id><goals><goal>copy</goal></goals><phase>process-resources</phase>
+                        <configuration>
+                            <fileset>
+                                <directory>src/baf-configuration</directory>
+                                <outputDirectory>${project.build.directory}/${project.build.finalName}_BAF_configurations.zip/</outputDirectory>
+                                <includes><include>**/*</include></includes>
+                            </fileset>
+                        </configuration>
+                    </execution>
+                    <execution><id>zip-BAF-instances</id><goals><goal>copy</goal></goals><phase>process-resources</phase>
+                        <configuration>
+                            <fileset>
+                                <directory>src/baf-instances</directory>
+                                <outputDirectory>${project.build.directory}/${project.build.finalName}_BAF_instances.zip/</outputDirectory>
+                                <includes><include>**/*</include></includes>
+                            </fileset>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

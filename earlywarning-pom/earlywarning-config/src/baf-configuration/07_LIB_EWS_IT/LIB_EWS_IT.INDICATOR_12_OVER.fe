@@ -1,0 +1,38 @@
+VAR formulaName = "[LIB_EWS_IT.INDICATOR_12_OVER.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+
+(NON_PERFORMING_LOANS_SYSTEM - NON_PERFORMING_LOANS_GROUP) AS NUM_IND_12_OVER
+	, GREATEST(CREDIT_FACILITY_TOT,CREDIT_USED_TOT)	AS DEN_IND_12_OVER,
+	
+	CAST(
+	  case 
+		when NUM_IND_12 > 0 and DEN_IND_12 = 0 THEN -1000000
+		when DEN_IND_12 < 0 then -1000000
+		when NUM_IND_12 = 0 and DEN_IND_12 >= 0 THEN 0
+		WHEN NUM_IND_12 < 0 and DEN_IND_12 >= 0 THEN 100
+		WHEN (DEN_IND_12 is null)  AND (NUM_IND_12 > 0 OR NUM_IND_12 < 0 OR NUM_IND_12 =0 ) then -1000000
+		else  ((cast (NUM_IND_12_OVER as DECIMAL (18,6))/ cast (DEN_IND_12_OVER as DECIMAL (18,6)) ) - VAL_BR_12_OVERRIDE)
+	  END
+	 AS DECIMAL (18,6)) AS IND_12_OVER
+,(
+	case
+		when NUM_IND_12 > 0 and DEN_IND_12 = 0 THEN 'SOFF002'
+		when DEN_IND_12 < 0 then 'SOFF002'
+		when NUM_IND_12 = 0 and DEN_IND_12 >= 0 THEN 'SOFF001'
+		WHEN NUM_IND_12 < 0 and DEN_IND_12 >= 0 THEN 'SOFF001'
+		WHEN (DEN_IND_12 is null)  AND (NUM_IND_12 > 0 OR NUM_IND_12 < 0 OR NUM_IND_12 =0 ) then 'SOFF002'
+		else ''
+		end		
+	 ) AS ERROR_MSG_IND_12_OVER
+
+";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

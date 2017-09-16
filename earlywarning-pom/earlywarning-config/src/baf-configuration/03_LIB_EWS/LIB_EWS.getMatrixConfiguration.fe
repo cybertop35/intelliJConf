@@ -1,0 +1,81 @@
+VAR formulaName = "[LIB_EWS.getMatrixConfiguration] ";
+DEBUGMESSAGE(formulaName, "START");
+
+
+var matrix = Param1;
+var fastTrack = Param2;
+VAR dataToUse = Param3;
+
+var configuration = [];
+var analysisUnitInstance = Utils.SingleSetToElement(matrix.Matrix_Workspace.Workspace.Workspace_AnalysisUnit.Analysis_Unit);
+VAR tableToUse = IIF(dataToUse=='actual', analysisUnitInstance.AnalyticalTable, analysisUnitInstance.BktestAnalyticalTable);
+configuration['sourceTable'] = "(SELECT * FROM " + tableToUse + " t WHERE " + LIB_AnalysisUnit.getWorkspaceFilterSql(matrix.Matrix_Workspace.Workspace.ID);
+if (fastTrack <> NULL) {
+    VAR fastTrackClause = LIB_AnalysisUnit.getFastTrackClause(fastTrack, tableToUse);
+    if (fastTrackClause <> NULL) {
+        configuration['sourceTable'] = configuration['sourceTable'] + " AND NOT EXISTS ( " + fastTrackClause + " ) ";
+    }
+}
+configuration['sourceTable'] = configuration['sourceTable'] + ")";
+configuration['keyColumn'] = Utils.SingleSetToElement(analysisUnitInstance.AnalysisUnit_Variable.Variable[IsKeyColumn=TRUE].ColumnName);
+
+var distance = 0;
+var offset;
+var xModel = Utils.SingleSetToElement(matrix.Matrix_Model[IsXAxis=TRUE]);
+configuration['tableX'] = IIF(dataToUse=='actual', xModel.Model.ResultTableName, xModel.Model.ResultTableName + '_BKTEST');
+configuration['scoreColX'] = xModel.Model.ModelColumnName;
+if (matrix.XAxisWeight <> NULL) {
+    distance = xModel.Model.MaxValue - xModel.Model.MinValue;
+    offset = -xModel.Model.MinValue;
+    configuration['tableX'] = "(select " + configuration['keyColumn'] + ", " + IIF(distance == 0, "0", "(" + configuration['scoreColX'] + "+" + offset + ")/" + distance) + " as " + configuration['scoreColX'] + " from " + configuration['tableX'] + ")";
+    configuration['weightX'] = matrix.XAxisWeight;
+}
+var allXThresholdsTo = matrix.Matrix_Model[IsXAxis=TRUE].Matrix_Model_Threshold[From<>NULL].To ORDER BY [To DESC];
+
+var yModel = Utils.SingleSetToElement(matrix.Matrix_Model[IsXAxis=FALSE]);
+configuration['tableY'] = IIF(dataToUse=='actual', yModel.Model.ResultTableName, yModel.Model.ResultTableName + '_BKTEST');
+configuration['scoreColY'] = yModel.Model.ModelColumnName;
+if (matrix.XAxisWeight <> NULL) {
+    distance = yModel.Model.MaxValue - yModel.Model.MinValue;
+    offset = -yModel.Model.MinValue;
+    configuration['tableY'] = "(select " + configuration['keyColumn'] + ", " + IIF(distance == 0, "0", "(" + configuration['scoreColY'] + "+" + offset + ")/" + distance) + " as " + configuration['scoreColY'] + " from " + configuration['tableY'] + ")";
+    configuration['weightY'] = 1-matrix.XAxisWeight;
+}
+var allYThresholdsTo = matrix.Matrix_Model[IsXAxis=FALSE].Matrix_Model_Threshold[From<>NULL].To ORDER BY [To DESC];
+
+var cells = {};
+var cell = [];
+var thId;
+var x;
+var y;
+
+foreach (matrix.Matrix_Bin as bin) {
+	cell = [];
+	thId = bin.X;
+    x = matrix.Matrix_Model.Matrix_Model_Threshold[ID=$thId];
+    thId = bin.Y;
+    y = matrix.Matrix_Model.Matrix_Model_Threshold[ID=$thId];
+    PUT(cell, 'fromX', x.From);
+    PUT(cell, 'toX', x.To);
+    if (allXThresholdsTo[0] == x.To) {
+    	PUT(cell, 'lastX', true);
+    }
+    PUT(cell, 'fromY', y.From);
+    PUT(cell, 'toY', y.To);
+    if (allYThresholdsTo[0] == y.To) {
+    	PUT(cell, 'lastY', true);
+    }
+    PUT(cell, 'categoricalScore', bin.CategoricalScoreId);
+    if (matrix.XAxisWeight <> NULL) {
+        PUT(cell, 'matrixScore', IIF(x.To <> NULL AND y.To <> NULL, (matrix.XAxisWeight*x.To)+((1-matrix.XAxisWeight)*y.To), NULL));
+    }
+    else {
+        PUT(cell, 'matrixScore', NULL);
+    }
+
+    ADDELEMENT(cells, cell);
+}
+
+configuration['cells'] = cells;
+DEBUGMESSAGE(formulaName, "END");
+return configuration;

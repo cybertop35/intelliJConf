@@ -1,0 +1,31 @@
+VAR formulaName = "[LIB_EWS.getMaxColor] ";
+DEBUGMESSAGE(formulaName, "START");
+
+# Param1: FEString        color1 ('DARK_BLUE')
+# Param2: FEString        color2 ('GREEN')
+# Result: FEInteger
+# Return 1 or -1 as comparison outcome to have the right order
+
+VAR color1 = Param1;
+VAR color2 = Param2;
+
+VAR mapColorWithPosition = [
+    'DARK_BLUE'     : 6,
+    'LIGHT_BLUE'    : 5,
+    'RED'          : 4,
+    'ORANGE'       : 3,
+    'LIGHT_GREEN '   : 2,
+    'GREEN'         : 1,
+    'NONE'          : 0
+];
+
+VAR comparisonOutcome = 0;
+IF(mapColorWithPosition[color1]>mapColorWithPosition[color2]) THEN {
+    comparisonOutcome = 1;
+}
+IF(mapColorWithPosition[color1]<mapColorWithPosition[color2]) THEN {
+    comparisonOutcome = -1;
+}
+
+DEBUGMESSAGE(formulaName, "END");
+RETURN comparisonOutcome;

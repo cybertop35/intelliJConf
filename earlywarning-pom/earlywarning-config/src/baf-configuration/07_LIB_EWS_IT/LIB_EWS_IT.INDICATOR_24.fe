@@ -1,0 +1,22 @@
+VAR formulaName = "[LIB_EWS_IT.INDICATOR_24.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+	
+CAST('' AS CHAR(1)) AS IND_24,
+	NULL AS ERROR_MSG_IND_24
+	
+	/*
+	NVL( CAST(ISDA_CREDIT_EVENT_DECLARED_CDS AS CHAR(1)) , '0')
+		AS IND_24,
+		NULL AS ERROR_MSG_IND_24
+	*/
+		";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

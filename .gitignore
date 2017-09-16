@@ -1,12 +1,14 @@
-*.class
-*.DS_Store
-bin
-/TutorialScal/*.cache
-.classpath
-.project
-.svn
-build
-bin
+01_Inst_Business_Rule.xlsx
+02_Inst_Business_Model.xlsx
+03_Inst_WarningScore_Matrix.xlsx
+earlywarning-pom - Copy
+node_modules
+target-grunt
+bower_components
 target
-*.settings
-.settings
+/Comp_Intesa.bat
+/earlywarning-pom/earlywarning-config/node/*.exe
+/earlywarning-pom/earlywarning-config/node/npm
+*.cmd
+*.exe
+npm

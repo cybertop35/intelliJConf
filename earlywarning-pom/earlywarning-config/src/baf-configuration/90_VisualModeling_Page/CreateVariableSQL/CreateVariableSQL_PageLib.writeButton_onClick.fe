@@ -1,0 +1,36 @@
+var formulaName = "[CreateVariableSQL_PageLib.writeButton_onClick] ";
+DEBUGMESSAGE(formulaName, "START");
+
+var user = Param1;
+var routerMap = Param2;
+var symbolTable = Param3;
+
+var eventContext = routerMap["eventContext"];
+DEBUGMESSAGE(formulaName + "eventContext=", eventContext);
+
+var widgets = {};
+var widgetsToRemove = {};
+var notifications = {};
+
+CreateVariableSQL_PageLib.updateColumnInfo(user, routerMap, symbolTable);
+
+notifications = CreateVariableSQL_PageLib.checkColumnNameValue(symbolTable['nodeValue']);
+if (is_empty(notifications)){
+    routerMap['widgets']["CreateVariableSQLCodeEditor"]['value']['text'] =
+        CreateVariableSQL.getNewCodeEditorTextValue(
+            symbolTable['nodeValue']['variableColumnName'],
+            routerMap['widgets']["CreateVariableSQLCodeEditor"]["value"]["text"],
+            false,
+            true
+        );
+    ADDELEMENT(widgets, routerMap['widgets']["CreateVariableSQLCodeEditor"]);
+}
+
+var widgetsAndNotifications = [
+    'widgets'           : widgets,
+    'widgetsToRemove'   : widgetsToRemove,
+    'notifications'     : notifications
+];
+
+DEBUGMESSAGE(formulaName, "END");
+return widgetsAndNotifications;

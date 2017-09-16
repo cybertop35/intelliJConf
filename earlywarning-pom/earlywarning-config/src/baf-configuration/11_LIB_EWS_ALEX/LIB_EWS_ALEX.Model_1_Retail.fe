@@ -1,0 +1,33 @@
+VAR formulaName = "[LIB_EWS_BE.Model_1_Retail.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "CAST(
+		CASE
+			WHEN (-7.476519 +(15.92813*ZEROIFNULL(IND_204))
+					+(0.0005780*ZEROIFNULL(IND_190))
+					+(0.1165750*ZEROIFNULL(IND_1))
+				) <= -20
+
+				THEN EXP(-20)
+			
+			WHEN (-7.476519 +(15.92813*ZEROIFNULL(IND_204))
+					+(0.0005780*ZEROIFNULL(IND_190))
+					+(0.1165750*ZEROIFNULL(IND_1))
+				) > 6
+
+				THEN EXP(6)
+			ELSE		
+				EXP(-7.476519 +(15.92813*ZEROIFNULL(IND_204))
+					+(0.0005780*ZEROIFNULL(IND_190))
+					+(0.1165750*ZEROIFNULL(IND_1))
+				)
+					 
+		END
+		as DECIMAL(30,12)) as MOD_RETAIL_1";
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

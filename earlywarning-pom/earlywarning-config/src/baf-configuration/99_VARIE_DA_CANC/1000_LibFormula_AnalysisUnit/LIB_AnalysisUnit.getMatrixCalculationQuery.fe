@@ -1,0 +1,122 @@
+VAR formulaName = "[LIB_AnalysisUnit.getMatrixCalculationQuery] ";
+DEBUGMESSAGE(formulaName, "START");
+
+#var configuration = [
+#   'sourceTable' : 'Customer_Analysis_Unit_BkTest',
+#   'keyColumn'   : 'sndg',
+#   'tableX'      : 'ModelA',
+#   'scoreColX'   : 'Score',
+#   'weightX'     : 0.6,
+#   'tableY'      : 'ModelB',
+#   'scoreColY'   : 'Score',
+#   'weightY'     : 0.4,
+#   'cells'       : { ['fromX' : 0, 'toX' : 0.2, 'fromY': 0, 'toY' : 0.1, 'categoricalScore' : 'GREEN'],
+#                     ['fromX' : 0.2, 'toX' : 0.4, 'fromY': 0, 'toY' : 0.1, 'categoricalScore' : 'GREEN'],
+#                     ['fromX' : 0.4, 'toX' : 0.8, 'fromY': 0, 'toY' : 0.1, 'categoricalScore' : 'YELLOW'],
+#                     ['fromX' : 0.8, 'toX' : 1,'fromY': 0, 'toY' : 0.1, 'categoricalScore' : 'YELLOW', 'lastX':true],
+#                     ['fromX' : 0, 'toX' : 0.2, 'fromY': 0.1, 'toY' : 0.4, 'categoricalScore' : 'GREEN'],
+#                     ['fromX' : 0.2, 'toX' : 0.4, 'fromY': 0.1, 'toY' : 0.4, 'categoricalScore' : 'GREEN'],
+#                     ['fromX' : 0.4, 'toX' : 0.8, 'fromY': 0.1, 'toY' : 0.4, 'categoricalScore' : 'YELLOW'],
+#                     ['fromX' : 0.8, 'toX' : 1, 'fromY': 0.1, 'toY' : 0.4, 'categoricalScore' : 'YELLOW', 'lastX':true],
+#                     ['fromX' : 0, 'toX' : 0.2, 'fromY': 0.4, 'toY' : 0.9, 'categoricalScore' : 'YELLOW'],
+#                     ['fromX' : 0.2, 'toX' : 0.4, 'fromY': 0.4, 'toY' : 0.9, 'categoricalScore' : 'YELLOW'],
+#                     ['fromX' : 0.4, 'toX' : 0.8, 'fromY': 0.4, 'toY' : 0.9, 'categoricalScore' : 'YELLOW'],
+#                     ['fromX' : 0.8, 'toX' : 1, 'fromY': 0.4, 'toY' : 0.9, 'categoricalScore' : 'YELLOW', 'lastX':true],
+#                     ['fromX' : 0, 'toX' : 0.2, 'fromY': 0.9, 'toY' : 1, 'categoricalScore' : 'RED', 'lastY':true],
+#                     ['fromX' : 0.2, 'toX' : 0.4, 'fromY': 0.9, 'toY' : 1, 'categoricalScore' : 'RED', 'lastY':true],
+#                     ['fromX' : 0.4, 'toX' : 0.8, 'fromY': 0.9, 'toY' : 1, 'categoricalScore' : 'RED', 'lastY':true],
+#                     ['fromX' : 0.8, 'toX' : 1,'fromY': 0.9, 'toY' : 1, 'categoricalScore' : 'RED', 'lastX':true, 'lastY':true]}
+#];
+var configuration = Param1;
+var adjConfiguration = Param2;
+
+# Datasource
+VAR predictiveDatasourceName = Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
+VAR predictiveDatasourceType = LIB_DB.getJDBCConnectionType(predictiveDatasourceName);
+
+var query = "select T." + configuration['keyColumn'] + " AS " + configuration['keyColumn'] + ", " +
+            " case ";
+
+var sqlWhen;
+var sqlCategoricalScore;
+var sqlWhenMatrixScore;
+foreach (configuration['cells'] as cell) {
+    sqlWhen = "";
+    if (cell['fromX'] <> NULL) {
+        sqlWhen = sqlWhen + " when X." +  configuration['scoreColX'] + " >= " + cell['fromX'] + " and  ";
+        if (cell['lastX']) {
+            sqlWhen = sqlWhen + "X." +  configuration['scoreColX'] + " <= " + cell['toX'] + " and ";
+        }
+        else {
+            sqlWhen = sqlWhen + "X." +  configuration['scoreColX'] + " < " + cell['toX'] + " and ";
+        }
+    }
+    else {
+        sqlWhen = sqlWhen + " when X." +  configuration['scoreColX'] + " is null and  ";
+    }
+
+    if (cell['fromY'] <> NULL) {
+        sqlWhen = sqlWhen + "Y." +  configuration['scoreColY'] + " >= " + cell['fromY'];
+        if (cell['lastY']) {
+            sqlWhen = sqlWhen + " and Y." +  configuration['scoreColY'] + " <= " + cell['toY'];
+        }
+        else {
+            sqlWhen = sqlWhen + " and Y." +  configuration['scoreColY'] + " < " + cell['toY'];
+        }
+    }
+    else {
+        sqlWhen = sqlWhen + "Y." +  configuration['scoreColY'] + " is null";
+    }
+    sqlCategoricalScore = sqlCategoricalScore + sqlWhen;
+
+    if (cell['categoricalScore'] <> Utils.SingleSetToElement(Categorical_Score[IsNoneCategory=TRUE].ID)) {
+        sqlCategoricalScore = sqlCategoricalScore + " then '" + cell['categoricalScore'] + "'";
+    }
+    else {
+        sqlCategoricalScore = sqlCategoricalScore + " then null";
+    }
+
+    if (configuration['weightX'] <> NULL) {
+        sqlWhenMatrixScore = sqlWhenMatrixScore + sqlWhen;
+        sqlWhenMatrixScore = sqlWhenMatrixScore + " then " + IIF(cell['matrixScore'] <> NULL, cell['matrixScore'], "NULL") + "";
+    }
+
+}
+
+query = query + sqlCategoricalScore +
+          " else null " +
+          " end as CATEGORICAL_SCORE, ";
+
+if (configuration['weightX'] <> NULL) {
+    query = query + " (" + configuration['weightX'] + "*X." + configuration['scoreColX'] + ")+(" + configuration['weightY'] + "*Y." + configuration['scoreColY'] + ") as CONTINUOUS_SCORE,";
+    query = query + " case " + sqlWhenMatrixScore +
+            " else null " +
+            " end as MATRIX_SCORE, ";
+}
+else {
+# TODO check whether it's necessary a cast
+    query = query + " null as CONTINUOUS_SCORE,";
+    query = query + " null as MATRIX_SCORE,";
+}
+
+if ( not is_empty(adjConfiguration)) {
+    var adjInfo;
+    for(var adjIndex = 0; adjIndex < SIZE(adjConfiguration); adjIndex = adjIndex + 1) {
+        adjInfo = adjConfiguration[adjIndex];
+
+        if(IS_EMPTY(TRIM(adjInfo['query']))) {
+            query = query + "1";
+        } else {
+            query = query + "CASE WHEN " + adjInfo['query'] + " THEN 1 ELSE 0 END";
+        }
+        query = query + " AS ADJ_" + PARSESTRING(adjIndex, "#") + "_F,";
+    }
+}
+
+query = query + " CAST('NO_ADJ' as " + LIB_DB.getDBRelatedStringType(['datasourceType' : predictiveDatasourceType]) + ") as ADJID " +
+          " from " + configuration['sourceTable'] + " T " +
+                 " inner join " + configuration['tableX'] + " X on T." + configuration['keyColumn'] + " = X." + configuration['keyColumn'] +
+                 " inner join " + configuration['tableY'] + " Y on T." + configuration['keyColumn'] + " = Y." + configuration['keyColumn'];
+
+DEBUGMESSAGE(formulaName, "END");
+RETURN query;

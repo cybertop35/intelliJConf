@@ -1,0 +1,13 @@
+VAR formulaName = "[LIB_EWS_IT.INDICATOR_16.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "NULL AS IND_16,
+	   NULL AS ERROR_MSG_IND_16";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

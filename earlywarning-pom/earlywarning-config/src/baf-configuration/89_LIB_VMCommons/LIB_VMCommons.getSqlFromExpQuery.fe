@@ -1,0 +1,53 @@
+VAR formulaName = "[LIB_VMCommons.getSqlFromExpQuery] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR query = Param1;
+VAR variables = Param2;
+var prefix = Param3;
+
+DEBUGMESSAGE(formulaName + " - variables : ", variables);
+
+VAR splitQuery;
+VAR finalQuery;
+VAR substr;
+VAR ids = {};
+VAR expressionSQLQuery;
+
+# splitting the query in substring and removing the first element obtained
+splitQuery = SPLIT(query, '<');
+REMOVEELEMENT(splitQuery, 0);
+
+# retrieving business rule id from the substring
+FOREACH (splitQuery as br){
+    substr = SPLIT(br, '=');
+    ADDELEMENT(ids, substr[0]);
+}
+DEBUGMESSAGE('ids : ', ids);
+
+finalQuery = query;
+var booleanVariable;
+foreach(ids as id){
+    booleanVariable = NULL;
+    foreach(variables as variable) {
+        if (variable['id'] == id) {
+            booleanVariable = prefix + "." + variable['columnName'];
+            break;
+        }
+    }
+    IF(CONTAINS(finalQuery,"<"+ id +"=false>") == true) {
+        finalQuery = REPLACESTRING(finalQuery, "<"+ id +"=false>", ' ( ' + booleanVariable + '=0 ) ');
+    } ELSE IF (CONTAINS(finalQuery,"<"+ id +"=true>") == true) {
+        finalQuery = REPLACESTRING(finalQuery, "<"+ id +"=true>", ' ( ' + booleanVariable + '=1 ) ');
+    } ELSE IF (CONTAINS(finalQuery,"<NONE=true>") == true) {
+        finalQuery = REPLACESTRING(finalQuery, "<NONE=true>", '( 1!=1 )');
+    } ELSE IF (CONTAINS(finalQuery,"<NONE=false>") == true) {
+        finalQuery = REPLACESTRING(finalQuery, "<NONE=false>", 'NOT ( 1!=1 )');
+    }
+}
+
+expressionSQLQuery = finalQuery;
+
+DEBUGMESSAGE(formulaName + " - expressionSQLQuery : ", expressionSQLQuery);
+
+DEBUGMESSAGE(formulaName, "END");
+RETURN expressionSQLQuery;

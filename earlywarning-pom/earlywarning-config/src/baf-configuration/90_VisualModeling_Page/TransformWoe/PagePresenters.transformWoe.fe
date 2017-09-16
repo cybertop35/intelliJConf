@@ -1,0 +1,57 @@
+var formulaName = "[PagePresenters.transformWoe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+var user = Param1;
+var context = Param2;
+
+var whoAmI = 'TransformWoe';
+
+var all_page_labels = LIB_Label.predictiveApp('VisualModeling');
+var visualModelingContext = context['visualModelingContext'];
+var nodeValue = context["node"]["value"];
+
+var thresholds = null;
+if(nodeValue <> null)
+ thresholds = nodeValue["thresholds"];
+
+
+var workspaceId = visualModelingContext['workspaceId'];
+var analysisUnitId = visualModelingContext['analysisUnitId'];
+var modelId = visualModelingContext['modelId'];
+var sessionId = visualModelingContext['sessionId'];
+
+var inputs = vm_eval_inputs(context["topology"], context["node"], visualModelingContext);
+var saved = false;
+var widgets = {};
+
+var variablesInfo = inputs[0]['variables']; #LIB_VMCommons.getVariablesInfo(inputs[0]['nodeTableName'], inputs[0]['variables']);
+var dataTableRows = TransformWoe.getVariablesDatasource(nodeValue, inputs, variablesInfo);
+
+var dataTable =
+[
+    'widgetId':'transformWoeTable',
+    'name':'dataTable',
+    'value':
+        [
+            'columns' : {
+                 ['headerLabel': "Variable Name",  'headerStyle':"ux-body2-bold ux-text-oneline", 'widgetName':"output", 'widgetParameters': ["class":"ux-body2 ux-text-grey"]],
+				 ['headerLabel': "Variable Type",  'headerStyle':"ux-body2-bold ux-text-oneline", 'widgetName':"output", 'widgetParameters': ["class":"ux-body2 ux-text-grey"]],
+				 ['headerLabel': "", 'widgetName':"actionButton", 'widgetParameters': ['label' : 'Crea', 'skin' : [ 'color' : 'green', 'size' : 'standard' ]]]
+
+            },
+            'values': dataTableRows
+        ],
+    'position':'#accordionPH'
+];
+
+ADDELEMENT(widgets, dataTable);
+
+
+DEBUGMESSAGE(formulaName, "END");
+
+return [
+    "layout" : "pages/layouts/transformWoe/",
+    "exported" : {'inputs', 'nodeValue', 'saved', 'visualModelingContext', 'dataTableRows', 'variablesInfo', 'whoAmI','thresholds'},
+    "pageTitle" : "Transform Woe",
+    "widgets" : widgets
+];

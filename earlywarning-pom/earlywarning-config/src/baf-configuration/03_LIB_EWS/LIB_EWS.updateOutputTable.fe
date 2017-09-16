@@ -1,0 +1,18 @@
+# FENull returnNull LIB_RISK.updateOutputIrisTable;
+# RETURN VALUE: FENull      -
+# EFFETCS:      -           updateAnalyticaltable
+# Param1:       FEInstance      analysisUnit instance id
+
+DEBUGMESSAGE("LIB_EWS.updateOutputTable.fe"); # stacktrace
+
+VAR analysisUnitID = Param1;
+VAR logActionName	= "updateOutputTable";
+
+VAR analysisUnitInstance = Analysis_Unit[ID=$analysisUnitID];
+VAR externalInfoFormula 	= analysisUnitInstance.CustomerInfoFormula;
+SAVE_LOG("Info", logActionName, "Update Output Table: "+analysisUnitID);
+VAR SETUP = EVAL(externalInfoFormula, {analysisUnitInstance});
+
+VAR updateOutput = SETUP["updateOutput"];
+
+return EVAL(updateOutput, {analysisUnitID});

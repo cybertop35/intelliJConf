@@ -1,0 +1,22 @@
+VAR formulaName = "[LIB_EWS_IT.IND_133_OVER.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+CAST(
+		CASE WHEN VAL_BR_133_OVERRIDE is not null THEN (IND_38 - VAL_BR_133_OVERRIDE)
+			 ELSE null
+		END AS DECIMAL(30,12)) AS IND_133_OVER,
+		
+		(CASE
+			WHEN VAL_BR_133_OVERRIDE is not null THEN ''
+			 ELSE ''
+		END ) AS ERROR_MSG_IND_133_OVER
+";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

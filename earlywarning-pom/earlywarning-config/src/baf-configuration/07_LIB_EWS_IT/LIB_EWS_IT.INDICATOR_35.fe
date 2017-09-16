@@ -1,0 +1,16 @@
+VAR formulaName = "[LIB_EWS_IT.INDICATOR_35.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+JD_REATI_GRAVI_FAM AS IND_35
+,null AS ERROR_MSG_IND_35
+
+";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

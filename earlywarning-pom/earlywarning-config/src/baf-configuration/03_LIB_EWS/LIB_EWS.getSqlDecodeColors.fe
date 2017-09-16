@@ -1,0 +1,12 @@
+
+VAR color = Param1;
+
+VAR sql = "case   when "+color+" = 'NONE' 	OR "+color+"	IS NULL				then 'S00'	
+				when "+color+" = 'GREEN' 									then 'S01'	
+				when "+color+" = 'LIGHT_GREEN' OR  "+color+" = 'LIGHT GREEN' 	then 'S10'	
+                  when "+color+" = 'ORANGE' 									then 'S20'
+				when "+color+" = 'RED' 									then 'S30'
+				when "+color+" = 'LIGHT_BLUE' OR "+color+" = 'LIGHT BLUE'		then 'S40'
+				when "+color+" = 'DARK_BLUE'  OR "+color+" = 'DARK BLUE'		then 'S50'	
+			end";
+return sql;
