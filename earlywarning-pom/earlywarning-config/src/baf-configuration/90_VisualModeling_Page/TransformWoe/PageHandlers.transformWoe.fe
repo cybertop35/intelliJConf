@@ -1,48 +1,210 @@
 var formulaName = "[PageHandlers.transformWoe] ";
 DEBUGMESSAGE(formulaName, "START");
 
-var user 		= Param1;
-var routerMap 	= Param2;
-var symbolTable 	= Param3;
+var user = Param1;
+var routerMap = Param2;
+var symbolTable	= Param3;
 
-var eventContext 	= routerMap["eventContext"];
-var widgetId 	= routerMap["widgetId"];
-
-var dataTableRows 	= null;
-var row 				= null;
-var widgets 			= {};
-var isEventHandled 	= FALSE;
+var widgetId = routerMap["widgetId"];
+var widgetTable = routerMap["widgets"]["transformWoeTable"];
+var dataTableRows = null;
+var row = null;
+var widgets	= {};
+var isEventHandled = FALSE;
 var indexRow;
+var indexButton;
+var indexSpunta;
+var thresholds;
+var variableId;
+var isCategorical;
+
+#debugmessage('WIDGET_ID: ',widgetId);
 
 if (ISLIKE(widgetId,"transformWoeTable_%") and not isEventHandled) {
 	
 	dataTableRows = symbolTable ["dataTableRows"];	
-	indexRow = SPLIT(widgetId,"_");
-	indexRow = indexRow[1];
+	var	indexRiga = SPLIT(widgetId,"_");
+
+	indexRow = indexRiga[1];
+	indexButton = indexRiga[2];
 	row = dataTableRows[NUM(indexRow)];
-	
 	put(symbolTable,"selectedRow",row);
+
+	if (indexButton == '3'){
+		widgets = TransformWoe_PageLib.editButton_onClick(user, routerMap, symbolTable);
+				
+		isEventHandled = TRUE;
+	}
+
+	if (indexButton == '4'){
+		isEventHandled = TRUE;
+
+		return TransformWoe_PageLib.deleteButton_onClick(user, routerMap, symbolTable);
+	}
+}
+
+if(widgetId == 'yesButtonDelete' AND NOT isEventHandled){
+
+	var thresholdsMap = symbolTable["thresholds"];
+	var variableType = symbolTable["selectedRow"][1];
 	
-    widgets = TransformWoe_PageLib.editButton_onClick(user, routerMap, symbolTable);
+	variableId = symbolTable["selectedRow"][3];
+	variableId = variableId["value"];
+    isEventHandled = TRUE;
+
+	if(thresholdsMap[variableId] <> NULL){
+		
+		REMOVE(thresholdsMap,variableId);
+		put(symbolTable,"thresholds",thresholdsMap);
+	
+		widgetTable['value']['values'] = TransformWoe.getVariablesDatasource(symbolTable['inputs'],symbolTable['thresholds']);
+		
+		widgets = LIB_Popup.cancelButton_onClick(user, routerMap, symbolTable);
+		addelement(widgets,widgetTable);
+
+		return [
+			"widgets": widgets,
+			"notifications": {
+				[
+					"type":"success",
+					"autoHide":true,
+					"title":"Success",
+					"message":'Successfully Deleted'
+				]
+			}
+		];
+	}
+}
+
+if(widgetId == 'noButtonDelete' AND NOT isEventHandled){
+	widgets = LIB_Popup.cancelButton_onClick(user, routerMap, symbolTable);
+
+	isEventHandled = TRUE;
+}
+
+if (widgetId == 'visualModelingSaveClick' AND NOT isEventHandled) {
+    widgets = TransformWoe_PageLib.saveButton_onClick(user, routerMap, symbolTable);
+    
     isEventHandled = TRUE;
 }
 
-if (widgetId == 'visualModelingSaveClick' and not isEventHandled) {
-    widgets = TransformWoe_PageLib.saveButton_onClick(user, routerMap, symbolTable);
+if(widgetId == "buttonCancel" AND NOT isEventHandled) THEN {
+	widgets = LIB_Popup.cancelButton_onClick(user, routerMap, symbolTable);
+   
     isEventHandled = TRUE;
 }
-IF(widgetId == "buttonCancel" AND NOT isEventHandled) THEN {
-    widgets = LIB_Popup.cancelButton_onClick(user, routerMap, symbolTable);
+
+if(widgetId == "buttonSave" AND NOT isEventHandled) THEN {
+
+	variableId = symbolTable["selectedRow"][3];
+	variableId = variableId["value"];
+	isCategorical = routerMap['widgets']["widgetsGridPH"]['value']['isCategorical'];
     isEventHandled = TRUE;
-}
-IF(widgetId == "buttonSave" AND NOT isEventHandled) THEN {
+
+    if(isCategorical <> true){
+		thresholds = routerMap['widgets']["widgetsGridPH"]["value"]["thresholds"];
+		var reg = "[a-zA-Z!@#$%^&*()_+]";
+		var scorefk;
+		var g = {};
+
+		foreach(thresholds as thrs){
+			scorefk = thrs["score"] + "1";
+			g = split(scorefk, reg);
+			
+			if(size(g) > 1){
+
+				return [
+					"widgets": {}, 
+					"notifications":{
+						[	"type":"error",
+							"autoHide":true,
+							"title":"Error",
+							"message":"You can't save Continuous values that contains strings!"
+						]
+					}
+				];
+			}
+		}
+    } else if(isCategorical){
+		thresholds = routerMap['widgets']["widgetsGridPH"]["value"]["thresholds"];
+		var reg = "(?i)[\"NEW VALUE...\"!@#$%^&*()+](?-i).*";
+		var scorefk;
+		var g = {};
+
+		foreach(thresholds as thrs){
+			scorefk = thrs["score"] + "1";
+			g = split(scorefk, reg);
+			
+			if((size(g) > 1)){
+				return [
+					"widgets": {},
+					"notifications":{
+						[
+							"type":"error",
+							"autoHide":true,
+							"title":"Error",
+							"message":"Invalid value for Categorical!"
+						]
+					}
+				];	
+			}
+			if(length(thrs["score"]) > 50){
+				return [
+					"widgets": {},
+					"notifications":{
+						[
+							"type":"error",
+							"autoHide":true,
+							"title":"Error",
+							"message":"Too long values for Categorical!"
+						]
+					}
+				];
+			}
+		}
+    }
+
     widgets = TransformWoe_PageLib.saveButtonConfigure_onClick(user, routerMap, symbolTable);
 	widgets = LIB_Popup.cancelButton_onClick(user, routerMap, symbolTable);
-    isEventHandled = TRUE;
+	widgetTable['value']['values'] = TransformWoe.getVariablesDatasource(symbolTable['inputs'],symbolTable['thresholds']);
+	addelement(widgets,widgetTable);
+
+	return [
+		"widgets": widgets, 
+		"notifications" : {
+			[
+				"type":"success",
+				"autoHide":true,
+				"title":"Success",
+				"message":'Successfully Saved'
+			]
+		}
+	];
 }
 
 if (not isEventHandled) {
     DEBUGMESSAGE(formulaName, "EVENT NOT HANDLED: THIS ROW SHOULDN'T BE LOGGED");
 }
+
+if (widgetId == 'toggleButtonGroup' AND NOT isEventHandled) {
+    
+    var myToggleButton = routerMap['widgets'][widgetId];
+    var myGridPH = routerMap['widgets']['widgetsGridPH'];		
+
+    if(myToggleButton['value']['selectedValues'][0] == "Continuous"){
+    	myGridPH['value']['isCategorical'] = false;
+    	thresholds = myGridPH["value"]["thresholds"];
+
+    	foreach(thresholds as thrs){
+
+    		thrs["score"] = 'NEW VALUE...';
+		}
+    } else {
+    	myGridPH['value']['isCategorical'] = true;
+    }
+    addelement(widgets, myGridPH);
+    isEventHandled = TRUE;
+}
+
 DEBUGMESSAGE(formulaName, "END");
 return widgets;

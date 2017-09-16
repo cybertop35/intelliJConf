@@ -12,3 +12,4 @@ target
 *.cmd
 *.exe
 npm
+/*.bat

@@ -1,4 +1,4 @@
-var formulaName = "[CreateVariable_PageLib.updateColumnInfo] ";
+var formulaName = "[CreateVariableSQL_PageLib.updateColumnInfo] ";
 DEBUGMESSAGE(formulaName, "START");
 
 # Param1 FEString

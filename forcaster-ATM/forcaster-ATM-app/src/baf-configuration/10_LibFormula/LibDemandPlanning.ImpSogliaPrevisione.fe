@@ -1,0 +1,15 @@
+# TODO: Previsione a monte sommata su una finestra rolling ampia quanto NUM_GG_RICARICA_2 A010100158
+VAR punto=Param1;
+VAR rolling=punto.NUM_GG_RICARICA_2;
+VAR prevMonte=COMPOSITION({punto.IMP_TOT_PRELEVATO_Mix,punto.IMP_TOT_PREL_RIPROP_Mix});
+VAR valueRoll;
+VAR startDateInt;
+VAR result=TS("DAILY","EUR");
+VAR valueSum;
+FOREACHDATE(rolling AS dateRolling){
+	valueRoll=VALUE(rolling,dateRolling)*(-1);
+	startDateInt=DATESUM(dateRolling,REALTOINT(valueRoll),"DAILY");
+	valueSum=SUMTS(prevMonte, startDateInt, dateRolling);
+	SETVALUE(result,dateRolling,valueSum);
+}
+RETURN result;

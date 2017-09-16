@@ -1,1 +1,93 @@
-.thresholdsGrid-container .thresholdBox{border-radius:5px;font-size:10px;line-height:24px;padding-top:2px}.thresholdsGrid-container .thresholdInputBox{height:20px;margin-bottom:4px}.thresholdsGrid-container ::-webkit-scrollbar{width:5px}.thresholdsGrid-container ::-webkit-scrollbar-track{background-color:#eaeaea;border-radius:3px}.thresholdsGrid-container ::-webkit-scrollbar-thumb{background-color:#ccc;border-radius:3px}.thresholdsGrid-container ::-webkit-scrollbar-thumb:hover{background-color:#aaa;border-radius:3px}.thresholdsGrid-container .input-warning-style{border:1px solid #fa820a !important}
+.thresholdsGrid-container .thresholdBox{
+	border-radius:5px;
+	font-size:10px;
+	line-height:24px;
+	padding-top:2px
+}
+
+.thresholdsGrid-container .thresholdInputBox{
+	height:20px;
+	margin-bottom:4px
+}
+
+.thresholdsGrid-container ::-webkit-scrollbar{
+	width:5px
+}
+
+.thresholdsGrid-container ::-webkit-scrollbar-track{
+	background-color:#eaeaea;
+	border-radius:3px
+}
+
+.thresholdsGrid-container ::-webkit-scrollbar-thumb{
+	background-color:#ccc;
+	border-radius:3px
+}
+
+.thresholdsGrid-container ::-webkit-scrollbar-thumb:hover{
+	background-color:#aaa;
+	border-radius:3px
+}
+
+.thresholdsGrid-container .input-warning-style{
+	border:1px solid #fa820a !important
+}
+
+input[type=checkbox].css-checkbox {
+	position: absolute; 
+    overflow: hidden; 
+    clip: rect(0 0 0 0); 
+    height:1px; 
+    width:1px; 
+    margin:-1px; 
+    padding:0;
+    border:0;
+}
+
+.elegant{background-image:url(http://csscheckbox.com/checkboxes/elegant.png);}
+
+input.css-checkbox.med[type="checkbox"] + label.css-label.med {
+	padding-left: 22px;
+	height: 17px;
+	display: inline-block;
+	background-repeat: no-repeat;
+	background-position: 0 0;
+	vertical-align: middle;
+	cursor: pointer;
+	margin-left: 12px;
+	margin-top: 4px;
+}
+
+input[type=checkbox].css-checkbox.med:checked + label.css-label.med {
+
+    background-position: 0 -17px;
+}
+
+.ux-background-grey-m3 {
+    background-color: #EBEDF0 !important;
+    border-radius: 5px !important;
+    height: 30px !important;
+    vertical-align: middle !important;
+}
+
+.ux-text-grey-p1 {
+    color: #636D78 !important;
+    padding-top: 6px !important;
+}
+
+.toggle-button-group-widget .btn-primary.active, .toggle-button-group-widget .btn-primary:hover, .toggle-button-group-widget .btn-primary:focus {
+    border-color: rgb(71, 191, 111) !important;
+    background-color: rgb(71, 191, 111) !important;
+    color: white !important;
+}
+
+.toggle-button-group-widget .btn-primary {
+    background-color: rgb(220, 220, 220) !important;
+    border-color: rgb(220, 220, 220) !important;
+    color: black !important;
+}
+
+.toggle-button-label {
+    width: 50% !important;
+    font-size: 10px !important;
+}

@@ -1,0 +1,18 @@
+VAR formulaName = "[LIB_EWS_RETAIL.INDICATOR_34.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+
+NVL( CAST(FLG_JD_INCROCIO_ASSEGNI AS CHAR(1)) , '0') AS IND_34, 
+CAST(NULL AS VARCHAR(20)) AS ERROR_MSG_IND_34
+
+
+";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

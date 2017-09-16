@@ -1,0 +1,58 @@
+VAR inputs = Param1;
+VAR weightedModelRows = Param2;
+var newRows = {};
+var varInfo = [];
+VAR items={};
+var selected;
+var find = false;
+
+
+foreach(weightedModelRows as row){
+	find = false;
+    items = {};
+	#Single row	
+	foreach (row as rowElement){
+		
+		if(CONTAINSKEY(rowElement, "items")){
+			selected = rowElement ['value'];
+			
+			if(selected <> NULL){ 
+	              foreach(inputs[0]['variables'] as variable){
+					if (	(variable['isKeyColumn']==FALSE OR variable['isKeyColumn']==NULL) AND
+						(variable['isHiddenColumn']==FALSE OR variable['isHiddenColumn']==NULL) AND
+						(variable['isSegment']==FALSE OR variable['isSegment']==NULL) AND
+						(variable['isTargetColumn']==FALSE OR variable['isTargetColumn']==NULL) AND
+						(variable['isPossibleTarget']==FALSE OR variable['isPossibleTarget']==NULL) AND
+						(variable['isPartitioningColumn']==FALSE OR variable['isPartitioningColumn']==NULL)
+						){							                         
+							varInfo = [];	
+							PUT(varInfo, 'value', variable['id']);
+							PUT(varInfo, 'label', variable['columnLabel']);	
+							
+                            if(selected['value'] == variable['id']){
+								PUT(varInfo, 'selected', true);	
+								find = true;								
+							}
+							else
+								PUT(varInfo, 'selected', false);
+								
+							ADDELEMENT(items, varInfo);
+					}
+				}
+				rowElement['items'] = items;
+			}			
+		}		
+		
+	}	
+	if(find == true)	ADDELEMENT(newRows,row);
+	
+	
+}
+weightedModelRows = {};
+VAR idsWM = {};
+var cols = WeightedModelWoe.getVariablesDatasource(inputs);
+VAR resultMap = WeightedModelWoe.getNewEmptyRow(weightedModelRows, idsWM, cols);
+newRows = concat(newRows,resultMap['weightedModelRows']);
+#DEBUGMESSAGE("----",newRows);
+return newRows;
+

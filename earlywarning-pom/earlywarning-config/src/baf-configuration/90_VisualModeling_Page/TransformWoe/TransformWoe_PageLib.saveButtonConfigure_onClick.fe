@@ -13,34 +13,46 @@ DEBUGMESSAGE(formulaName, "START");
 # var symbolTable = ;
 # var widgetsAndNotifications = TransformWoe_PageLib.saveButtonConfigure_onClick(user, routerMap, symbolTable);
 
-var user 		= Param1;
-var routerMap 	= Param2;
-var symbolTable 	= Param3;
-var eventContext 	= routerMap["eventContext"];
-VAR variableId 	= symbolTable["selectedRow"][2];
-VAR variableType 	= symbolTable["selectedRow"][1];
-variableId		= variableId["value"];
-variableType 	= variableType["label"];
-VAR thresholds;
+var user = Param1;
+var routerMap = Param2;
+var symbolTable = Param3;
+var eventContext = routerMap["eventContext"];
+var variableId = symbolTable["selectedRow"][3];
+var variableType = symbolTable["selectedRow"][1];
+var thresholds;
+var toggleButtonValue;
+var woeResultsMap = [];
+var thresholdsMap = symbolTable["thresholds"];
 
-# DEBUGMESSAGE(formulaName,  routerMap['widgets']["widgetsGridPH"]["value"]["thresholds"]);
-# DEBUGMESSAGE(formulaName, 	symbolTable["thresholds"]);
+variableId = variableId["value"];
+variableType = variableType["label"];
 
-VAR thresholdsMap = symbolTable["thresholds"];
-IF(thresholdsMap == NULL){
+if(thresholdsMap == NULL){
 	thresholdsMap = [];
 }
 
-IF(variableType == "CONTINUOUS" ) {
+if(variableType == "CONTINUOUS") {
+
 	thresholds = routerMap['widgets']["widgetsGridPH"]["value"]["thresholds"];
+	toggleButtonValue = routerMap['widgets']['toggleButtonGroup']['value']['selectedValues'][0];
+
+	if(toggleButtonValue == "Continuous"){
+
+    	toggleButtonValue = false;
+    } else {
+    	toggleButtonValue = true;
+    }
 }
-IF(variableType == "CATEGORICAL" ) {
-	# DEBUGMESSAGE(formulaName, routerMap['widgets']["widgetsGridPH"]);
+
+if(variableType == "CATEGORICAL") {
+
 	thresholds = routerMap['widgets']["widgetsGridPH"]["value"]["values"];
 }
 
-put(thresholdsMap,variableId,thresholds);
+put(woeResultsMap,"isCategorical",toggleButtonValue);
+put(woeResultsMap,"values",thresholds);
+put(thresholdsMap,variableId,woeResultsMap);
 put(symbolTable,"thresholds",thresholdsMap);
 
 DEBUGMESSAGE(formulaName, "END");
-RETURN {};
+return {};

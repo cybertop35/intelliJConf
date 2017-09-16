@@ -1,0 +1,90 @@
+VAR formulaName = "[LIB_EWS_IT.INDICATOR_5.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+
+cast(
+case when  IMP_UTILE_PERD_CE is null and 
+		   IMP_TOT_AMMORTAMENTI is null and 
+		   IMP_INT_PASS_ONERI_ASS is null and 
+	       IMP_ACCANTONAMENTI is null then null 
+	 else
+		(zeroifnull(IMP_UTILE_PERD_CE)+zeroifnull(IMP_TOT_AMMORTAMENTI)+zeroifnull(IMP_INT_PASS_ONERI_ASS)+zeroifnull(IMP_ACCANTONAMENTI)) 
+end as decimal(20,6)) AS NUM_IND_5,
+
+cast(
+case when  IMP_DEBITI_FIN_BT is null and 
+		   IMP_DEBITI_FIN_MLT is null and 
+		   IMP_LIQUIDITA is null and
+		   IMP_INT_PASS_ONERI_ASS is null then null 
+	 else
+	(zeroifnull(IMP_DEBITI_FIN_BT) + (cast(zeroifnull(IMP_DEBITI_FIN_MLT) as decimal(18,6))/3.5) - zeroifnull(IMP_LIQUIDITA) + zeroifnull(IMP_INT_PASS_ONERI_ASS ))
+end as decimal(20,6))as DEN_IND_5
+	,
+	cast( CASE 
+		WHEN ((FIN_STAT_SOURCE = 'CEBI') AND(FLG_COND_ELEGIBILITA_1 = 1 
+									AND FLG_COND_ELEGIBILITA_2 = 1 
+									AND FLG_COND_ELEGIBILITA_3 = 1 
+									AND FLG_COND_ELEGIBILITA_4 = 1 
+									AND FLG_COND_ELEGIBILITA_5 = 1 
+									AND FLG_COND_ELEGIBILITA_6 = 1) ) 
+			or (FIN_STAT_SOURCE= 'CIQ' AND(FLG_COND_ELEGIBILITA_1=1 AND FLG_COND_ELEGIBILITA_2=1))
+			
+			or (FIN_STAT_SOURCE= 'FIS' AND(FLG_COND_ELEGIBILITA_1=1 
+									   AND FLG_COND_ELEGIBILITA_2=1
+									   AND FLG_COND_ELEGIBILITA_5=1 											
+									   AND FLG_COND_ELEGIBILITA_6=1 )
+					)
+		THEN (
+			CASE
+				when DEN_IND_5  = 0 and NUM_IND_5 > 0 then 1000000
+				when DEN_IND_5  = 0 and NUM_IND_5 <= 0 then 0.16393						
+				when DEN_IND_5  < 0 and NUM_IND_5 > 0 then 1000000
+				when DEN_IND_5  < 0 and NUM_IND_5 <= 0 then 0.16393	
+				else  (cast (num_ind_5 as NUMBER (20,6) )/ cast (den_ind_5 as NUMBER (20,6)) )
+			END	)
+		ELSE NULL
+		END
+	 as decimal(18,6)) AS IND_05,
+		(
+	  case when BIL_DT_T1 is null 					  						then 'BILA000;' ELSE '' END ||
+	  CASE when FIN_STAT_SOURCE in('CEBI' , 'CIQ', 'FIS') and FLG_COND_ELEGIBILITA_1 = 0 								then 'BILA001;' ELSE '' END ||
+	  CASE when FIN_STAT_SOURCE in('CEBI' , 'CIQ', 'FIS') and FLG_COND_ELEGIBILITA_2 = 0 								then 'BILA002;' ELSE '' END ||
+	  CASE when FIN_STAT_SOURCE in('CEBI' , 'CIQ', 'FIS') and FLG_COND_ELEGIBILITA_3 = 0 								then 'BILA003;' ELSE '' END ||
+	  CASE when FIN_STAT_SOURCE in('CEBI' , 'CIQ', 'FIS') and FLG_COND_ELEGIBILITA_4 = 0 								then 'BILA004;' ELSE '' END ||
+	  CASE when FIN_STAT_SOURCE in('CEBI' , 'CIQ', 'FIS') and FLG_COND_ELEGIBILITA_5 = 0 								then 'BILA005;' ELSE '' END ||
+	  CASE when FIN_STAT_SOURCE in('CEBI' , 'CIQ', 'FIS') and FLG_COND_ELEGIBILITA_6 = 0 								then 'BILA006;' ELSE '' END ||
+	  CASE WHEN (
+					((FIN_STAT_SOURCE = 'CEBI') AND(	FLG_COND_ELEGIBILITA_1 = 1 AND 
+													FLG_COND_ELEGIBILITA_2 = 1 AND 
+													FLG_COND_ELEGIBILITA_3 = 1 AND 
+													FLG_COND_ELEGIBILITA_4 = 1 AND 
+													FLG_COND_ELEGIBILITA_5 = 1 AND
+													FLG_COND_ELEGIBILITA_6 = 1
+												) 
+					) 
+					or (FIN_STAT_SOURCE= 'CIQ' AND(	FLG_COND_ELEGIBILITA_1=1 AND 
+													FLG_COND_ELEGIBILITA_2=1 AND
+													FLG_COND_ELEGIBILITA_6 = 1 
+												)
+					)
+					or (FIN_STAT_SOURCE= 'FIS' AND(FLG_COND_ELEGIBILITA_1=1 
+											   AND FLG_COND_ELEGIBILITA_2=1
+											   AND FLG_COND_ELEGIBILITA_5=1 											
+											   AND FLG_COND_ELEGIBILITA_6=1 )
+					)
+				)
+				AND (DEN_IND_5 <= 0 
+					AND BIL_DT_T1 is not null 
+					)
+			THEN 'BILA010;' ELSE '' END 	   		
+	) as ERROR_MSG_IND_05
+		";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

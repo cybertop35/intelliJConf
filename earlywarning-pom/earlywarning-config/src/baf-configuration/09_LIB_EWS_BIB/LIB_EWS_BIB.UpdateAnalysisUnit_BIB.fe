@@ -143,20 +143,23 @@ VAR select =  "SELECT SNDG as SNDG,
 		,"+ LIB_EWS_BE.INDICATOR_223() +"
 		,"+ LIB_EWS_BE.INDICATOR_224() +"
 		,"+ LIB_EWS_BE.INDICATOR_225() +"
-		,"+ LIB_EWS_BIB.Model_1_Corporate() +"
-		,"+ LIB_EWS_BIB.Model_2_Corporate() +"
-		,"+ LIB_EWS_BIB.Model_1_Retail() +"
-		,"+ LIB_EWS_BIB.Model_2_Retail() +" 
+
          FROM "+schema+"."+customerUnit.Source_tableName+" 
          WHERE COUNTRY='BIB'";
 
 VAR QUERY ="CREATE TABLE "+ CAU_TMP_TABLE_NAME +" 
 			as ( 
-				"+select+"
+				select t.*
+						,"+ LIB_EWS_BIB.Model_1_Corporate() +"
+						,"+ LIB_EWS_BIB.Model_2_Corporate() +"
+						,"+ LIB_EWS_BIB.Model_1_Retail() +"
+						,"+ LIB_EWS_BIB.Model_2_Retail() +" 	                
+                FROM (
+                "+select+") t
 				
 			) WITH DATA PRIMARY INDEX(SNDG)";
 
-SQLEXECUTE(QUERY,DBCONNECTION,NULL,{});
+SQLEXECUTE("diagnostic noviewfold on for session; "+QUERY,DBCONNECTION,NULL,{});
 
 CREATED = LIB_DB.isTableExistingAndHavingData(CAU_TMP_TABLE_NAME, DBCONNECTION);
 

@@ -25,32 +25,29 @@ var variableDataType = Utils.SingleSetToElement(LIB_WidgetHelper.dropdown_getSel
 symbolTable['nodeValue']['variableDataType'] = variableDataType['value'];
 symbolTable['nodeValue']['code'] = routerMap['widgets']['CreateVariableSQLCodeEditor']['value']['text'];
 
+
+#OK
 notifications = CreateVariableSQL_PageLib.checkUserInputs(symbolTable['nodeValue']);
 symbolTable['run'] = false;
+
 if (is_empty(notifications)){
-    if(not CreateVariableSQL.validateRCode(symbolTable['nodeValue']['code'], symbolTable['nodeValue']['variableColumnName'])) {
-        notifications =  {
-            [ "type" : "error", "title" : allPageLabels['ERROR'], "message" : allPageLabels['CODE_HAS_TO_CONTAIN'] + ' "df$' + symbolTable['nodeValue']['variableColumnName'] + '"', "autoHide" : true]
-        };
-    } else {
-        var rOutput = CreateVariableSQL.executeRcode(symbolTable['nodeValue'], inputs, visualModelingContext);
-        if (rOutput['status'] == 'SUCCESSFUL'){
-            symbolTable['run'] = true;
-            notifications =  {
-                [ "type" : "success", "title" : allPageLabels['SUCCESS'], "message" : allPageLabels["NEW_VARIABLE_CREATED"], "autoHide" : true]
-            };
-        }
-        if (rOutput['status'] == 'EXECUTION_FAILED') {
-            notifications = {
-                [ "type" : "error", "title" : allPageLabels['ERROR'], "message" : allPageLabels["R_EXECUTION_ERROR"], "autoHide" : true]
-            };
-        }
-        if (rOutput['status'] == 'RESULT_RETRIEVAL_FAILED') {
-            notifications = {
-                    [ "type" : "error", "title" : allPageLabels['ERROR'], "message" : "The R program executed correctly, but an error occurred while trying to extract the return values from the execution.", "autoHide" : true]
-            };
-        }
-    }
+	var rOutput = CreateVariableSQL.executeSQLcode(symbolTable['nodeValue'], inputs, visualModelingContext);
+	if (rOutput['status'] == 'SUCCESSFUL'){
+		symbolTable['run'] = true;
+		notifications =  {
+			[ "type" : "success", "title" : allPageLabels['SUCCESS'], "message" : allPageLabels["NEW_VARIABLE_CREATED"], "autoHide" : true]
+		};
+	}
+	if (rOutput['status'] == 'EXECUTION_FAILED') {
+		notifications = {
+			[ "type" : "error", "title" : allPageLabels['ERROR'], "message" : allPageLabels["R_EXECUTION_ERROR"], "autoHide" : true]
+		};
+	}
+	if (rOutput['status'] == 'RESULT_RETRIEVAL_FAILED') {
+		notifications = {
+				[ "type" : "error", "title" : allPageLabels['ERROR'], "message" : "The R program executed correctly, but an error occurred while trying to extract the return values from the execution.", "autoHide" : true]
+		};
+	}
 }
 
 var widgetsAndNotifications = [

@@ -42,6 +42,8 @@ define(["jquery", "underscore", "backbone", "app", "tooltips", "events"], functi
 			'blur .inputVal': 'onBlur',
 			'keypress .inputVal': 'onKeypress',
 			'dblclick .thresholdBox': 'onDoubleClick',
+			'mouseup .checkbox-squareMin': 'onCheckboxSelectMin',
+			'mouseup .checkbox-squareMax': 'onCheckboxSelectMax',
 			'click .add': 'addThreshold',
 			'click .remove': 'removeThreshold'
 		},
@@ -53,6 +55,30 @@ define(["jquery", "underscore", "backbone", "app", "tooltips", "events"], functi
 			else {
 				this.onValueEvent(e);
 			}
+		},
+
+		onCheckboxSelectMin : function(e){
+			var currentEle = $(e.currentTarget);
+			var index = parseInt($(currentEle).parent().parent().attr('data-index'));
+			var thresholds = this.model.value.thresholds;
+					
+				if(thresholds[index].EqualsMin){
+				thresholds[index].EqualsMin = false;
+				} else {
+					thresholds[index].EqualsMin = true;
+				}
+		},
+		
+		onCheckboxSelectMax : function(e){
+			var currentEle = $(e.currentTarget);
+			var index = parseInt($(currentEle).parent().parent().attr('data-index'));
+			var thresholds = this.model.value.thresholds;
+			
+				if(thresholds[index].EqualsMax){
+				thresholds[index].EqualsMax = false;
+				} else {
+					thresholds[index].EqualsMax = true;
+				}
 		},
 
 		onInput: function(e) {
@@ -72,12 +98,12 @@ define(["jquery", "underscore", "backbone", "app", "tooltips", "events"], functi
 				e.stopPropagation();
 				var currentEle = $(e.currentTarget);
 				var value = $(e.currentTarget).html();
-				this.updateVal(currentEle, value);
+				this.updateVal(currentEle, "");
 			}
 		},
 
 		updateVal : function(currentEle, value) {
-			$(currentEle).html('<input class="inputVal thresholdInputBox" value="' + value.trim() + '" />');
+			$(currentEle).html('<input class="inputVal thresholdInputBox" value="' + value.trim() + '" ></input>');
 			$(".thresholdInputBox").focus();
 			var index = parseInt($(currentEle).parent().parent().attr('data-index'));
 			var thresholds = this.model.value.thresholds;
@@ -89,10 +115,15 @@ define(["jquery", "underscore", "backbone", "app", "tooltips", "events"], functi
 			});
 			var self = this;
 			$(".thresholdInputBox").focusout(function () {
-				if(self.errorMessage == undefined){
+
+				if($(this).val() == ""){
+					
+					return;
+				} else if(self.errorMessage == undefined){
+
 					thresholds[index].score = $(".thresholdInputBox").val().trim();
 					$(currentEle).html($(".thresholdInputBox").val().trim());
-				 }
+				}
 			});
 		},
 
@@ -159,7 +190,7 @@ define(["jquery", "underscore", "backbone", "app", "tooltips", "events"], functi
 			if (this.isRequiredInputEmpty(e)) {
 				this.addAndSetErrorMessage('Required field');
 				this.required = true;
-			} else if (this.isInputInvalidNumber(e)) {
+			} else if (this.isInputInvalidNumber(e) && (!this.model.value.isCategorical)) {
 				this.addAndSetErrorMessage('Invalid number');
 			} else if (this.isMaxLengthExceeded(e)) {
 				this.addAndSetErrorMessage('Max length ' + this.model.value.maxLength);
@@ -259,11 +290,12 @@ define(["jquery", "underscore", "backbone", "app", "tooltips", "events"], functi
 				var index = parseInt(row.attr('data-index'));
 				var fromVal = parseFloat(row.find('.toValue').val());
 				if(this.model.value.thresholds.length > 1){
-					row.before('<div id="'+ (index) + '_' + this.model.widgetId + '" class="row align-center thRow" data-index="' + (index) + '"><div class="col-lg-4 col-md-4 col-sm-4 l-right-space m-bottom-space"><div class="thresholdBox text-center ux-text-grey-p1 ux-text-oneline s-right-space s-left-space ux-background-grey-m3" >'+this.model.value.defaultThresholdName+'</div></div><div class="col-lg-3 col-md-3 col-sm-3 s-right-space m-bottom-space"><input value="' + fromVal + '" maxlength class="fromValue inputVal" disabled /></div><div class="col-lg-3 col-md-3 col-sm-3 s-right-space m-bottom-space"><input value="" maxlength class="toValue inputVal ux-input-error-style" /></div><div class="col-lg-1 col-md-1 col-sm-1 s-left-space s-right-space m-bottom-space"><span class="add glyphicon glyphicon-plus-sign ux-text-grey ux-cursor-click" aria-hidden="true"></span></div><div class="col-lg-1 col-md-1 col-sm-1 s-left-space m-bottom-space"><span class="remove glyphicon glyphicon-minus-sign ux-text-grey ux-cursor-click" aria-hidden="true"></span></div></div>');
+					row.before('<div id="'+ (index) + '_' + this.model.widgetId + '" class="row align-center thRow" data-index="' + (index) +'"><div class="col-lg-1 col-md-1 col-sm-1 s-right-space m-bottom-space"><input id="check1-'+ (index) +'" type="checkbox" class="css-checkbox med"/><label for="check1-'+ (index) +'" name="check1-'+ (index) +'" class="checkbox-squareMin css-label med elegant"></label></div><div class="col-lg-2 col-md-2 col-sm-2 s-right-space m-bottom-space"><input value="' + fromVal + '" maxlength class="fromValue inputVal" disabled /></div><div class="col-lg-1 col-md-1 col-sm-1 s-right-space m-bottom-space"><input id="check2-'+ (index) +'" type="checkbox"  class="css-checkbox med"/><label for="check2-'+ (index) +'" name="check2-'+ (index) +'" class="checkbox-squareMax css-label med elegant"></label></div><div class="col-lg-2 col-md-2 col-sm-2 s-right-space m-bottom-space"><input value="" maxlength class="toValue inputVal ux-input-error-style" /></div><div class="col-lg-4 col-md-4 col-sm-4 s-right-space m-bottom-space"><div class="thresholdBox text-center ux-text-grey-p1 ux-text-oneline s-right-space s-left-space ux-background-grey-m3">'+this.model.value.defaultThresholdName+'</div></div><div class="col-lg-1 col-md-1 col-sm-1 s-left-space m-bottom-space"><span class="add glyphicon glyphicon-plus-sign ux-text-grey ux-cursor-click" aria-hidden="true"></span></div><div class="col-lg-1 col-md-1 col-sm-1 m-bottom-space"><span class="remove glyphicon glyphicon-minus-sign ux-text-grey ux-cursor-click" aria-hidden="true"></span></div></div>');
 				} else if(this.model.value.thresholds.length == 1){
-					row.before('<div id="'+ (index) + '_' + this.model.widgetId + '" class="row align-center thRow" data-index="' + (index) + '"><div class="col-lg-4 col-md-4 col-sm-4 l-right-space m-bottom-space"><div class="thresholdBox text-center ux-text-grey-p1 ux-text-oneline s-right-space s-left-space ux-background-grey-m3" >'+this.model.value.defaultThresholdName+'</div></div><div class="col-lg-3 col-md-3 col-sm-3 s-right-space m-bottom-space"><input value="' + fromVal + '" maxlength class="fromValue inputVal" disabled /></div><div class="col-lg-3 col-md-3 col-sm-3 s-right-space m-bottom-space"><input value="" maxlength class="toValue inputVal ux-input-error-style" /></div><div class="col-lg-1 col-md-1 col-sm-1 s-left-space m-bottom-space"><span class="remove glyphicon glyphicon-minus-sign ux-text-grey ux-cursor-click" aria-hidden="true"></span></div></div>');
+					row.before('<div id="'+ (index) + '_' + this.model.widgetId + '" class="row align-center thRow" data-index="' + (index) + '"><div class="col-lg-1 col-md-1 col-sm-1 s-right-space m-bottom-space"><input id="check1-'+ (index) +'" type="checkbox" class="checkbox-squareMin css-checkbox med"/><label for="check1-'+ (index) +'" name="check1-'+ (index) +'" class="css-label med elegant"></label></div><div class="col-lg-2 col-md-2 col-sm-2 s-right-space m-bottom-space"><input value="' + fromVal + '" maxlength class="fromValue inputVal" disabled /></div><div class="col-lg-1 col-md-1 col-sm-1 s-right-space m-bottom-space"><input id="check2-'+ (index) +'" type="checkbox"  class="checkbox-squareMax css-checkbox med"/><label for="check2-'+ (index) +'" name="check2-'+ (index) +'" class="css-label med elegant"></label></div><div class="col-lg-2 col-md-2 col-sm-2 s-right-space m-bottom-space"><input value="" maxlength class="toValue inputVal ux-input-error-style" /></div><div class="col-lg-4 col-md-4 col-sm-4 s-right-space m-bottom-space"><div class="thresholdBox text-center ux-text-grey-p1 ux-text-oneline s-right-space s-left-space ux-background-grey-m3" >'+this.model.value.defaultThresholdName+'</div></div><div class="col-lg-1 col-md-1 col-sm-1 s-left-space m-bottom-space"><span class="remove glyphicon glyphicon-minus-sign ux-text-grey ux-cursor-click" aria-hidden="true"></span></div></div>');
 				}
-				this.model.value.thresholds.splice(index, 0, {score : this.model.value.defaultThresholdName, from : fromVal, to: null, index: index, labelColor: 'grey-m3'});
+				this.model.value.thresholds.splice(index, 0, {EqualsMin: false, from: fromVal, EqualsMax: false, to: null, score: this.model.value.defaultThresholdName, index: index, labelColor: 'grey-m3'}); 
+
 				this.model.value.errors++;
 
 				var firstVal = index + 1;

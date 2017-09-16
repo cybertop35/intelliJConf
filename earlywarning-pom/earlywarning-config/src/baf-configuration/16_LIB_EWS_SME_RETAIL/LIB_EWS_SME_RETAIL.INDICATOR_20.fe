@@ -1,0 +1,21 @@
+VAR formulaName = "[LIB_EWS_RETAIL.INDICATOR_20.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+
+NVL( CAST(FLG_NOPG_AR_RIF AS CHAR(1)) , '0') AS IND_20, 
+CAST(
+	CASE 
+		WHEN FLG_NOPG_AR_RIF IS NULL THEN 'NOPG000_1'
+		ELSE '' 
+	END AS VARCHAR(20)) AS ERROR_MSG_IND_20
+
+";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

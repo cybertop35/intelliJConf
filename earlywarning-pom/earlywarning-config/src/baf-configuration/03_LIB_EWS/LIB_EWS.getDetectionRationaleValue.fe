@@ -1,8 +1,8 @@
-VAR formulaName = "[LIB_EWS_BE.getDetectionRationaleValue] ";
+VAR formulaName = "[LIB_EWS.getDetectionRationaleValue] ";
 DEBUGMESSAGE(formulaName, "START");
 
 VAR fastTrackInstance 	= Param1;
-VAR fastTrackColumnName = Param2;
+VAR fastTrackColumnName 	= Param2;
 VAR adjMap 				= Param3; #MAPPA NOME COLONNA - Adjustments
 VAR models 				= Param4;
 VAR sql;
@@ -12,9 +12,10 @@ VAR counter = 1;
 VAR modelIndex;
 VAR brName;
 VAR INDEX;
+sql= "(";
 if (fastTrackInstance <> NULL)  {
 	
-	sql= "(";
+	
 	brList = fastTrackInstance.FastTrack_BusinessRule.Business_Rule;
 	foreach (brList as br ){
 		INDEX = INDEXOF(br.NAME,'_');
@@ -32,7 +33,7 @@ if (fastTrackInstance <> NULL)  {
 	
 		sql= sql + " case when "+fastTrackColumnName+ " = 1 AND "+ br. SqlQuery       +" then '"+brName+";' ELSE '' END || ";
 	}
-    
+  }
 	# sql =  sql + "''  ";
 	
 	FOREACHKEY (adjMap AS key){
@@ -52,26 +53,38 @@ if (fastTrackInstance <> NULL)  {
 		else {
 			brName = SUBSTRING(br.NAME,0,INDEX);
 		}
-			sql= sql + " case when "+fastTrackColumnName+ " = 0 AND "+key+ " = 1 AND "+ br. SqlQuery       +" then '"+brName+";' ELSE '' END || ";
+			if(fastTrackInstance <> null)
+				sql= sql + " case when "+fastTrackColumnName+ " = 0 AND "+key+ " = 1 AND "+ br. SqlQuery       +" then '"+brName+";' ELSE '' END || ";
+			else
+				sql= sql + " case when "+key+ " = 1 AND "+ br. SqlQuery       +" then '"+brName+";' ELSE '' END || ";
 		}
     }
 	foreach(models as mod){
 		#modelIndex = substring(mod,15,1);
-		
-		sql= sql + " case when "+fastTrackColumnName+ " = 0 AND "+mod+ " = 'S30'  then 'DS0"+counter+";' ELSE '' END || ";
-		counter = counter +1;		
-		sql= sql + " case when "+fastTrackColumnName+ " = 0 AND "+mod+ " = 'S20'  then 'DS0"+counter+";' ELSE '' END || ";
-		counter = counter +1;
-		sql= sql + " case when "+fastTrackColumnName+ " = 0 AND "+mod+ " = 'S10'  then 'DS0"+counter+";' ELSE '' END || ";
-		counter = counter +1;
-		
+		if(fastTrackInstance <> null){
+			sql= sql + " case when "+fastTrackColumnName+ " = 0 AND "+mod+ " = 'S30'  then 'DS0"+counter+";' ELSE '' END || ";
+			counter = counter +1;		
+			sql= sql + " case when "+fastTrackColumnName+ " = 0 AND "+mod+ " = 'S20'  then 'DS0"+counter+";' ELSE '' END || ";
+			counter = counter +1;
+			sql= sql + " case when "+fastTrackColumnName+ " = 0 AND "+mod+ " = 'S10'  then 'DS0"+counter+";' ELSE '' END || ";
+			counter = counter +1;
+		}
+		else{
+			sql= sql + " case when "+mod+ " = 'S30'  then 'DS0"+counter+";' ELSE '' END || ";
+			counter = counter +1;		
+			sql= sql + " case when "+mod+ " = 'S20'  then 'DS0"+counter+";' ELSE '' END || ";
+			counter = counter +1;
+			sql= sql + " case when "+mod+ " = 'S10'  then 'DS0"+counter+";' ELSE '' END || ";
+			counter = counter +1;
+			
+		}
 	}
 	
     
 	
 	
-	sql = sql +"'' )";
-}
+sql = sql +"'' )";
+
 
 DEBUGMESSAGE(formulaName, "END");
 

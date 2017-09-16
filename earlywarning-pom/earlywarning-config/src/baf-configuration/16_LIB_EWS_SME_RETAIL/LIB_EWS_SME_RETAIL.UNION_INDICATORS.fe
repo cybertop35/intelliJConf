@@ -1,0 +1,45 @@
+VAR formulaName = "[LIB_EWS_SME_RETAIL.UNION_INDICATORS.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR customerUnit = Param1;
+VAR schema = customerUnit.TeradataSchema;
+
+
+VAR sql = "";
+
+sql = "select 
+		COD_SNDG as SNDG
+		,null as TARGET
+		,NULL as EXPOSURE
+		,'SME_RETAIL' as SEGMENT
+		,creation_DT as SYSTEM_DATE
+		,'IT' as COUNTRY
+		
+		
+ 
+	,"+ LIB_EWS_SME_RETAIL.INDICATOR_2() +"   
+	,"+ LIB_EWS_SME_RETAIL.INDICATOR_6() +" 
+	,"+ LIB_EWS_SME_RETAIL.INDICATOR_7() +" 
+	,"+ LIB_EWS_SME_RETAIL.INDICATOR_10() +" 
+	,"+ LIB_EWS_SME_RETAIL.INDICATOR_11() +" 
+	,"+ LIB_EWS_SME_RETAIL.INDICATOR_12() +" 
+	,"+ LIB_EWS_SME_RETAIL.INDICATOR_13() +" 
+	,"+ LIB_EWS_SME_RETAIL.INDICATOR_15() +"
+	,"+ LIB_EWS_SME_RETAIL.INDICATOR_17() +"
+	,"+ LIB_EWS_SME_RETAIL.INDICATOR_18() +"
+	,"+ LIB_EWS_SME_RETAIL.INDICATOR_22() +"
+	,"+ LIB_EWS_SME_RETAIL.INDICATOR_26() +"
+	,"+ LIB_EWS_SME_RETAIL.INDICATOR_27() +"
+	,"+ LIB_EWS_SME_RETAIL.INDICATOR_28() +"
+	,"+ LIB_EWS_SME_RETAIL.INDICATOR_29() +"
+	,"+ LIB_EWS_SME_RETAIL.INDICATOR_34() +"
+	,"+ LIB_EWS_SME_RETAIL.INDICATOR_35() +"
+
+
+	from "+schema+"."+customerUnit.Source_tableName;
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

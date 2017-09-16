@@ -1,16 +1,28 @@
-VAR formulaName = "[LIB_EWS_BE.UNION_INDICATORS.fe] ";
+VAR formulaName = "[LIB_EWS_BE.UNION_INDICATORS ] ";
 DEBUGMESSAGE(formulaName, "START");
 VAR customerUnit = Param1;
 VAR schema = customerUnit.TeradataSchema;
 VAR sql = "";
+VAR tableNameStatic = customerUnit.Source_tableName+"_STATIC";
+VAR DBCONNECTION 		= Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
 
-sql = "SELECT SNDG as SNDG,
-			EXPOSURE_AMOUNT AS EXPOSURE,
-			null as TARGET, 
-			REGULAMENTARY_SEGMENT as SEGMENT
-			,SYSTEM_DATE
-			,COUNTRY
+
+
+sql = " SELECT SNDG as SNDG_STATIC
+		,REGULAMENTARY_SEGMENT as SEGMENT
+        ,COUNTRY AS COUNTRY_STATIC
 		,"+LIB_EWS_BE.static_filter_indicators_BE() +"
+		from "+schema+"."+customerUnit.Source_tableName; 
+
+IF(LIB_DB.isTableExisting(tableNameStatic,DBCONNECTION)) THEN{
+	SQLEXECUTE("DROP TABLE "+ tableNameStatic,DBCONNECTION,NULL,{});
+}
+SAVE_LOG("Info", formulaName, "Execute query Static value" );
+SQLEXECUTE("diagnostic noviewfold on for session; "+"CREATE TABLE " +tableNameStatic+ " as ("+sql+") WITH DATA PRIMARY INDEX(SNDG_STATIC)",DBCONNECTION,null,{});
+
+
+sql = "SELECT SNDG as SNDG_TMP1
+		,COUNTRY as COUNTRY_TMP1
 		,"+ LIB_EWS_BE.INDICATOR_1() +"
 		,"+ LIB_EWS_BE.INDICATOR_2() +"
 		,"+ LIB_EWS_BE.INDICATOR_3() +"
@@ -61,7 +73,21 @@ sql = "SELECT SNDG as SNDG,
 		,"+ LIB_EWS_BE.INDICATOR_48() +"
 		,"+ LIB_EWS_BE.INDICATOR_49() +"
 		,"+ LIB_EWS_BE.INDICATOR_50() +"
-		,"+ LIB_EWS_BE.INDICATOR_51() +"
+		from "+schema+"."+customerUnit.Source_tableName +" "+customerUnit.Source_tableName+"
+		JOIN "+ tableNameStatic+" "+ tableNameStatic +" ON "+tableNameStatic+".SNDG_STATIC ="+customerUnit.Source_tableName+".SNDG
+        		AND "+tableNameStatic+".COUNTRY_STATIC ="+customerUnit.Source_tableName+".COUNTRY"	;
+	
+	VAR tableNameTMP1 = customerUnit.Source_tableName+"_1";
+	IF(LIB_DB.isTableExisting(tableNameTMP1,DBCONNECTION)) THEN{
+		SQLEXECUTE("DROP TABLE "+ tableNameTMP1,DBCONNECTION,NULL,{});
+	}
+	SAVE_LOG("Info", formulaName, "Execute query 1" );
+	SQLEXECUTE("diagnostic noviewfold on for session; "+"CREATE TABLE " +tableNameTMP1+ " as ("+sql+") WITH DATA PRIMARY INDEX(SNDG_TMP1)",DBCONNECTION,null,{});
+	
+		
+	sql = "SELECT SNDG as SNDG_TMP2
+    	,COUNTRY as COUNTRY_TMP2
+		         ,"+ LIB_EWS_BE.INDICATOR_51() +"
 		,"+ LIB_EWS_BE.INDICATOR_52() +"
 		,"+ LIB_EWS_BE.INDICATOR_53() +"
 		,"+ LIB_EWS_BE.INDICATOR_54() +"
@@ -70,18 +96,53 @@ sql = "SELECT SNDG as SNDG,
 		,"+ LIB_EWS_BE.INDICATOR_57() +"
 		,"+ LIB_EWS_BE.INDICATOR_58() +"
 		,"+ LIB_EWS_BE.INDICATOR_60() +"
-		,"+ LIB_EWS_BE.INDICATOR_61() +"
+		
+		from "+schema+"."+customerUnit.Source_tableName +" "+customerUnit.Source_tableName+"
+		JOIN "+ tableNameStatic+" "+ tableNameStatic +" ON "+tableNameStatic+".SNDG_STATIC ="+customerUnit.Source_tableName+".SNDG
+        		AND "+tableNameStatic+".COUNTRY_STATIC ="+customerUnit.Source_tableName+".COUNTRY"	;
+	
+	VAR tableNameTMP2 = customerUnit.Source_tableName+"_2";
+	IF(LIB_DB.isTableExisting(tableNameTMP2,DBCONNECTION)) THEN{
+		SQLEXECUTE("DROP TABLE "+ tableNameTMP2,DBCONNECTION,NULL,{});
+	}
+	SAVE_LOG("Info", formulaName, "Execute query 2" );
+	SQLEXECUTE("diagnostic noviewfold on for session; "+"CREATE TABLE " +tableNameTMP2+ " as ("+sql+") WITH DATA PRIMARY INDEX(SNDG_TMP2)",DBCONNECTION,null,{});
+	
+	##############################
+	
+	sql = "SELECT SNDG as SNDG_TMP3
+    	,COUNTRY as COUNTRY_TMP3
+		  ,"+ LIB_EWS_BE.INDICATOR_61() +"
 		,"+ LIB_EWS_BE.INDICATOR_62() +"
+		,"+ LIB_EWS_BE.INDICATOR_80() +"     
+        ,"+ LIB_EWS_BE.INDICATOR_81() +"
+    
+		from "+schema+"."+customerUnit.Source_tableName +" "+customerUnit.Source_tableName+"
+		JOIN "+ tableNameStatic+" "+ tableNameStatic +" ON "+tableNameStatic+".SNDG_STATIC ="+customerUnit.Source_tableName+".SNDG
+        	AND "+tableNameStatic+".COUNTRY_STATIC ="+customerUnit.Source_tableName+".COUNTRY"	;
+	
+	VAR tableNameTMP3 = customerUnit.Source_tableName+"_3";
+	IF(LIB_DB.isTableExisting(tableNameTMP3,DBCONNECTION)) THEN{
+		SQLEXECUTE("DROP TABLE "+ tableNameTMP3,DBCONNECTION,NULL,{});
+	}
+	SAVE_LOG("Info", formulaName, "Execute query 3" );
+	SQLEXECUTE("diagnostic noviewfold on for session; "+"CREATE TABLE " +tableNameTMP3+ " as ("+sql+") WITH DATA PRIMARY INDEX(SNDG_TMP3)",DBCONNECTION,null,{});
+	
+	
+	##############################
+	
+	sql = "SELECT SNDG as SNDG_TMP4
+    		,COUNTRY as  COUNTRY_TMP4    		
 		,"+ LIB_EWS_BE.INDICATOR_63() +"
 		,"+ LIB_EWS_BE.INDICATOR_64() +"
 		,"+ LIB_EWS_BE.INDICATOR_65() +"
 		,"+ LIB_EWS_BE.INDICATOR_66() +"
 		,"+ LIB_EWS_BE.INDICATOR_67() +"
 		,"+ LIB_EWS_BE.INDICATOR_68() +"
-		,"+ LIB_EWS_BE.INDICATOR_69() +"
+		,"+ LIB_EWS_BE.INDICATOR_69() +"            
 		,"+ LIB_EWS_BE.INDICATOR_70() +"
-		,"+ LIB_EWS_BE.INDICATOR_71() +"
-		,"+ LIB_EWS_BE.INDICATOR_72() +"
+        ,"+ LIB_EWS_BE.INDICATOR_71() +"
+        ,"+ LIB_EWS_BE.INDICATOR_72() +"
 		,"+ LIB_EWS_BE.INDICATOR_73() +"
 		,"+ LIB_EWS_BE.INDICATOR_74() +"
 		,"+ LIB_EWS_BE.INDICATOR_75() +"
@@ -89,8 +150,21 @@ sql = "SELECT SNDG as SNDG,
 		,"+ LIB_EWS_BE.INDICATOR_77() +"
 		,"+ LIB_EWS_BE.INDICATOR_78() +"
 		,"+ LIB_EWS_BE.INDICATOR_79() +"
-		,"+ LIB_EWS_BE.INDICATOR_80() +"
-		,"+ LIB_EWS_BE.INDICATOR_81() +"
+		from "+schema+"."+customerUnit.Source_tableName +" "+customerUnit.Source_tableName+"
+		JOIN "+ tableNameStatic+" "+ tableNameStatic +" ON "+tableNameStatic+".SNDG_STATIC ="+customerUnit.Source_tableName+".SNDG
+        	AND "+tableNameStatic+".COUNTRY_STATIC ="+customerUnit.Source_tableName+".COUNTRY"	;
+	
+	VAR tableNameTMP4 = customerUnit.Source_tableName+"_4";
+	IF(LIB_DB.isTableExisting(tableNameTMP4,DBCONNECTION)) THEN{
+		SQLEXECUTE("DROP TABLE "+ tableNameTMP4,DBCONNECTION,NULL,{});
+	}
+	SAVE_LOG("Info", formulaName, "Execute query 4" );
+	SQLEXECUTE("diagnostic noviewfold on for session; "+"CREATE TABLE " +tableNameTMP4+ " as ("+sql+") WITH DATA PRIMARY INDEX(SNDG_TMP4)",DBCONNECTION,null,{});
+	
+	##############################
+	
+	sql = "SELECT SNDG as SNDG_TMP5
+    		,COUNTRY as  COUNTRY_TMP5
 		,"+ LIB_EWS_BE.INDICATOR_82() +"
 		,"+ LIB_EWS_BE.INDICATOR_83() +"
 		,"+ LIB_EWS_BE.INDICATOR_84() +"
@@ -100,9 +174,9 @@ sql = "SELECT SNDG as SNDG,
 		,"+ LIB_EWS_BE.INDICATOR_88() +"
 		,"+ LIB_EWS_BE.INDICATOR_89() +"
 		,"+ LIB_EWS_BE.INDICATOR_90() +"
-		,"+ LIB_EWS_BE.INDICATOR_91() +"
+        ,"+ LIB_EWS_BE.INDICATOR_91() +"
 		,"+ LIB_EWS_BE.INDICATOR_92() +"
-		,"+ LIB_EWS_BE.INDICATOR_93() +"
+        ,"+ LIB_EWS_BE.INDICATOR_93() +"
 		,"+ LIB_EWS_BE.INDICATOR_94() +"
 		,"+ LIB_EWS_BE.INDICATOR_95() +"
 		,"+ LIB_EWS_BE.INDICATOR_96() +"
@@ -110,7 +184,7 @@ sql = "SELECT SNDG as SNDG,
 		,"+ LIB_EWS_BE.INDICATOR_98() +"
 		,"+ LIB_EWS_BE.INDICATOR_99() +"
 		,"+ LIB_EWS_BE.INDICATOR_100() +"
-		,"+ LIB_EWS_BE.INDICATOR_101() +"
+        ,"+ LIB_EWS_BE.INDICATOR_101() +"
 		,"+ LIB_EWS_BE.INDICATOR_102() +"
 		,"+ LIB_EWS_BE.INDICATOR_103() +"
 		,"+ LIB_EWS_BE.INDICATOR_104() +"
@@ -120,7 +194,7 @@ sql = "SELECT SNDG as SNDG,
 		,"+ LIB_EWS_BE.INDICATOR_108() +"
 		,"+ LIB_EWS_BE.INDICATOR_109() +"
 		,"+ LIB_EWS_BE.INDICATOR_110() +"
-		,"+ LIB_EWS_BE.INDICATOR_111() +"
+        ,"+ LIB_EWS_BE.INDICATOR_111() +"
 		,"+ LIB_EWS_BE.INDICATOR_112() +"
 		,"+ LIB_EWS_BE.INDICATOR_113() +"
 		,"+ LIB_EWS_BE.INDICATOR_114() +"
@@ -135,7 +209,7 @@ sql = "SELECT SNDG as SNDG,
 		,"+ LIB_EWS_BE.INDICATOR_128() +"
 		,"+ LIB_EWS_BE.INDICATOR_129() +"
 		,"+ LIB_EWS_BE.INDICATOR_130() +"
-		,"+ LIB_EWS_BE.INDICATOR_131() +"
+        ,"+ LIB_EWS_BE.INDICATOR_131() +"
 		,"+ LIB_EWS_BE.INDICATOR_132() +"
 		,"+ LIB_EWS_BE.INDICATOR_133() +"
 		,"+ LIB_EWS_BE.INDICATOR_134() +"
@@ -145,7 +219,7 @@ sql = "SELECT SNDG as SNDG,
 		,"+ LIB_EWS_BE.INDICATOR_138() +"
 		,"+ LIB_EWS_BE.INDICATOR_139() +"
 		,"+ LIB_EWS_BE.INDICATOR_140() +"
-		,"+ LIB_EWS_BE.INDICATOR_141() +"
+        ,"+ LIB_EWS_BE.INDICATOR_141() +"
 		,"+ LIB_EWS_BE.INDICATOR_142() +"
 		,"+ LIB_EWS_BE.INDICATOR_143() +"
 		,"+ LIB_EWS_BE.INDICATOR_144() +"
@@ -165,7 +239,7 @@ sql = "SELECT SNDG as SNDG,
 		,"+ LIB_EWS_BE.INDICATOR_158() +"
 		,"+ LIB_EWS_BE.INDICATOR_159() +"
 		,"+ LIB_EWS_BE.INDICATOR_160() +"
-		,"+ LIB_EWS_BE.INDICATOR_161() +"
+        ,"+ LIB_EWS_BE.INDICATOR_161() +"
 		,"+ LIB_EWS_BE.INDICATOR_162() +"
 		,"+ LIB_EWS_BE.INDICATOR_163() +"
 		,"+ LIB_EWS_BE.INDICATOR_164() +"
@@ -230,7 +304,44 @@ sql = "SELECT SNDG as SNDG,
 		,"+ LIB_EWS_BE.INDICATOR_223() +"
 		,"+ LIB_EWS_BE.INDICATOR_224() +"
    		,"+ LIB_EWS_BE.INDICATOR_225() +"	
-	from "+schema+"."+customerUnit.Source_tableName;
+		from "+schema+"."+customerUnit.Source_tableName +" "+customerUnit.Source_tableName+"
+		JOIN "+ tableNameStatic+" "+ tableNameStatic +" ON "+tableNameStatic+".SNDG_STATIC ="+customerUnit.Source_tableName+".SNDG
+        	AND "+tableNameStatic+".COUNTRY_STATIC ="+customerUnit.Source_tableName+".COUNTRY"	;
+	
+		
+	VAR tableNameTMP5 = customerUnit.Source_tableName+"_5";
+	IF(LIB_DB.isTableExisting(tableNameTMP5,DBCONNECTION)) THEN{
+		SQLEXECUTE("DROP TABLE "+ tableNameTMP5,DBCONNECTION,NULL,{});
+	}
+	SAVE_LOG("Info", formulaName, "Execute query 5" );
+	SQLEXECUTE("diagnostic noviewfold on for session; "+"CREATE TABLE " +tableNameTMP5+ " as ("+sql+") WITH DATA PRIMARY INDEX(SNDG_TMP5)",DBCONNECTION,null,{});
+	
+sql = "SELECT SNDG
+			,EXPOSURE_AMOUNT AS EXPOSURE
+			,null as TARGET 
+			,SYSTEM_DATE
+			,COUNTRY
+			,"+tableNameStatic+".*
+			,"+tableNameTMP1+".*
+            ,"+tableNameTMP2+".*
+            ,"+tableNameTMP3+".*
+            ,"+tableNameTMP4+".*
+			,"+tableNameTMP5+".*
+        from "+schema+"."+customerUnit.Source_tableName +" "+customerUnit.Source_tableName+"
+		JOIN "+tableNameStatic +" "+ tableNameStatic +" ON "+tableNameStatic+".SNDG_STATIC ="+customerUnit.Source_tableName+".SNDG
+        	AND "+tableNameStatic+".COUNTRY_STATIC ="+customerUnit.Source_tableName+".COUNTRY
+		JOIN "+tableNameTMP1 +" "+ tableNameTMP1 +" ON "+tableNameTMP1+".SNDG_TMP1 ="+customerUnit.Source_tableName+".SNDG
+        	AND "+tableNameTMP1+".COUNTRY_TMP1 ="+customerUnit.Source_tableName+".COUNTRY
+        JOIN "+tableNameTMP2 +" "+ tableNameTMP2 +" ON "+tableNameTMP2+".SNDG_TMP2 ="+customerUnit.Source_tableName+".SNDG
+        	AND "+tableNameTMP2+".COUNTRY_TMP2 ="+customerUnit.Source_tableName+".COUNTRY
+        JOIN "+tableNameTMP3 +" "+ tableNameTMP3 +" ON "+tableNameTMP3+".SNDG_TMP3 ="+customerUnit.Source_tableName+".SNDG
+        	AND "+tableNameTMP3+".COUNTRY_TMP3 ="+customerUnit.Source_tableName+".COUNTRY
+        JOIN "+tableNameTMP4 +" "+ tableNameTMP4 +" ON "+tableNameTMP4+".SNDG_TMP4 ="+customerUnit.Source_tableName+".SNDG
+        	AND "+tableNameTMP4+".COUNTRY_TMP4 ="+customerUnit.Source_tableName+".COUNTRY
+		JOIN "+tableNameTMP5 +" "+ tableNameTMP5 +" ON "+tableNameTMP5+".SNDG_TMP5 ="+customerUnit.Source_tableName+".SNDG
+        	AND "+tableNameTMP5+".COUNTRY_TMP5 ="+customerUnit.Source_tableName+".COUNTRY";
+
+SAVE_LOG("Info", formulaName, "Generate query Union Ind" );
 
 
 DEBUGMESSAGE(formulaName, sql);

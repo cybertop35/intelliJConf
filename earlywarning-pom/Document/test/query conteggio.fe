@@ -1,0 +1,38 @@
+
+-------------------COONTEGGIO BR ------------------------------------
+select 'BR000001' as nome, count(*) as conteggio from tewsa0w.output_web_XXX where BR000001 = 1 union
+select 'BR000002' as nome, count(*) as conteggio from tewsa0w.output_web_XXX where BR000002 = 1 union
+select 'BR000003' as nome, count(*) as conteggio from tewsa0w.output_web_XXX where BR000003 = 1 union
+select 'BR000004' as nome, count(*) as conteggio from tewsa0w.output_web_XXX where BR000004 = 1 union
+select 'BR000005' as nome, count(*) as conteggio from tewsa0w.output_web_XXX where BR000005 = 1 union
+select 'BR000006' as nome, count(*) as conteggio from tewsa0w.output_web_XXX where BR000006 = 1 union
+select 'BR000007' as nome, count(*) as conteggio from tewsa0w.output_web_XXX where BR000007 = 1 union
+select 'BR000008' as nome, count(*) as conteggio from tewsa0w.output_web_XXX where BR000008 = 1 union
+select 'BR000009' as nome, count(*) as conteggio from tewsa0w.output_web_XXX where BR000009 = 1 union
+select 'BR000010' as nome, count(*) as conteggio from tewsa0w.output_web_XXX where BR000010 = 1 union
+select 'BR000011' as nome, count(*) as conteggio from tewsa0w.output_web_XXX where BR000011 = 1 union
+select 'BR000012' as nome, count(*) as conteggio from tewsa0w.output_web_XXX where BR000012 = 1 union
+select 'BR000013' as nome, count(*) as conteggio from tewsa0w.output_web_XXX where BR000013 = 1 union
+select 'BR000014' as nome, count(*) as conteggio from tewsa0w.output_web_XXX where BR000014 = 1 union
+select 'BR000015' as nome, count(*) as conteggio from tewsa0w.output_web_XXX where BR000015 = 1 union
+select 'BR000016' as nome, count(*) as conteggio from tewsa0w.output_web_XXX where BR000016 = 1 union
+select 'BR000017' as nome, count(*) as conteggio from tewsa0w.output_web_XXX where BR000017 = 1 union
+select 'BR000018' as nome, count(*) as conteggio from tewsa0w.output_web_XXX where BR000018 = 1
+
+-------------------CONTEGGIO EXCEPTION --------------------------------------------
+
+select 'EXCEPTION_1' as nome, count(*) as conteggio from tewsa0w.output_web_XXX where EXCEPTION_1 = 1 union
+select 'EXCEPTION_2' as nome, count(*) as conteggio from tewsa0w.output_web_XXX where EXCEPTION_2 = 1 union
+select 'EXCEPTION_3' as nome, count(*) as conteggio from tewsa0w.output_web_XXX where EXCEPTION_3 = 1
+
+-------------------CONTEGGIO COLOR APP --------------------------------------------
+
+select 'S50' as nome, count(*) as conteggio from tewsa0w.output_web_be where SEMAFORO_APP = 'S50' and country = 'XXX' union
+select 'S40' as nome, count(*) as conteggio from tewsa0w.output_web_be where SEMAFORO_APP = 'S40' and country = 'XXX' union
+select 'S30' as nome, count(*) as conteggio from tewsa0w.output_web_be where SEMAFORO_APP = 'S30' and country = 'XXX' union
+select 'S20' as nome, count(*) as conteggio from tewsa0w.output_web_be where SEMAFORO_APP = 'S20' and country = 'XXX' union
+select 'S10' as nome, count(*) as conteggio from tewsa0w.output_web_be where SEMAFORO_APP = 'S10' and country = 'XXX' union
+select 'S01' as nome, count(*) as conteggio from tewsa0w.output_web_be where SEMAFORO_APP = 'S01' and country = 'XXX'
+
+----------------CONTEGGIO PER SEGMENTO --------------------------------------------
+select segment, count(*) as conteggio from sewsa0w.output_web_BE where COUNTRY = 'CIB' GROUP BY SEGMENT

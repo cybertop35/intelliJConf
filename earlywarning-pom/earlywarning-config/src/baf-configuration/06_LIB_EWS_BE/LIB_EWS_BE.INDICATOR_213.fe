@@ -23,8 +23,8 @@ CAST(
 END ||
                 
                 CASE
-                               WHEN (VAL_MAX_IND_213 IS NOT NULL AND IND_213_TMP > VAL_MAX_IND_213) THEN 'E0002'
-                               ELSE ''
+                           WHEN (VAL_MAX_IND_213 IS NOT NULL AND IND_213_TMP > VAL_MAX_IND_213) THEN 'E0002'
+                           ELSE ''
                                
 END AS ERROR_MSG_IND_213
 ";

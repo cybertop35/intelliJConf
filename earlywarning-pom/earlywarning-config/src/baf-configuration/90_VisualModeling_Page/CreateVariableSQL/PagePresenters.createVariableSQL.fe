@@ -9,10 +9,10 @@ var whoAmI = 'CreateVariableSQL';
 var nodeValue = context["node"]["value"];
 var visualModelingContext = context['visualModelingContext'];
 
-var workspaceId = visualModelingContext['workspaceId'];
-var analysisUnitId = visualModelingContext['analysisUnitId'];
-var modelId = visualModelingContext['modelId'];
-var sessionId = visualModelingContext['sessionId'];
+var workspaceId 		= visualModelingContext['workspaceId'];
+var analysisUnitId 	= visualModelingContext['analysisUnitId'];
+var modelId 			= visualModelingContext['modelId'];
+var sessionId 		= visualModelingContext['sessionId'];
 
 var inputs = vm_eval_inputs(context["topology"], context["node"], visualModelingContext);
 var prevVariables = inputs[0]['variables'];
@@ -27,7 +27,7 @@ if (nodeValue == null) {
 }
 
 if (nodeValue['code'] == null) {
-    nodeValue['code'] = allPageLabels["R_COMMENT"];
+    nodeValue['code'] = "";
 }
 
 if (nodeValue['variableLabelName'] == null) {
@@ -78,10 +78,10 @@ LIB_WidgetHelper.dropdown_setSelected(itemsType, {nodeValue['variableType']}, tr
 var rSyntaxTitle = [
     "widgetId" : "rSyntaxTitle",
     "name" : "output",
-    "value" : [ "label" : allPageLabels["R_SYNTAX_EDITOR"] ],
+    "value" : [ "label" : "SQL Syntax Editor" ],
     "position" : "#rSyntaxTitle"
 ];
-#addelement(widgets, rSyntaxTitle);
+addelement(widgets, rSyntaxTitle);
 
 var runActionButton = [
     "widgetId" : "runActionButton",
@@ -94,18 +94,18 @@ var runActionButton = [
     ],
     "position" : "#runButton"
 ];
-#addelement(widgets, runActionButton);
+addelement(widgets, runActionButton);
 
 var codeEditor = [
     "widgetId" : "CreateVariableSQLCodeEditor",
     "name" : "codeEditor",
     "value" : [
         "theme" : "ace/theme/clouds",
-        "mode" : "ace/mode/r",
+        "mode" : "ace/mode/mysql",
         "noChangeDelay" : 5000,
         "text" : nodeValue['code']
     ],
-    "position" : "#CreateVariableCodeEditor"
+    "position" : "#createVariableCodeEditor"
 ];
 addelement(widgets, codeEditor);
 
@@ -216,7 +216,7 @@ VAR searchBox = [
 addelement(widgets, searchBox);
 
 return [
-    "layout"    : "pages/layouts/CreateVariableSQL/",
+    "layout"    : "pages/layouts/createVariableSQL/",
     "exported"  : {
        'whoAmI',
        'saved',

@@ -53,6 +53,11 @@ VAR modelID;
 VAR modelSelct ;
 VAR modelTable;
 var axis;
+VAR columnsWoe;
+
+#CALCOLO LE BR
+VAR brColumns = LIB_EWS.getBRFieldName(analysisUnitInstance);
+
 FOREACH ( WORKSPACE_PLAN_LIST as WORKSPACE ){
 
 	LIB_DB.DropTableIfExists("TMP_OUTWP_"+WORKSPACE.ID,DBCONNECTION);   
@@ -67,24 +72,19 @@ FOREACH ( WORKSPACE_PLAN_LIST as WORKSPACE ){
         model = Predictive_Model[ID=$modelID];
       
         axis = LIB_EWS_IT.getMatrixAxis(model); 
-        
-		modelSelct= "SELECT   SNDG										AS SNDG_MODEL,
-							SCORE_000023_WM 							AS SCORE_CR_SISTEMA,
-							SCORE_000045_WM 							AS SCORE_CR_ALZO_ZERO,
-							SCORE_000046_WM 							AS SCORE_XRA,
-							"+axis['xAxis']+" 							AS COLOR_CR_SISTEMA,
-							"+axis['yAxis']+" 							AS COLOR_CR_ALZO_ZERO,
-							CASE 
-								WHEN SCORE_XRA < -3.175998827 THEN 'S01'
-								WHEN SCORE_XRA >= -3.175998827 and SCORE_XRA < -2.487701243 THEN 'S10'
-								WHEN SCORE_XRA >= -2.487701243 and SCORE_XRA < -1.73345452 THEN 'S20'
-								WHEN SCORE_XRA >= -1.73345452 THEN 'S30'
-								ELSE 'S00' 
-							END as COLOR_XRA, 
-							"+LIB_EWS.getSqlDecodeColors("MATRIX_0")+ " AS MATRIX_COLOR_CR,
-							SCORE_000046_WM_WOE							AS SCORE_XRA_WOE, 
-							MATRIX_0_WOE 								AS MATRIX_SCORE_CR, 
-							SCORE_000242_WM 							AS SCORE_CR_XRA 
+
+		columnsWoe = LIB_EWS.getVMNodeColumnByName(model,'Score Woe');
+		modelSelct =" SELECT SNDG 																					AS SNDG_MODEL,
+					"+ARRAY_TO_STRING(LIB_EWS.getVMNodeColumnByName(model,'CR Sistema')) +" 							AS SCORE_CR_SISTEMA,
+					"+ARRAY_TO_STRING(LIB_EWS.getVMNodeColumnByName(model,'CR alzo zero')) +" 							AS SCORE_CR_ALZO_ZERO,
+					"+ARRAY_TO_STRING(LIB_EWS.getVMNodeColumnByName(model,'Override Score XRA')) +"					AS SCORE_XRA,
+					"+axis['xAxis']+" 																			AS COLOR_CR_SISTEMA,
+					"+axis['yAxis']+" 																			AS COLOR_CR_ALZO_ZERO,
+					"+ARRAY_TO_STRING(LIB_EWS.getVMNodeColumnByName(model,'Color XRA')) +"								AS COLOR_XRA,
+					"+LIB_EWS.getSqlDecodeColors(ARRAY_TO_STRING(LIB_EWS.getVMNodeColumnByName(model,'CR Matrix'))) +"	AS MATRIX_COLOR_CR,
+					"+columnsWoe[0]+"																				AS SCORE_XRA_WOE,
+					"+columnsWoe[1]+"																				AS MATRIX_SCORE_CR,
+					"+ARRAY_TO_STRING(LIB_EWS.getVMNodeColumnByName(model,'Score CR_XRA'))+"							AS SCORE_CR_XRA
 					FROM "+modelTable+"_VM";
 	}
 	else {
@@ -105,7 +105,9 @@ FOREACH ( WORKSPACE_PLAN_LIST as WORKSPACE ){
 	IF(LENGTH (SQL_UNION) > 0){
 		SQL_UNION = SQL_UNION + " UNION ALL ";
 	}
-	SQL_UNION = SQL_UNION +" SELECT * 	
+	#ESCLUDO IL CALCOLO DELLE BR PERCHE PER LA DASHBOARD ITALIA CORPORATE SONO CALCOLATE IN MODO SPECIFICO	
+	SQL_UNION = SQL_UNION +" SELECT "+ARRAY_TO_STRING( Utils.getColumnName( "TMP_OUTWP_"+WORKSPACE.ID ,KEYSET(brColumns)  ) )+"
+								,MODEL.*
 						 FROM TMP_OUTWP_"+WORKSPACE.ID + " WS 
 						 LEFT JOIN ( "+modelSelct+" ) MODEL ON WS.SNDG = MODEL.sndg_model";
 	
@@ -176,9 +178,9 @@ foreach (BR_LIST as b){
 	}
 	ELSE IF(brName == '08' OR brName == '117' OR brName == '118' OR 
 		   brName == '25' OR brName == '525' OR brName == '512' OR 
-		   brName == '36' OR brName == '536' OR
+		   brName == '36' OR brName == '37' OR brName == '536' OR
 		   brName == '132' OR brName == '133' OR brName == '134' OR brName == '135' OR brName == '136' OR brName == '137' OR
-		   brName == '138' OR brName == '139' OR brName == '140' OR brName == '141' OR brName == '142') THEN {
+		   brName == '138' OR brName == '139' OR brName == '140' OR brName == '141' OR brName == '142' ) THEN {
 		SQL_CALCOLO = SQL_CALCOLO +" ,GREATEST(CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END,"+NOME_COLONNA+"BIS) as "+  NOME_COLONNA ;
 		
 	}
@@ -241,13 +243,13 @@ IF(CREATED) THEN {
     
     SQL = "REPLACE VIEW "+T_OUT_VIEW+" AS (
 			SELECT "+T_OUT +".SNDG,"+ARRAY_TO_STRING(array,', ')+"
-            	,REGEXP_REPLACE(detection_rationale, -- sourcestring
+            	,CAST(REGEXP_REPLACE(detection_rationale, -- sourcestring
                 'BR(\d+)', -- regexp
                 'BR_\1', --replacestring
                 1, --startposition
                 0, -- occurrence, 0 = all
                 'i' -- match -> case insensitive
-				) as 	DETECTION_RATIONALE		
+				) AS VARCHAR(200) )as 	DETECTION_RATIONALE		
             ,"+ARRAY_TO_STRING(castFields, ', ')+"
 			FROM "+T_OUT +" "+T_OUT+ " 
 				JOIN " +variablesTableName+ " " + analysisTable +" ON "+ analysisTable+".SNDG_JOIN = "+T_OUT+".SNDG

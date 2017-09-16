@@ -1,0 +1,16 @@
+VAR formulaName = "[LIB_EWS_RETAIL.INDICATOR_2.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+
+	NVL( CAST(FLG_CRR_DEFAULT AS CHAR(1)) , '0') AS IND_02, 
+	CAST(NULL AS VARCHAR(20)) AS ERROR_MSG_IND_02
+	
+		";
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

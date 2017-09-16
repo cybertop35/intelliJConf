@@ -1,0 +1,23 @@
+VAR formulaName = "[LIB_EWS_RETAIL.INDICATOR_119.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+
+
+NVL( CAST(FLG_JD_IRIS_SOC_ISP AS CHAR(1)) , '0') AS IND_119, 
+
+CASE
+	WHEN FLG_IRIS_GRA_NON_ESC IS NULL THEN 'SGR000_1' 
+	ELSE '' 
+END as ERROR_MSG_IND_119
+
+
+";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;

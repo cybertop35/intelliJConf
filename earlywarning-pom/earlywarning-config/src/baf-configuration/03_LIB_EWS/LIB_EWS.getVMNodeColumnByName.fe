@@ -1,0 +1,83 @@
+# FENull returnNull LIB_EWS.getVMNodeColumnByName;
+# RETURN VALUE: FEArray      -
+# EFFETCS:      -        
+# Param1:    FEInstance     Model
+# Param2:	String 		Node name
+
+VAR model 	= Param1;
+VAR nodeName = Param2;
+
+VAR formulaName = "[LIB_EWS.getVMNodeColumnByName] ";
+
+DEBUGMESSAGE(formulaName,'START');
+
+VAR conf 		= model.Topology;
+VAR json 		= TEXTFILETOSTRING(conf);
+VAR jsonMap 		= JSONSTRINGTOMAP(json);
+VAR nodes 		= jsonMap['nodes'];
+VAR connections 	= jsonMap['connections'];
+VAR columnName 	= {};
+VAR tmp;
+
+foreach (nodes as node){
+	if(UPCASE(RTRIM(node['label'])) == UPCASE(nodeName)){
+    	
+        IF(node['name'] == 'Transform Woe'){
+        	var thresholds = node['value']['thresholds'];
+            foreachkey(thresholds as t){
+            	addelement(columnName,t+"_WOE");
+            }
+            break;
+        }        
+        
+        IF(node['name'] == 'Create Variable SQL'){
+        	addelement (columnName, node['value']['variableColumnName']);
+			break;
+        }
+    	
+        IF(node['name'] == 'Weighted Model Woe'){
+        	tmp = SPLIT(node['value']['nodeTableName'],'_');
+            tmp = tmp[SIZE(tmp) - 1 ];
+            tmp = "SCORE_"+SUBSTRING(tmp,3,LENGTH(tmp)-3)+"_WM";
+            addelement (columnName,tmp);     
+			break;
+        }		
+        
+		IF(node['name'] == 'Matrix Node'){
+        	#var tmpTable = 
+            var ordeConn = {};
+            var id= node['id'];
+            var indexFrom;
+            var indexTo;
+            var count = 0;
+            foreach (connections as con){
+            	indexFrom = GETINDEX(ordeConn,con['from']);
+                indexTo = GETINDEX(ordeConn,con['to']);                
+                IF(indexFrom == -1 )
+                	addelement(ordeConn,con['from']);
+                IF(indexTo == -1 ){
+                	indexFrom = GETINDEX(ordeConn,con['from']);
+                	insertelement(ordeConn,con['to'],indexFrom+1);
+				}
+            }
+            
+            foreach (ordeConn as con){
+            	foreach(nodes as no){
+                	if(no['id'] == con and no['name'] == 'Matrix Node' and  no['id'] <> id){
+                    	count = count + 1;
+                        break;
+                    }
+                }
+            	
+            	if(con == id) {
+					addelement(columnName,'MATRIX_'+count);
+					break;
+				}
+            }
+        
+        }
+       
+    }
+}
+DEBUGMESSAGE(formulaName,'START');
+return columnName;

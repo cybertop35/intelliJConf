@@ -1,0 +1,47 @@
+var formulaName = "[TransformWoe_PageLib.deleteButton_onClick] ";
+DEBUGMESSAGE(formulaName, "START");
+
+var user 		= Param1;
+var routerMap 	= Param2;
+var symbolTable 	= Param3;
+
+VAR thresholdsMap 	= symbolTable["thresholds"];
+var variablesInfo 	= symbolTable["variablesInfo"];
+VAR variableId 		= symbolTable["selectedRow"][3];
+
+VAR variableType 		= symbolTable["selectedRow"][1];
+var minYModelValue 	= 0;
+var maxYModelValue 	= 0;
+VAR thresholds 		= {};
+VAR widget 			= NULL;
+
+variableId	= variableId["value"];
+
+debugmessage('********************* LA VARIABLE_ID è =',variableId);
+debugmessage('********************* THRESHOLDMAP DELLA VARIABLE_ID =',thresholdsMap[variableId]);
+
+variableType 	= variableType["label"];
+
+IF(thresholdsMap[variableId] <> NULL){
+debugmessage('********************* IL ThresholdMAP è DIVERSO DA NULL =');
+
+REMOVE(thresholdsMap,variableId);
+#symbolTable["thresholds"] = thresholdsMap;
+put(symbolTable,"thresholds",thresholdsMap);
+
+
+debugmessage('*********************THRESHOLDMAP DOPO IL REMOVE =',thresholdsMap);
+	
+}
+	
+	
+	
+	
+	
+#put(thresholdsMap,variableId,thresholds);
+#put(symbolTable,"thresholds",thresholdsMap);
+
+
+
+DEBUGMESSAGE(formulaName, "END");
+RETURN ['widgetsToRemove': {}];

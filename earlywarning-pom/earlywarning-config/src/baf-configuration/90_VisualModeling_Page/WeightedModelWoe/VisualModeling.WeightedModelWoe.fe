@@ -76,7 +76,7 @@ if (updated == false){
 				selectedColumn 	= variables[i]['columnName'];
 				selectedValue 	= weightedModelRows[j][1]["inputValue"];
 			
-				EXPRESSION = EXPRESSION + "("+selectedColumn+" * ("+selectedValue+ "))+";
+				EXPRESSION = EXPRESSION + "( (CAST("+selectedColumn+" AS DECIMAL(30,12) ))  * ("+selectedValue+ "))+";
 			}
 		}
 	}

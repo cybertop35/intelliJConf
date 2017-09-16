@@ -16,10 +16,8 @@ DEBUGMESSAGE(formulaName, "START");
 VAR analysisUnitInstance = Param1;
 
 
-var setup =["CRR_INDICATOR":"IND_17",
+var setup =["CRR_EXPRESSION":"IND_17 = 1",
 			"HAVE_ERROR_MESSAGE":true,
-			"executableQuery" : "SELECT SNDG, EXPOSURE AS CI_EXPOSURE, SCONFINO AS CI_SCONFINO FROM " + analysisUnitInstance.AnalyticalTable,
-			"fieldList" : {"CI_EXPOSURE", "CI_SCONFINO"},
 			"keyColumn" : "SNDG",
 			"backtestingMonth": 3,
 			"updateOutput": "LIB_EWS_KOPER.updateOutputTable_KOPER(Param1);",

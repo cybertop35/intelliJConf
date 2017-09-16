@@ -5,7 +5,8 @@ VAR sql = "";
 
 sql = "
 		(EQUITY_T1 - EQUITY_T2) as NUM_IND_3 
-		,( 
+		,
+		cast( 
 		CASE 
 			WHEN (FIN_STAT_SOURCE = 'CEBI' AND(ELIGIBLE_FIN_STAT_COND_1 = 1 
 											AND ELIGIBLE_FIN_STAT_COND_2 =1 
@@ -39,7 +40,7 @@ sql = "
 				)
 			ELSE NULL
 		end 
-	) as IND_03,
+	as decimal(18,3)) as IND_03,
 		(case when DATA_t1 is null and data_t2 is null  						then 'BILA000;' ELSE '' END ||
 	  CASE when ELIGIBLE_FIN_STAT_COND_1 = 0 								then 'BILA001;' ELSE '' END ||
 	  CASE when ELIGIBLE_FIN_STAT_COND_2 = 0 								then 'BILA002;' ELSE '' END ||

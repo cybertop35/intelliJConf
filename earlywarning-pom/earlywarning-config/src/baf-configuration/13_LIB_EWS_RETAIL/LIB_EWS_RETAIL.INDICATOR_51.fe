@@ -1,0 +1,25 @@
+
+VAR formulaName = "[LIB_EWS_RETAIL.INDICATOR_51.fe] ";
+DEBUGMESSAGE(formulaName, "START");
+
+VAR sql = "";
+
+sql = "
+CAST(
+	case 
+		when NUM_GIO_SCONF_MEAN_90GG IS NULL OR NUM_GIO_SCONF_MEAN_90GG < 0 THEN NULL
+		else NUM_GIO_SCONF_MEAN_90GG
+	end AS DECIMAL(18,6)) AS IND_51,
+CASE
+	when NUM_GIO_SCONF_MEAN_90GG IS NULL THEN 'XRA000_1' 
+	WHEN NUM_GIO_SCONF_MEAN_90GG < 0 THEN 'XRA004_1'
+	else ''
+END AS ERROR_MSG_IND_51
+		";
+
+
+DEBUGMESSAGE(formulaName, sql);
+DEBUGMESSAGE(formulaName, "END");
+
+return sql;
+

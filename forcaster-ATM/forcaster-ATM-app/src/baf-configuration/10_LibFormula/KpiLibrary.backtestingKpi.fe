@@ -1,0 +1,52 @@
+# KpiLibrary.backtestingKpi(FETimeSeries actual, FETimeSeries forecast)
+# Questa formula va usata nell'azione del backtesting.
+# Le TS dovrebbero essere iniettate automaticamente.
+# Invoca la formula che calcola tutti i 32 (nuovi) KPI e li restituisce come lista
+# ------------------------------------------------------------------------------------------------------------------------------------
+
+IF (Param1 == NULL) THEN { RETURN NULL; }
+IF (Param2 == NULL) THEN { RETURN NULL; }
+IF (SIZE(Param1) == 0) THEN { RETURN NULL; }
+IF (SIZE(Param2) == 0) THEN { RETURN NULL; }
+
+VAR actual = Param1;
+
+VAR forecast = Param2;
+
+VAR mappaKPI = KpiLibrary.multiKpi(actual, forecast);
+
+VAR listaKpi = {};
+# ADDELEMENT(listaKpi, GET(mappaKPI, "NSE"));
+ADDELEMENT(listaKpi, GET(mappaKPI, "A-MAPE"));
+ADDELEMENT(listaKpi, GET(mappaKPI, "MAE"));
+#	ADDELEMENT(listaKpi, GET(mappaKPI, "IQR-A-APE"));
+# ADDELEMENT(listaKpi, GET(mappaKPI, "PBIAS"));
+#	ADDELEMENT(listaKpi, GET(mappaKPI, "RSR"));
+#	ADDELEMENT(listaKpi, GET(mappaKPI, "MEAN"));
+#	ADDELEMENT(listaKpi, GET(mappaKPI, "SD"));
+#	ADDELEMENT(listaKpi, GET(mappaKPI, "SST"));
+#	ADDELEMENT(listaKpi, GET(mappaKPI, "SSE"));
+#	ADDELEMENT(listaKpi, GET(mappaKPI, "MSE"));
+ADDELEMENT(listaKpi, GET(mappaKPI, "RMSE"));
+#	ADDELEMENT(listaKpi, GET(mappaKPI, "UMSE"));
+#	ADDELEMENT(listaKpi, GET(mappaKPI, "URMSE"));
+#	ADDELEMENT(listaKpi, GET(mappaKPI, "MAXPE"));
+#	ADDELEMENT(listaKpi, GET(mappaKPI, "MINPE"));
+ADDELEMENT(listaKpi, GET(mappaKPI, "A-MPE"));
+#	ADDELEMENT(listaKpi, GET(mappaKPI, "F-MPE"));
+#	ADDELEMENT(listaKpi, GET(mappaKPI, "S-MPE"));
+#	ADDELEMENT(listaKpi, GET(mappaKPI, "W-MPE"));
+#	ADDELEMENT(listaKpi, GET(mappaKPI, "F-MAPE"));
+#	ADDELEMENT(listaKpi, GET(mappaKPI, "S-MAPE"));
+ADDELEMENT(listaKpi, GET(mappaKPI, "A-WAPE"));
+#	ADDELEMENT(listaKpi, GET(mappaKPI, "F-WAPE"));
+#	ADDELEMENT(listaKpi, GET(mappaKPI, "S-WAPE"));
+#	ADDELEMENT(listaKpi, GET(mappaKPI, "A-WMAPE"));
+#	ADDELEMENT(listaKpi, GET(mappaKPI, "F-WMAPE"));
+#	ADDELEMENT(listaKpi, GET(mappaKPI, "S-WMAPE"));
+#	ADDELEMENT(listaKpi, GET(mappaKPI, "MAXERROR"));
+#	ADDELEMENT(listaKpi, GET(mappaKPI, "ME"));
+#	ADDELEMENT(listaKpi, GET(mappaKPI, "WMAE"));
+#	ADDELEMENT(listaKpi, GET(mappaKPI, "RSQUARE"));
+
+RETURN listaKpi;

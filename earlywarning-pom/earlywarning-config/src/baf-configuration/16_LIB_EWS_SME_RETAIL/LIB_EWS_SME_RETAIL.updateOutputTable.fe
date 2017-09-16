@@ -1,0 +1,175 @@
+# FENull returnNull LIB_EWS_SME_RETAIL.updateOutputTable;
+# RETURN VALUE: FENull      -
+# EFFETCS:      -           updateAnalyticaltable
+# Param1:       FEInstance      analysisUnit instance id
+
+DEBUGMESSAGE("LIB_EWS_SME_RETAIL.updateOutputTable.fe"); # stacktrace
+
+
+VAR analysisUnitID 		= Param1;
+VAR analysisUnitInstance 	= Analysis_Unit[ID=$analysisUnitID];
+VAR customerUnit 			= analysisUnitInstance.CustomerUnit_AnalysisUnit.Customer_Unit;
+
+VAR WORKSPACE_PLAN_LIST;
+VAR analysisTable;
+VAR BR_LIST = {};
+VAR VARIABLES;
+VAR CREATED;
+
+var keyColumn;
+VAR SQL_UNION = "";
+VAR model;
+VAR modelID;
+VAR modelSelct ;
+VAR modelTable;
+
+VAR DBCONNECTION 			= Properties_Predictive[ID="PREDICTIVE_PROPERTIES"].PredictiveDatasourceName;
+
+VAR T_OUT_TMP 			= analysisUnitInstance.ResultTableName+"_TMP";
+VAR T_OUT_BCK 			= analysisUnitInstance.ResultTableName+"_BCK";
+VAR T_OUT_CALC 			= analysisUnitInstance.ResultTableName+"_CALC";
+VAR T_OUT 				= analysisUnitInstance.ResultTableName;
+VAR externalInfoFormula 	= analysisUnitInstance.CustomerInfoFormula;
+VAR castFields 			={};
+VAR NOME_COLONNA 			= NULL;
+VAR SETUP 				= EVAL(externalInfoFormula, {analysisUnitInstance});
+VAR HAVE_ERROR_MESSAGE 	= SETUP["HAVE_ERROR_MESSAGE"];
+
+# RECUPERO LA MATRICE IN PROD
+WORKSPACE_PLAN_LIST 	= analysisUnitInstance.Workspace_AnalysisUnit.Workspace.Workspace_Plan[Status="Production"];
+VARIABLES 			= analysisUnitInstance.AnalysisUnit_Variable.Variable order by [ColumnName ASC];
+BR_LIST 				= analysisUnitInstance.Subset_AnalysisUnit.Business_Rule;
+analysisTable 		= analysisUnitInstance.AnalyticalTable;
+keyColumn 			= Utils.SingleSetToElement(analysisUnitInstance.AnalysisUnit_Variable.Variable[IsKeyColumn=true].ColumnName);
+
+
+IF(SIZE (WORKSPACE_PLAN_LIST ) == 0) {
+	RETURN;
+}
+
+FOREACH ( WORKSPACE_PLAN_LIST as ws ){
+
+	LIB_DB.DropTableIfExists("TMP_OUTWP_"+ws.ID,DBCONNECTION);   
+    SQLEXECUTE("CREATE TABLE TMP_OUTWP_"+ws.ID+" AS ( "+  LIB_EWS.getQueryOutputForWorkplace(ws) +" ) WITH DATA PRIMARY INDEX(SNDG)",DBCONNECTION,NULL,{});
+		
+	modelID = Utils.SingleSetToElement(ws.WorkspacePlan_Matrix.Matrix.Matrix_Model.Model.ID);
+	
+	IF (modelID <> NULL ){
+    	model = Predictive_Model[ID=$modelID]; 
+    	modelTable = model.ResultTableName;
+        modelID = model.ID;
+          
+      
+		modelSelct= "SELECT   "+keyColumn+"																							AS SNDG_MODEL
+							,"+LIB_EWS.getSqlDecodeColors(Utils.SingleSetToElement(LIB_EWS.getVMNodeColumnByName(model,'Color XRA')))+" 		as COLOR_XRA
+							,"+LIB_EWS.getSqlDecodeColors(Utils.SingleSetToElement(LIB_EWS.getVMNodeColumnByName(model,'Color CRAFI')))+" 	as COLOR_CRAFI
+							,"+LIB_EWS.getSqlDecodeColors(Utils.SingleSetToElement(LIB_EWS.getVMNodeColumnByName(model,'Color BILFAM')))+"	as COLOR_BILFAM
+					FROM "+modelTable+"_VM";
+	}
+	else {
+			modelSelct = "
+					SELECT 	NULL		AS SNDG_MODEL,
+							NULL		AS COLOR_XRA,
+							NULL		AS COLOR_CRAFI,
+							NULL		AS COLOR_BILFAM" ;	
+	}
+	
+	IF(LENGTH (SQL_UNION) > 0){
+		SQL_UNION = SQL_UNION + " UNION ALL ";
+	}
+	SQL_UNION = SQL_UNION +" SELECT * 	
+						 FROM TMP_OUTWP_"+ws.ID + " WS 
+						 LEFT JOIN ( "+modelSelct+" ) MODEL ON WS.SNDG = MODEL.sndg_model";
+}
+
+IF(LIB_DB.isTableExisting(T_OUT_CALC,DBCONNECTION)) THEN{
+    SQLEXECUTE("DROP TABLE "+ T_OUT_CALC,DBCONNECTION,NULL,{});
+}
+SQLEXECUTE("CREATE TABLE "+ T_OUT_CALC +" as ("+SQL_UNION+") WITH DATA PRIMARY INDEX(SNDG)",DBCONNECTION,NULL,{});
+
+#AGGIUNGO COLONNE DI DEFAULT
+addelement(castFields,analysisTable+"."+keyColumn);
+addelement(castFields,analysisTable+".SYSTEM_DATE");
+addelement(castFields,analysisTable+".SEGMENT");
+
+foreach (VARIABLES as v){
+ 	IF( v.ColumnName <> "TARGET" and v.ColumnName <> "EXPOSURE" and v.ColumnName <> "SNDG" and v.ColumnName <> "SEGMENT"  ){
+		addelement(castFields," ("+analysisTable+"."+v.ColumnName+" ) as "+ v.ColumnName);
+
+        if(HAVE_ERROR_MESSAGE) {
+			addelement(castFields,"CAST ("+analysisTable+".ERROR_MSG_"+v.ColumnName+" as VARCHAR(200)  ) as ERROR_MSG_" +v.ColumnName);
+        }
+	}
+}
+
+#VAR brName;
+#VAR INDEX ;
+#var skip = {};
+#foreach (BR_LIST as b){
+#	INDEX = INDEXOF(b.NAME,'_');
+#	
+#	if(INDEX < 0){
+#		INDEX = INDEXOF(b.NAME,'-');
+#	}
+#	
+#    if(INDEX < 0){
+#    	brName = b.ID;
+#    }
+#    else {
+#		brName = SUBSTRING(b.NAME,2,INDEX-2);
+#    }
+#	NOME_COLONNA = "BR0000"+brName;
+#	addelement(castFields,"(CASE WHEN "+b.SqlQuery+"then 1 ELSE 0 END ) as "+  NOME_COLONNA) ;
+
+#}
+
+VAR modules = LIB_EWS_SME_RETAIL.getAllModulesElaboration(analysisUnitInstance);
+
+VAR columnsModules = "";
+foreach (modules['columns'] as column) {
+	if(LENGTH(columnsModules) > 0 ){
+		columnsModules = columnsModules +",";
+	}
+	addelement(castFields,column+" AS MODULE_"+column); 
+}
+
+addelement(castFields,"CAST(null as VARCHAR(50)) as WARNING_APP ");
+addelement(castFields,"CAST( TMP.SEMAFORO_APP as VARCHAR(50)) as COLOR_APP ");
+addelement(castFields,"COLOR_APP as COLOR_SYSTEM");
+addelement(castFields,"CURRENT_DATE AS CREATION_DATE");
+#Aggiungo i sottomoduli
+addelement(castFields,LIB_EWS_SME_RETAIL.getSingleModules());
+
+VAR SQL_CALCOLO;
+SQL_CALCOLO = "SELECT "+ARRAY_TO_STRING(castFields);
+SQL_CALCOLO = SQL_CALCOLO + ","+ ARRAY_TO_STRING(Utils.getColumnName(T_OUT_CALC,{"SNDG","COUNTRY","SNDG_MODEL"})); 
+SQL_CALCOLO = SQL_CALCOLO + " FROM "+ analysisTable + " "+analysisTable;
+SQL_CALCOLO = SQL_CALCOLO + " JOIN  ("+ SQL_UNION+") TMP ON TMP.SNDG =  "+analysisTable+".SNDG" ;
+SQL_CALCOLO = SQL_CALCOLO +" LEFT JOIN ("+ modules['query']+")MODULI on MODULI."+modules['keyColumn']+" = TMP.SNDG";
+
+
+IF(LIB_DB.isTableExisting(T_OUT_TMP,DBCONNECTION)) THEN{
+    SQLEXECUTE("DROP TABLE "+ T_OUT_TMP,DBCONNECTION,NULL,{});
+}
+    
+SQL_CALCOLO = "CREATE TABLE "+T_OUT_TMP+" AS ( "+ SQL_CALCOLO+" ) WITH DATA PRIMARY INDEX(SNDG)";
+SQLEXECUTE(SQL_CALCOLO,DBCONNECTION,NULL,{}); 
+
+CREATED = LIB_DB.isTableExistingAndHavingData(T_OUT_TMP, DBCONNECTION);
+
+VAR CURRENT_DATE = PARSESTRING(NOW(),'dd/MM/YYYY');
+IF(CREATED) THEN {
+    IF(LIB_DB.isTableExisting(T_OUT_BCK,DBCONNECTION)) THEN    {
+        SQLEXECUTE("DROP TABLE "+T_OUT_BCK,DBCONNECTION,NULL,{});
+    }
+    IF(LIB_DB.isTableExisting(T_OUT,DBCONNECTION)) THEN    {
+    	LIB_DB.renameTable(T_OUT,T_OUT_BCK,DBCONNECTION,NULL);   
+    }
+    LIB_DB.renameTable(T_OUT_TMP,T_OUT,DBCONNECTION,NULL);
+
+	
+	return NOW();
+    
+}
+return null;
+

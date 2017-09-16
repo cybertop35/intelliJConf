@@ -1,0 +1,6 @@
+VAR punto=Param1;
+VAR totPrel=punto.IMP_TOT_PRELEVATO;
+# VAR endTot=ENDDATE(totPrel);
+# return DATEDIFF(TODAY(),endTot,"DAILY");
+VAR startTot=STARTDATE(totPrel);
+return DATEDIFF(TODAY(),startTot,"DAILY");

@@ -1,0 +1,43 @@
+var formulaName = "[TransformWoe_PageLib.deleteButton_onClick] ";
+DEBUGMESSAGE(formulaName, "START");
+
+var user = Param1;
+var routerMap = Param2;
+var symbolTable	= Param3;
+
+var deleteWidgets = {
+
+	[
+        'widgetId':'popupConfigureTitle',
+        'name':'output',
+        'value':['label' : 'Are you sure?', 'class': 'un-body2-bold ux-text-grey-p2'],
+        'position':'#configureTitlePH'
+    ],
+	[
+		'widgetId':'yesButtonDelete',
+		'name':'actionButton',
+		'value':[ 'label' : 'Yes', 'skin' : [ 'color' : 'green', 'size' : 'standard' ] ],
+		'position':'#yesButtonPH'
+	],
+	[
+		'widgetId':'noButtonDelete',
+		'name':'actionButton',
+		'value':[ 'label' : 'No', 'skin' : [ 'color' : 'red', 'size' : 'standard' ] ],
+		'position':'#noButtonPH'
+	]
+};
+
+var confirmPopup = {[
+    "widgetId" : "popupDeleteConfirm",
+    "name"     : "template",
+    "value"    : [
+        'show'     : true,
+        'popup'    : true,
+        'layout'   : 'pages/layouts/popupDeleteConfirm/',
+        'widgets'  : deleteWidgets
+    ],
+    "position" : "#confirmPopup"
+]};
+
+DEBUGMESSAGE(formulaName, "END");
+return ['widgets': confirmPopup, 'widgetsToRemove': {}];
