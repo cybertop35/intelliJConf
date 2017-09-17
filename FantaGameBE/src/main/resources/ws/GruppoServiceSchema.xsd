@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+		elementFormDefault="qualified" 
+		attributeFormDefault="qualified"
+        targetNamespace="http://fantagame.it/app/ws/type"
+        xmlns:tns="http://fantagame.it/app/ws/type">
+
+  <complexType name="persona">
+    <sequence>
+      <element name="accCond" type="boolean" tns:minOccurs="0"/>
+      <element name="cognome" type="string" tns:minOccurs="0"/>
+      <element name="email" type="string" tns:minOccurs="0"/>
+      <element name="idUser" type="int"/>
+      <element name="nome" type="string" tns:minOccurs="0"/>
+      <element name="sesso" type="unsignedShort"/>
+      <element name="telefono" type="string" tns:minOccurs="0"/>
+      <element name="dataNascita" type="dateTime" tns:minOccurs="0"/>
+     </sequence>
+  </complexType>
+
+
+  <complexType name="gruppo">
+    <sequence>
+      <element name="dateCreazione" type="dateTime" tns:minOccurs="0"/>
+      <element name="idGruppo" type="int" tns:minOccurs="0"/>
+      <element name="maxAttaccanti" type="int" tns:minOccurs="0"/>
+      <element name="maxCentroCamposti" type="int" tns:minOccurs="0"/>
+      <element name="maxCredito" type="int" tns:minOccurs="0"/>
+      <element name="maxDifensori" type="int" tns:minOccurs="0"/>
+      <element name="maxPortieri" type="int" tns:minOccurs="0"/>
+      <element name="nome" type="string" tns:minOccurs="0"/>
+      <element name="owner" type="tns:persona" tns:minOccurs="0"/>
+    </sequence>
+  </complexType>
+
+  <complexType name="messageResponseService-Response">
+    <sequence>
+      <element name="clazzToCast" type="string" tns:minOccurs="0"/>
+      <element name="code" type="int"/>
+      <element name="message" type="string" tns:minOccurs="0"/>
+      <element name="result" type="anyType" tns:minOccurs="0"/>
+    </sequence>
+  </complexType>
+  
+    <complexType name="messageGroup-Request">
+   		<sequence>
+      		<element name="gruppo" type="tns:gruppo" tns:minOccurs="0" />
+      		<element name="command" type="int" tns:minOccurs="0"/>
+      		<element name="message" type="string" tns:minOccurs="0"/>
+      		<element name="subject" type="string" tns:minOccurs="0"/>
+      		<element name="emails" type="string" tns:minOccurs="0" tns:nillable="true" tns:maxOccurs="unbounded"/>
+    	</sequence>
+  </complexType>
+  
+ <!-- 
+   <element name="realSquadra" type="tns:realSquadra"/>
+  
+  <element name="authorities" type="tns:authorities"/>
+
+  <element name="ruolo" type="tns:ruolo"/>
+        
+  <element name="andamento" type="tns:andamento"/>
+
+  <element name="classifica" type="tns:classifica"/>
+
+  <element name="fantaSquadra" type="tns:fantaSquadra"/>
+
+  <element name="formazione" type="tns:formazione"/>
+
+  <element name="giocatore" type="tns:giocatore"/>
+
+  <element name="gruppo" type="tns:gruppo"/>
+-->
+ 
+  <element name="persona" type="tns:persona"/>
+  <element name="gruppo" type="tns:gruppo"/>
+  <element name="messageResponseService-Response" type="tns:messageResponseService-Response"/>
+  <element name="messageGroup-Request" type="tns:messageGroup-Request"/>
+  
+  
+</schema>
+

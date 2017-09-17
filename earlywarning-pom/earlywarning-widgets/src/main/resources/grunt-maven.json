@@ -1,4 +1,0 @@
-{
-  "skipTests": "${skipTests}",
-  "version": "${project.version}"
-}

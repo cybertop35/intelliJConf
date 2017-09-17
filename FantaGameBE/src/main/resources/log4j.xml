@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd" >
+<log4j:configuration>
+
+	<appender name="console" class="org.apache.log4j.ConsoleAppender">
+		<param name="Target" value="System.out" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%-5p: %c - %m%n" />
+		</layout>
+	</appender>
+	
+	<appender name="Infofile" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="File" value="C:/fantaGameLog/info.log" />
+		<param name="DatePattern" value="'.'yyyy-MM-dd" />
+		<param name="Append" value="true" />
+		<param name="threshold" value="info" />
+		
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern"
+				value="%d{yyyy-MM-dd HH:mm:ss} %5p %c{1} - %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="info" />
+			<param name="LevelMax" value="info" />
+		</filter>
+		<filter class="org.apache.log4j.varia.StringMatchFilter">
+			<param name="StringToMatch" value="sendViaPost" />
+			<param name="AcceptOnMatch" value="false" />
+		</filter>
+		<filter class="org.apache.log4j.varia.StringMatchFilter">
+			<param name="StringToMatch" value="Caused by:" />
+			<param name="AcceptOnMatch" value="false" />
+		</filter>
+		<filter class="org.apache.log4j.varia.StringMatchFilter">
+			<param name="StringToMatch" value="getSOAPBuilder" />
+			<param name="AcceptOnMatch" value="false" />
+		</filter>
+		<filter class="org.apache.log4j.varia.StringMatchFilter">
+			<param name="StringToMatch" value="Deploying" />
+			<param name="AcceptOnMatch" value="false" />
+		</filter>
+	</appender>
+	
+	<appender name="Warnfile" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="DatePattern" value="'.'yyyy-MM-dd" />
+		<param name="Append" value="true" />
+		<param name="File" value="C:/fantaGameLog/warn.log" />
+		<param name="threshold" value="info" />
+		
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern"
+				value="%d{yyyy-MM-dd HH:mm:ss} %5p %c{1} - %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="warn" />
+			<param name="LevelMax" value="warn" />
+		</filter>
+		<filter class="org.apache.log4j.varia.StringMatchFilter">
+			<param name="StringToMatch" value="sendViaPost" />
+			<param name="AcceptOnMatch" value="false" />
+		</filter>
+		<filter class="org.apache.log4j.varia.StringMatchFilter">
+			<param name="StringToMatch" value="Caused by:" />
+			<param name="AcceptOnMatch" value="false" />
+		</filter>
+		<filter class="org.apache.log4j.varia.StringMatchFilter">
+			<param name="StringToMatch" value="getSOAPBuilder" />
+			<param name="AcceptOnMatch" value="false" />
+		</filter>
+	</appender>
+	
+	<appender name="Errorfile" class="org.apache.log4j.DailyRollingFileAppender">
+		<param name="DatePattern" value="'.'yyyy-MM-dd" />
+		<param name="Append" value="true" />
+		<param name="File" value="C:/fantaGameLog/error.log" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern"
+				value="%d{yyyy-MM-dd HH:mm:ss} %5p %c{1}:%L - %m%n" />
+		</layout>
+		<filter class="org.apache.log4j.varia.LevelRangeFilter">
+			<param name="LevelMin" value="error" />
+			<param name="LevelMax" value="fatal" />
+		</filter>
+		<filter class="org.apache.log4j.varia.StringMatchFilter">
+			<param name="StringToMatch" value="UnsupportedOperationException" />
+			<param name="AcceptOnMatch" value="false" />
+		</filter>
+		<filter class="org.apache.log4j.varia.StringMatchFilter">
+			<param name="StringToMatch" value="Caused by:" />
+			<param name="AcceptOnMatch" value="false" />
+		</filter>
+	</appender>
+
+	<appender name="Tracefile" class="org.apache.log4j.DailyRollingFileAppender">
+			<param name="DatePattern" value="'.'yyyy-MM-dd" />
+			<param name="Append" value="true" />
+			<param name="File" value="C:/fantaGameLog/trace.log" />
+			<layout class="org.apache.log4j.PatternLayout">
+				<param name="ConversionPattern"
+					value="%d{yyyy-MM-dd HH:mm:ss} %5p %c{1}:%L - %m%n" />
+			</layout>
+			<filter class="org.apache.log4j.varia.LevelRangeFilter">
+				<param name="LevelMin" value="trace" />
+				<param name="LevelMax" value="trace" />
+			</filter>
+			<filter class="org.apache.log4j.varia.StringMatchFilter">
+				<param name="StringToMatch" value="UnsupportedOperationException" />
+				<param name="AcceptOnMatch" value="false" />
+			</filter>
+			<filter class="org.apache.log4j.varia.StringMatchFilter">
+				<param name="StringToMatch" value="Caused by:" />
+				<param name="AcceptOnMatch" value="false" />
+			</filter>
+		</appender>
+		
+	<appender name="ws" class="org.apache.log4j.DailyRollingFileAppender">
+			<param name="DatePattern" value="'.'yyyy-MM-dd" />
+			<param name="Append" value="true" />
+			<param name="File" value="C:/fantaGameLog/ws.log" />
+			<layout class="org.apache.log4j.PatternLayout">
+				<param name="ConversionPattern"
+					value="%d{yyyy-MM-dd HH:mm:ss} %5p %c{1}:%L - %m%n" />
+			</layout>
+	</appender>
+	
+	<appender name="ASYNCHError" class="org.apache.log4j.AsyncAppender">
+	       <appender-ref ref="Errorfile"/>
+	</appender>
+	<appender name="ASYNCHInfo" class="org.apache.log4j.AsyncAppender">
+	       <appender-ref ref="Infofile"/>
+	</appender>
+	<appender name="ASYNCHWarn" class="org.apache.log4j.AsyncAppender">
+	       <appender-ref ref="Warnfile"/>
+	</appender>
+	<appender name="ASYNCHTrace" class="org.apache.log4j.AsyncAppender">
+	       <appender-ref ref="Tracefile"/>
+	</appender>
+	<appender name="ASYNCHws" class="org.apache.log4j.AsyncAppender">
+	       <appender-ref ref="ws"/>
+	</appender>
+
+	<!-- Application Loggers -->
+<!-- 	<logger name="com.fantagame"> -->
+<!-- 		<level value="debug" /> -->
+<!-- 	</logger> -->
+	
+	<!-- 3rdparty Loggers -->
+	<logger name="org.springframework.core">
+		<level value="info" />
+	</logger>
+	
+	<logger name="org.springframework.beans">
+		<level value="info" />
+	</logger>
+	
+	<logger name="org.springframework.context">
+		<level value="info" />
+	</logger>
+
+	<logger name="org.springframework.web">
+		<level value="info" />
+	</logger>
+	
+	<logger name="org.hibernate">
+		<level value="warn" />
+	</logger>
+	
+	<logger name="log4j.logger.org.springframework.ws.client.MessageTracing.sent">
+		<appender-ref ref="ws" />
+	</logger>
+
+	<logger name="log4j.logger.org.springframework.ws.client.MessageTracing.received">
+		<level value="info" />
+	</logger>
+	
+	<logger name="log4j.logger.org.springframework.ws.server.MessageTracing">
+		<appender-ref ref="ws" />
+	</logger>
+
+	<logger name="org.springframework.ws">
+		<appender-ref ref="ws" />
+	</logger>
+
+	<root>
+		<priority value="debug"></priority>
+		<appender-ref ref="ASYNCHInfo" />
+		<appender-ref ref="ASYNCHError"/>
+		<appender-ref ref="ASYNCHTrace"/>	
+		<appender-ref ref="ASYNCHws"/>
+		<appender-ref ref="ASYNCHWarn"/>	
+		<appender-ref ref="console" />
+	</root>
+
+	
+</log4j:configuration>

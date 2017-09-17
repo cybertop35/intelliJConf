@@ -1,5 +1,0 @@
-IF (Param1 == NULL) THEN { RETURN NULL; }
-IF (Param2 == NULL) THEN { RETURN NULL; }
-IF (SIZE(Param1) == 0) THEN { RETURN NULL; }
-IF (SIZE(Param2) == 0) THEN { RETURN NULL; }
-RETURN MAPE(Param1, Param2)*100;

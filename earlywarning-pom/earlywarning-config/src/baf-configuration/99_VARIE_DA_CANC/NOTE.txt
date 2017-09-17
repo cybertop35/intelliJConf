@@ -1,7 +1,0 @@
-1000_LibFormula_AnalysisUnit
-- Formule modificate per effuare il calcolo corretto degli ADJ in modalita linked
-1050_LIB_BRJson
--Formule modificate per effuare correttamente il NOT nell BR
-
-LIB_DB
-- Aggiunta Ottimizzazione per teradata

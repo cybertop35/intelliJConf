@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE tiles-definitions PUBLIC
+	"-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+	"http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+
+<tiles-definitions>
+
+	<definition name="secure/home" extends="logged-layout">
+			<put-attribute name="title" value="Private Home Page" />
+			<put-attribute name="navigation" value="/WEB-INF/secure/menu.jsp" />
+			<put-attribute name="body" value="/WEB-INF/secure/home.jsp" />
+	</definition>
+	
+	<definition name="secure/showMysquadra" extends="logged-layout">
+			<put-attribute name="title" value="My club" />
+			<put-attribute name="navigation" value="/WEB-INF/secure/menu.jsp" />
+			<put-attribute name="body" value="/WEB-INF/secure/squadra/viewClubs.jsp" />
+	</definition>
+	
+		<definition name="secure/myProfile" extends="logged-layout">
+			<put-attribute name="title" value="Modify profile" />
+			<put-attribute name="navigation" value="/WEB-INF/secure/menu.jsp" />
+			<put-attribute name="body" value="/WEB-INF/secure/profile/modifyProfile.jsp" />
+	</definition>
+	
+	<definition name="secure/createClub" extends="logged-layout">
+			<put-attribute name="title" value="Modify profile" />
+			<put-attribute name="navigation" value="/WEB-INF/secure/menu.jsp" />
+			<put-attribute name="body" value="/WEB-INF/secure/profile/createClub.jsp" />
+	</definition>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<!-- Use this for Oauth -->	
+	 <definition name="secure/requestTokenAuth" extends="logged-layout">
+			<put-attribute name="title" value="Private Home Page" />
+			<put-attribute name="navigation" value="/WEB-INF/secure/menu.jsp" />
+			<put-attribute name="body" value="/WEB-INF/secure/request_token_authorized.jsp" />
+	</definition> 
+	
+	 <definition name="secure/accessConfirmation" extends="logged-layout">
+			<put-attribute name="title" value="Private Home Page" />
+			<put-attribute name="navigation" value="/WEB-INF/secure/menu.jsp" />
+			<put-attribute name="body" value="/WEB-INF/secure/access_confirmation.jsp" />
+	</definition>
+	
+	
+	
+</tiles-definitions>

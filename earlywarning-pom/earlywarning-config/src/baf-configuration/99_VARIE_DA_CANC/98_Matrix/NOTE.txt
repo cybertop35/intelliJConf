@@ -1,5 +1,0 @@
---------MODIFICATE PER EVIATARE CALCOLO TABELLA AGGREGATA
-Matrix.getMatrixData
-Matrix.areAggregationTableToCalculate
-----
-

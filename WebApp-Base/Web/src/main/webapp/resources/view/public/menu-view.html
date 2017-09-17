@@ -1,0 +1,46 @@
+
+<!-- Navigation & Logo-->
+<div class="mainmenu-wrapper">
+	<div class="container">
+		<div class="menuextras">
+			<div class="extras">
+				<ul>
+					<!-- 							<li class="shopping-cart-items"><i class="glyphicon glyphicon-shopping-cart icon-white"></i> <a href="page-shopping-cart.html"><b>3 items</b></a></li> -->
+					<li>
+						<div class="dropdown choose-country">
+							<a class="#" data-toggle="dropdown" href="#"><img
+								src="resources/img/flags/it.png" alt="Italian"> IT</a>
+							<ul class="dropdown-menu" role="menu">
+								<li role="menuitem"><a href="#"><img
+										src="resources/img/flags/gb.png" alt="Great Britain"> UK</a></li>
+							</ul>
+						</div>
+					</li>
+					<li><a href="#/auth/login">Login</a></li>
+				</ul>
+			</div>
+		</div>
+		<!-- START MAIN MENU -->
+		<div class="row">
+			<div class="logo-wrapper col-sm-2">
+				<a href="#/"> <img src="resources/img/logo.jpg">
+				</a>
+			</div>
+
+			<div ng-controller='navbarDirectiveTestCtrl'
+				class="col-sm-10 nopadding">
+				<!-- Here's the "Angled Navbar" directive in use -->
+				<angled-navbar affixed=''
+							   brand='brand' 
+							   inverse='false'
+							   menus='menus' 
+							   search='search'
+							   searchfn='searchfn()'
+<!-- 							   navfn='navfn(action)' -->
+							   /> 
+				<!-- /angled-navbar -->
+			</div>
+		</div>
+		<!-- END MAIN MENU -->
+	</div>
+</div>

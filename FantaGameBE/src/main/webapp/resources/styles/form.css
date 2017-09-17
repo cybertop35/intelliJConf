@@ -1,0 +1,179 @@
+.blocksubhead {
+	font: normal 12px;
+	color: #3e3e3e;
+	background: #e9e9e9 none repeat-x;
+	padding: 4px 10px 4px 10px;
+	border-top: 1px solid #cecece;
+	font-weight: bold;
+	border-top: none;
+}
+
+.blockhead {
+	font: normal 14px Tahoma, Calibri, Verdana, Geneva, sans-serif;
+	color: #ffffff;
+	background: #333333 repeat-x;
+	_background-image: none;
+	padding: 10px 10px 4px 10px;
+	border: 1px solid #5a7f97;
+	-moz-border-radius-topright: 5px;
+	-moz-border-radius-topleft: 5px;
+	-webkit-border-top-right-radius: 5px;
+	-webkit-border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
+	margin-top: 20px;
+}
+
+.blockhead1 {
+	font: normal 14px Tahoma, Calibri, Verdana, Geneva, sans-serif;
+	color: #ffffff;
+	background: #333333 repeat-x;
+	_background-image: none;
+	padding: 10px 10px 4px 10px;
+	border: 1px solid #5a7f97;
+	-moz-border-radius-topright: 5px;
+	-moz-border-radius-topleft: 5px;
+	-webkit-border-top-right-radius: 5px;
+	-webkit-border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	border-top-left-radius: 5px;
+}
+
+.blockbody {
+	background: rgb(255, 255, 255) none no-repeat;
+	border-right: 1px solid #333333;
+	border-left: 1px solid #333333;
+	border-bottom: 1px solid #333333;
+}
+
+.section {
+	padding: 0 15px;
+}
+
+.tableForm {
+	padding: 4px 10px 4px 20px;
+}
+
+table.tableForm  td {
+	padding: 10px 10px 10px 0px;
+	width: 200px;
+}
+
+.tableForm label {
+	text-align: right;
+	width: 200px;
+	padding: 0 0 0 0;
+}
+
+.fieldValid {
+	background: #006600;
+}
+
+.square {
+	width: 10px;
+	height: 10px;
+	float: left;
+	margin: 0;
+	padding: 0 0 0 0;
+	color: #000;
+	background: #fff;
+	font-family: Helvetica, Arial, Sans-Serif;
+	padding-left: 6px;;
+}
+
+fieldset {
+	border-width: 0;
+}
+
+.blockrow {
+	padding: 10px 0 10px 0;
+}
+
+/**** STYLE FILE UPLOAD*****/
+.previwImage {
+	height: 120px;
+	width: 90px;
+	border-top-style: solid;
+	border-right-style: solid;
+	border-bottom-style: solid;
+	border-left-style: solid;
+	border-top-color: #999;
+	border-right-color: #999;
+	border-bottom-color: #999;
+	border-left-color: #999;
+	text-align: center;
+	padding: 5px 5px 5px 5px;
+	line-height: 8em;
+}
+
+.fileinput-button input {
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin: 0;
+	border: solid transparent;
+	border-width: 0 0 100px 200px;
+	opacity: 0;
+	filter: alpha(opacity = 0);
+	-moz-transform: translate(-300px, 0) scale(4);
+	direction: ltr;
+	cursor: pointer;
+}
+
+.fileinput-button {
+	position: relative;
+	overflow: hidden;
+	float: center;
+	margin-right: 4px;
+}
+
+[class ^="icon-"] {
+	display: inline-block;
+	width: 14px;
+	height: 14px;
+	vertical-align: text-top;
+	background-repeat: no-repeat;
+	*margin-right: .3em;
+}
+
+[class ^="icon-"]:last-child {
+	*margin-left: 0;
+}
+
+.icon-white {
+	background-image: url(../img/glyphicons-halflings-white.png);
+}
+
+.icon-plus {
+	background-position: -408px -95px;
+}
+
+.btn {
+	display: inline-block;
+	color: #fff;
+	font-size: 15px;
+	line-height: 1.2em;
+	text-decoration: none;
+	background: url(../img/box/link2-bgd.gif) left repeat-x;
+	letter-spacing: -1px;
+	text-transform: uppercase
+}
+
+.btn:hover {
+	color: #000
+}
+
+.btn span {
+	display: block;
+	background: url(../img/box/link2-left.gif) no-repeat left
+}
+
+.btn span span {
+	background: url(../img/box/link2-right.gif) no-repeat right;
+	padding: 20px 22px
+}
+
+.btn:first-child {
+	*margin-left: 0;
+}
+

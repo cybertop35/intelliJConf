@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE tiles-definitions PUBLIC
+	"-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+	"http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+
+<tiles-definitions>
+
+	<definition name="pub/home" extends="standard-layout">
+			<put-attribute name="title" value="Home Page" />
+			<put-attribute name="navigation" value="/WEB-INF/pub/menu.jsp" />
+			<put-attribute name="body" value="/WEB-INF/pub/home.jsp" />
+	</definition>
+	
+	<definition name="pub/news" extends="standard-layout">
+			<put-attribute name="title" value="News" />
+			<put-attribute name="body" value="/WEB-INF/pub/News.jsp" />
+	</definition>
+	 
+	<definition name="pub/contatti" extends="standard-layout">
+			<put-attribute name="title" value="Contatti" />
+			<put-attribute name="body" value="/WEB-INF/pub/Contatti.jsp" />
+	</definition>
+	
+	<definition name="pub/chisono" extends="standard-layout">
+			<put-attribute name="title" value="Chi sono" />
+			<put-attribute name="body" value="/WEB-INF/pub/Chi_Sono.jsp" />
+	</definition>
+	
+	<definition name="pub/personServices/activation" extends="standard-layout">
+			<put-attribute name="title" value="User Activation" />
+			<put-attribute name="body" value="/WEB-INF/pub/servicePersona/SuccessActivation.jsp" />
+	</definition>
+
+	<definition name="pub/personServices/forgotPassword" extends="standard-layout">
+			<put-attribute name="title" value="User - Forgot Password" />
+			<put-attribute name="body" value="/WEB-INF/pub/servicePersona/ForgotPassword.jsp" />
+	</definition>
+	
+	<definition name="pub/personServices/registration" extends="standard-layout">
+			<put-attribute name="title" value="User Activation" />
+			<put-attribute name="body" value="/WEB-INF/pub/servicePersona/userRegitration.jsp" />
+	</definition>
+	<definition name="pub/error" extends="standard-layout">
+			<put-attribute name="title" value="Error" />
+			<put-attribute name="body" value="/WEB-INF/pub/errorPage.jsp" />
+	</definition>
+	
+	<!-- Login PAGE -->
+	<definition name="pub/login" extends="standard-layout">
+			<put-attribute name="title" value="Login" />
+			<put-attribute name="body" value="/WEB-INF/pub/home.jsp" />
+	</definition>
+	<definition name="pub/loggedout" extends="standard-layout">
+			<put-attribute name="title" value="Loggedout" />
+			<put-attribute name="body" value="/WEB-INF/pub/home.jsp" />
+	</definition>
+	<definition name="pub/accessdeneid" extends="standard-layout">
+			<put-attribute name="title" value="Loggedout" />
+			<put-attribute name="body" value="/WEB-INF/pub/loggin/accessDeneid.jsp" />
+	</definition>
+	<definition name="pub/timeout" extends="standard-layout">
+			<put-attribute name="title" value="Login timeout" />
+			<put-attribute name="navigationDX" value="/WEB-INF/pub/loggin/login.jsp" />
+			<put-attribute name="body" value="/WEB-INF/pub/loggin/timeout.jsp" />
+			<put-attribute name="navigation" value="/WEB-INF/pub/menu.jsp" />
+	</definition>    
+	 
+</tiles-definitions>

@@ -1,8 +1,0 @@
-VAR puntoDiprelievo=Param1;
-VAR cap=puntoDiprelievo.PuntoDiPrelievo_CAP.CAP;
-VAR result;
-IF(SIZE(cap)>0){
-	cap=cap[0];
-	return cap.Timeseries1;
-}
-RETURN TS("DAILY","");

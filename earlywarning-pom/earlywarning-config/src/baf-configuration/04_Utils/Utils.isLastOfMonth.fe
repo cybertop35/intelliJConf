@@ -1,3 +1,0 @@
-VAR oggi = TODAY();
-VAR ultimoDelMese = DATESUM(DATESUM(CLEANDATE(oggi, "MONTHLY"), 1, "MONTHLY"), -1, "DAILY");
-return (oggi == ultimoDelMese);   

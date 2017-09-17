@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+ 
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
+        version="1.0">
+ 
+    <named-query name="userGroup.findByName">
+        <query>
+            from UserGroup
+            where name = ?
+        </query>
+    </named-query>
+ 
+    <named-query name="userToken.findByName">
+        <query>
+            from UserToken
+            where name = ?
+        </query>
+    </named-query>
+ 
+    <named-query name="user.findByUsername">
+        <query>
+            from User
+            where username = ?
+        </query>
+    </named-query>
+</entity-mappings>

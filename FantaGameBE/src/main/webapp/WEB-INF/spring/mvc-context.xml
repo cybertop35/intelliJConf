@@ -1,0 +1,62 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 	http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+						http://www.springframework.org/schema/context 	http://www.springframework.org/schema/context/spring-context-3.1.xsd
+						http://www.springframework.org/schema/tx    	http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
+       					http://www.springframework.org/schema/aop       http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+       					http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd">
+				
+	<mvc:annotation-driven /> 		
+	<mvc:default-servlet-handler />
+	<context:component-scan base-package="com.fantagame.be.business.controller" />
+	
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+	     <!-- one of the properties available; the maximum file size in bytes (5mb)-->
+	    <property name="maxUploadSize" value="5242880"/>
+	</bean>
+
+	<bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
+		<property name="definitions">
+			<list>
+				<value>/WEB-INF/layouts/layouts.xml</value>
+				<value>/WEB-INF/pub/view.xml</value>
+				<value>/WEB-INF/secure/view.xml</value>
+				<value>/WEB-INF/secure/admin/view.xml</value>
+				<value>/WEB-INF/oauth/view.xml</value>
+			</list>
+		</property>
+	</bean>
+
+<!-- 	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/> -->
+
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<property name="requestContextAttribute" value="requestContext" />
+		<property name="viewClass" value="org.springframework.web.servlet.view.tiles2.TilesView"/>
+	</bean>
+
+<!-- 	<bean id="handlerMapping" class="org.springframework.web.servlet.handler.BeanNameUrlHandlerMapping" > -->
+<!-- 		<property name="order" value="1"/> -->
+<!-- 	</bean>  -->
+		
+	<mvc:view-controller path="/pub/home.htm" />
+    <mvc:view-controller path="/pub/news.htm" />
+	<mvc:view-controller path="/pub/contatti.htm" />
+	<mvc:view-controller path="/pub/chisono.htm" />
+	
+	<mvc:view-controller path="/pub/login.htm" />
+	<mvc:view-controller path="/pub/accessdeneid.htm"/>
+	<mvc:view-controller path="/pub/timeout.htm" />
+	
+	<!-- Secure Controlled -->
+	<mvc:view-controller path="/secure/home.htm"/>
+	
+	<!-- Admin Controlled -->
+	<mvc:view-controller path="/secure/admin/home.htm"/>
+	
+ 	<!-- oauth --> 
+ 	<mvc:view-controller path="/oauth/confirm_access.htm"/>
+
+
+</beans>
