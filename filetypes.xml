@@ -1,7 +1,9 @@
 <application>
   <component name="FileTypeManager" version="17">
     <extensionMap>
-      <mapping ext="session" type="PLAIN_TEXT" />
+      <mapping ext="klib" type="ARCHIVE" />
+      <mapping ext="xlsm" type="Native" />
+      <mapping pattern="header" type="PLAIN_TEXT" />
     </extensionMap>
   </component>
 </application>
