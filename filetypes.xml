@@ -4,6 +4,8 @@
       <mapping ext="klib" type="ARCHIVE" />
       <mapping ext="xlsm" type="Native" />
       <mapping pattern="header" type="PLAIN_TEXT" />
+      <mapping pattern="_common_metadata" type="PLAIN_TEXT" />
+      <mapping pattern="_metadata" type="PLAIN_TEXT" />
     </extensionMap>
   </component>
 </application>
