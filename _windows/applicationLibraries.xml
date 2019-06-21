@@ -1,5 +1,32 @@
 <application>
   <component name="libraryTable">
+    <library name="Python 3.5 interpreter library">
+      <CLASSES>
+        <root url="file://C:/Dati/SDK/Python/Python35-32/Lib" />
+        <root url="file://C:/Dati/SDK/Python/Python35-32/DLLs" />
+        <root url="file://C:/Dati/SDK/Python/Python35-32" />
+        <root url="file://C:/Dati/SDK/Python/Python35-32/Lib/site-packages" />
+        <root url="file://$USER_HOME$/.IdeaIC2019.1/system/python_stubs/-5114502" />
+        <root url="file://$APPLICATION_PLUGINS_DIR$/python-ce/helpers/python-skeletons" />
+        <root url="file://$APPLICATION_PLUGINS_DIR$/python-ce/helpers/typeshed/stdlib/3" />
+        <root url="file://$APPLICATION_PLUGINS_DIR$/python-ce/helpers/typeshed/stdlib/2and3" />
+        <root url="file://$APPLICATION_PLUGINS_DIR$/python-ce/helpers/typeshed/third_party/3" />
+        <root url="file://$APPLICATION_PLUGINS_DIR$/python-ce/helpers/typeshed/third_party/2and3" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="file://C:/Dati/SDK/Python/Python35-32/Lib" />
+        <root url="file://C:/Dati/SDK/Python/Python35-32/DLLs" />
+        <root url="file://C:/Dati/SDK/Python/Python35-32" />
+        <root url="file://C:/Dati/SDK/Python/Python35-32/Lib/site-packages" />
+        <root url="file://$USER_HOME$/.IdeaIC2019.1/system/python_stubs/-5114502" />
+        <root url="file://$APPLICATION_PLUGINS_DIR$/python-ce/helpers/python-skeletons" />
+        <root url="file://$APPLICATION_PLUGINS_DIR$/python-ce/helpers/typeshed/stdlib/3" />
+        <root url="file://$APPLICATION_PLUGINS_DIR$/python-ce/helpers/typeshed/stdlib/2and3" />
+        <root url="file://$APPLICATION_PLUGINS_DIR$/python-ce/helpers/typeshed/third_party/3" />
+        <root url="file://$APPLICATION_PLUGINS_DIR$/python-ce/helpers/typeshed/third_party/2and3" />
+      </SOURCES>
+    </library>
     <library name="Python 3.5.2 (C:\Dati\DEV\SDK\Python352\python.exe) interpreter library">
       <CLASSES />
       <JAVADOC />
