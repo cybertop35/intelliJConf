@@ -1,7 +1,7 @@
 <application>
   <component name="FindSettings">
-    <option name="customScope" value="Project 'Spark'" />
-    <option name="defaultScopeName" value="Project 'Spark'" />
-    <option name="SEARCH_SCOPE" value="Project 'Spark'" />
+    <option name="customScope" value="Project 'dataload'" />
+    <option name="defaultScopeName" value="Project 'dataload'" />
+    <option name="SEARCH_SCOPE" value="Project 'dataload'" />
   </component>
 </application>
