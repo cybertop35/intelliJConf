@@ -1,5 +1,13 @@
 <application>
   <component name="libraryTable">
+    <library name="jdk-8u21_64">
+      <CLASSES />
+      <JAVADOC />
+      <SOURCES>
+        <root url="file://C:/Dati/SDK/Java/jdk-8u21_64" />
+      </SOURCES>
+      <jarDirectory url="file://C:/Dati/SDK/Java/jdk-8u21_64" recursive="false" type="SOURCES" />
+    </library>
     <library name="Python 3.5 interpreter library">
       <CLASSES>
         <root url="file://C:/Dati/SDK/Python/Python35-32/Lib" />
@@ -26,16 +34,6 @@
         <root url="file://$APPLICATION_PLUGINS_DIR$/python-ce/helpers/typeshed/third_party/3" />
         <root url="file://$APPLICATION_PLUGINS_DIR$/python-ce/helpers/typeshed/third_party/2and3" />
       </SOURCES>
-    </library>
-    <library name="Python 3.5.2 (C:\Dati\DEV\SDK\Python352\python.exe) interpreter library">
-      <CLASSES />
-      <JAVADOC />
-      <SOURCES />
-    </library>
-    <library name="R Skeletons">
-      <CLASSES />
-      <JAVADOC />
-      <SOURCES />
     </library>
     <library name="scala-sdk-2.11.8" type="Scala">
       <properties>
