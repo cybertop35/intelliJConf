@@ -6,6 +6,10 @@
           <option name="url" value="http://gogs.devops.atosdev.com" />
           <option name="userName" value="marco.calabretta@atos.net" />
         </UrlAndUserName>
+        <UrlAndUserName>
+          <option name="url" value="http://bitbucket.org" />
+          <option name="userName" value="cybertop" />
+        </UrlAndUserName>
       </list>
     </option>
   </component>
